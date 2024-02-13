@@ -6,8 +6,42 @@ import { ModeToggle } from '../theme-toggle'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 
+// sample routes
+export const routes = [
+  {
+    name: 'Route 1',
+    path: '/',
+    icon: <Cat className="h-4 w-4" />,
+  },
+  {
+    name: 'Route 2',
+    path: '/',
+    icon: <Cat className="h-4 w-4" />,
+  },
+  {
+    name: 'Route 3',
+    path: '/',
+    icon: <Cat className="h-4 w-4" />,
+  },
+  {
+    name: 'Route 4',
+    path: '/',
+    icon: <Cat className="h-4 w-4" />,
+  },
+]
+
 const Header = () => {
   const router = useRouter()
+
+  const navLinks = routes.map((route, index) => {
+    return (
+      <NavLink key={index} to={route.path}>
+        {route.icon}
+        <span className="hidden md:block">{route.name}</span>
+      </NavLink>
+    )
+  })
+
   return (
     <header className="flex h-16 items-center justify-between border-b dark:border-[#29292c] bg-white px-6 dark:bg-[#18181A]">
       <div className="flex items-center gap-4 lg:gap-6">
@@ -25,28 +59,8 @@ const Header = () => {
             Edge Academy
           </h1> */}
         </div>
-
         <Separator orientation="vertical" className="h-6" />
-
-        <NavLink to="/">
-          <Cat className="mt-[0.2rem] h-4 w-4" />
-          <span className="hidden md:block">Route 1</span>
-        </NavLink>
-
-        <NavLink to="/">
-          <Cat className="h-4 w-4" />
-          <span className="hidden md:block">Route 2</span>
-        </NavLink>
-
-        <NavLink to="/">
-          <Cat className="h-4 w-4" />
-          <span className="hidden md:block">Route 2</span>
-        </NavLink>
-
-        <NavLink to="/">
-          <Cat className="h-4 w-4" />
-          <span className="hidden md:block">Route 3</span>
-        </NavLink>
+        <nav className="flex items-center gap-4 lg:gap-6">{navLinks}</nav>
       </div>
       <div className="flex items-center gap-4 lg:gap-6 ">
         <Separator orientation="vertical" className="h-6 dark:bg-[#2d2d37]" />

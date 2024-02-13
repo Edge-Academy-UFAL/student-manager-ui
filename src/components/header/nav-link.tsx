@@ -13,8 +13,8 @@ export function NavLink(props: NavLinkProps) {
   return (
     <Link href={props.to}>
       <h1
-        data-current={pathname === props.to}
-        className="flex items-center gap-1.5 text-sm font-medium"
+        data-current={pathname === props.to} // add data-current attribute to the NavLink component to indicate the current route
+        className="flex items-center gap-1.5 text-[0.9rem] font-medium"
       >
         {props.children}
       </h1>
