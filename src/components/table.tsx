@@ -30,8 +30,6 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
@@ -43,16 +41,16 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { tableData as data } from '@/lib/sample-data'
 
 export type Payment = {
   id: string
   status: 'pending' | 'processing' | 'success' | 'failed'
   email: string
   name: string
+  class: string
 }
 
-export default function DataTableDemo() {
+export default function DataTableDemo({ data }: { data: Payment[] }) {
   const router = useRouter()
 
   const columns: ColumnDef<Payment>[] = [
@@ -91,9 +89,7 @@ export default function DataTableDemo() {
           </Button>
         )
       },
-      cell: ({ row }) => (
-        <div className="lowercase">{row.getValue('name')}</div>
-      ),
+      cell: ({ row }) => <div>{row.getValue('name')}</div>,
     },
 
     {
@@ -113,11 +109,18 @@ export default function DataTableDemo() {
         <div className="lowercase">{row.getValue('email')}</div>
       ),
     },
+    // {
+    //   accessorKey: 'status',
+    //   header: 'Status',
+    //   cell: ({ row }) => (
+    //     <div className="capitalize">{row.getValue('status')}</div>
+    //   ),
+    // },
     {
-      accessorKey: 'status',
-      header: 'Status',
+      accessorKey: 'class',
+      header: 'Turma',
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('status')}</div>
+        <div className="capitalize">{row.getValue('class')}</div>
       ),
     },
     {
@@ -135,15 +138,8 @@ export default function DataTableDemo() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Ações</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-                Copiar ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => router.push('/aluno/' + payment.id)}
+                onClick={() => router.push('/alunos/' + payment.id)}
               >
                 Visualizar Perfil
               </DropdownMenuItem>
@@ -183,7 +179,7 @@ export default function DataTableDemo() {
   })
 
   return (
-    <div className="w-full px-20">
+    <div className="w-full px-10 py-5 justify-center">
       <div className="flex items-center py-4">
         <Input
           placeholder="Buscar por nome..."
