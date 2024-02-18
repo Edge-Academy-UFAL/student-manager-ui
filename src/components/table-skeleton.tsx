@@ -22,8 +22,8 @@ export function DataTableSkeleton({
   filterableColumnCount = 1,
 }: DataTableSkeletonProps) {
   return (
-    <div className="w-full space-y-3 overflow-auto px-10 py-5">
-      <div className="flex w-full items-center justify-between space-x-2 overflow-auto p-1">
+    <div className="w-full space-y-3 overflow-auto px-10 py-6">
+      <div className="flex w-full items-center justify-between space-x-2 overflow-auto py-4">
         <div className="flex flex-1 items-center space-x-2">
           {searchableColumnCount > 0
             ? Array.from({ length: searchableColumnCount }).map((_, i) => (
