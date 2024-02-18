@@ -1,9 +1,9 @@
 'use client'
 
-import * as React from 'react'
 import { useRouter } from 'next/navigation'
+import * as React from 'react'
 
-import { ChevronRight, ChevronLeft } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import {
   CaretSortIcon,
@@ -42,18 +42,17 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-export type Payment = {
+export type Student = {
   id: string
-  status: 'pending' | 'processing' | 'success' | 'failed'
   email: string
   nome: string
   turma: string
 }
 
-export default function DataTableDemo({ data }: { data: Payment[] }) {
+export default function DataTableDemo({ data }: { data: Student[] }) {
   const router = useRouter()
 
-  const columns: ColumnDef<Payment>[] = [
+  const columns: ColumnDef<Student>[] = [
     {
       id: 'select',
       header: ({ table }) => (
@@ -117,10 +116,10 @@ export default function DataTableDemo({ data }: { data: Payment[] }) {
     //   ),
     // },
     {
-      accessorKey: 'class',
+      accessorKey: 'turma',
       header: 'Turma',
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('class')}</div>
+        <div className="capitalize">{row.getValue('turma')}</div>
       ),
     },
     {
