@@ -46,8 +46,8 @@ export type Payment = {
   id: string
   status: 'pending' | 'processing' | 'success' | 'failed'
   email: string
-  name: string
-  class: string
+  nome: string
+  turma: string
 }
 
 export default function DataTableDemo({ data }: { data: Payment[] }) {
@@ -77,7 +77,7 @@ export default function DataTableDemo({ data }: { data: Payment[] }) {
       enableHiding: false,
     },
     {
-      accessorKey: 'name',
+      accessorKey: 'nome',
       header: ({ column }) => {
         return (
           <Button
@@ -89,7 +89,7 @@ export default function DataTableDemo({ data }: { data: Payment[] }) {
           </Button>
         )
       },
-      cell: ({ row }) => <div>{row.getValue('name')}</div>,
+      cell: ({ row }) => <div>{row.getValue('nome')}</div>,
     },
 
     {
@@ -179,7 +179,7 @@ export default function DataTableDemo({ data }: { data: Payment[] }) {
   })
 
   return (
-    <div className="w-full px-10 py-5 justify-center">
+    <div className="w-full px-10 py-5 justify-center bg-background">
       <div className="flex items-center py-4">
         <Input
           placeholder="Buscar por nome..."
@@ -216,7 +216,7 @@ export default function DataTableDemo({ data }: { data: Payment[] }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border ">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

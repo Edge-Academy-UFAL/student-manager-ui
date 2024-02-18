@@ -15,17 +15,17 @@ export const routes = [
   },
   {
     name: 'Route 2',
-    path: '/',
+    path: '/rota2',
     icon: <Cat className="h-4 w-4" />,
   },
   {
     name: 'Route 3',
-    path: '/',
+    path: '/rota3',
     icon: <Cat className="h-4 w-4" />,
   },
   {
     name: 'Route 4',
-    path: '/',
+    path: '/rota4',
     icon: <Cat className="h-4 w-4" />,
   },
 ]
@@ -43,13 +43,13 @@ const Header = () => {
   })
 
   return (
-    <header className="flex h-16 items-center justify-between border-b px-6">
+    <header className="flex h-16 items-center justify-between border-b px-6 bg-background">
       <div className="flex items-center gap-4 lg:gap-6">
         <div
           className="flex gap-4 hover:cursor-pointer"
           onClick={() => router.push('/')}
         >
-          <h1 className="flex items-center gap-1.5 text-base transition-colors font-medium bg-gradient-to-r p-[0.35rem] rounded-lg from-blue-600 via-green-500 to-indigo-400 text-white shadow-sm">
+          <h1 className="flex items-center gap-1.5 text-base transition-colors font-medium bg-gradient-to-r p-[0.35rem] rounded-lg  from-[#5dead3] to-[#92d625] text-white shadow-sm">
             Edge Academy
           </h1>
         </div>
