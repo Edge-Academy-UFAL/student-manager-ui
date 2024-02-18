@@ -18,7 +18,7 @@ export default function Home() {
                 Gerenciador de Alunos
               </div>
               <h1 className="text-4xl font-bold tracking-tighter leading-tighter sm:text-5xl md:tracking-tight">
-                Conheça o Gerenciador de Alunos
+                Gerenciador de Alunos Edge Academy
               </h1>
               <p className="max-w-screen-md text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-400">
                 A plataforma que simplifica a gestão dos alunos do{' '}
