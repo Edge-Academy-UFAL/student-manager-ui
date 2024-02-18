@@ -8,6 +8,8 @@ import Link from 'next/link'
 export default function Home() {
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 h-[calc(100vh-100px)] flex justify-center items-center">
+      <div className="absolute top-0 z-[-2] h-screen w-screen dark:bg-[#000000] dark:bg-[radial-gradient(#ffffff33_1px,#080808_1px)] bg-[size:20px_20px]"></div>
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
       <div className="container px-4 md:px-6">
         <div className="grid items-center gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">
           <div className="space-y-5">

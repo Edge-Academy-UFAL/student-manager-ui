@@ -179,7 +179,7 @@ export default function DataTableDemo({ data }: { data: Payment[] }) {
   })
 
   return (
-    <div className="w-full px-10 py-5 justify-center bg-background">
+    <div className="w-full px-10 py-5 justify-center">
       <div className="flex items-center py-4">
         <Input
           placeholder="Buscar por nome..."
