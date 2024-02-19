@@ -1,4 +1,3 @@
-import Header from '@/components/header/header'
 import { GeistMono } from 'geist/font/mono'
 import type { Metadata } from 'next'
 import { Providers } from './providers'
@@ -19,7 +18,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={GeistMono.className}>
         <Providers>
-          <Header />
           <main>{children}</main>
         </Providers>
       </body>
