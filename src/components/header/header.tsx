@@ -1,10 +1,10 @@
 'use client'
-import { Separator } from '../ui/separator'
 import { Cat, Users } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ModeToggle } from '../theme-toggle'
+import { Separator } from '../ui/separator'
 import { NavLink } from './nav-link'
 import { UserSheet } from './user-sheet'
-import { ModeToggle } from '../theme-toggle'
-import { useRouter } from 'next/navigation'
 
 // sample routes
 export const routes = [

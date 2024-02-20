@@ -1,3 +1,4 @@
+import { DotBackground } from '@/components/background'
 import Header from '@/components/header/header'
 import Link from 'next/link'
 
@@ -6,14 +7,13 @@ export default function Home() {
     <div>
       <Header />
       <section className="w-full py-12 md:py-24 lg:py-32 h-[calc(100vh-100px)] flex justify-center items-center">
-        <div className="absolute top-0 z-[-2] h-screen w-screen dark:bg-[#000000] dark:bg-[radial-gradient(#ffffff33_1px,#080808_1px)] bg-[size:20px_20px]"></div>
-        <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <DotBackground />
         <div className="container px-4 md:px-6">
-          <div className="grid items-center gap-6 lg:grid-cols-[1fr_600px] lg:gap-12 xl:grid-cols-[1fr_700px]">
-            <div className="space-y-5">
+          <div className="grid grid-cols-3 items-center gap-6 lg:gap-12">
+            <div className="space-y-5 col-span-2">
               <div className="space-y-3">
                 <div className="inline-block rounded-lg bg-gray-100 px-3 py-1 text-sm dark:bg-gray-800">
-                  Gerenciador de Alunos
+                  v1.0
                 </div>
                 <h1 className="text-4xl font-bold tracking-tighter leading-tighter sm:text-5xl md:tracking-tight">
                   Gerenciador de Alunos Edge Academy
@@ -24,7 +24,7 @@ export default function Home() {
                     className="bg-gradient-to-tr from-blue-300 to-green-500 text-transparent bg-clip-text font-extrabold hover:cursor-pointer
                  hover:decoration-2 decoration-foreground hover:underline"
                   >
-                    Edge Academy
+                    Edge Academy.
                   </span>{' '}
                   Tenha controle total do processo de aprendizado e evolução dos
                   alunos.
@@ -33,7 +33,7 @@ export default function Home() {
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Link
                   className="inline-flex h-10 items-center justify-center rounded-md bg-gradient-to-r from-[#00cdac] to-[#8ac926] px-8 text-sm font-medium text-white shadow  hover:opacity-90 disabled:pointer-events-none disabled:opacity-50 dark:hover:opacity-110  dark:opacity-90 dark:focus-visible:ring-gray-300 transition duration-300 ease-in-out delay-150 bg-blue-500 hover:-translate-y-[0.15rem]"
-                  href="#"
+                  href="/login"
                 >
                   Faça Login
                 </Link>

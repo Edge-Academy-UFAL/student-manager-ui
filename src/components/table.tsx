@@ -108,16 +108,19 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         <div className="lowercase">{row.getValue('email')}</div>
       ),
     },
-    // {
-    //   accessorKey: 'status',
-    //   header: 'Status',
-    //   cell: ({ row }) => (
-    //     <div className="capitalize">{row.getValue('status')}</div>
-    //   ),
-    // },
     {
       accessorKey: 'turma',
-      header: 'Turma',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Turma
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue('turma')}</div>
       ),
@@ -182,9 +185,9 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       <div className="flex items-center py-4">
         <Input
           placeholder="Buscar por nome..."
-          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+          value={(table.getColumn('nome')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn('name')?.setFilterValue(event.target.value)
+            table.getColumn('nome')?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

@@ -12,7 +12,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Link } from 'lucide-react'
+import Link from 'next/link'
 import ReturnButton from './return-button'
 
 export default function LoginAccount() {
@@ -48,14 +48,11 @@ export default function LoginAccount() {
           </CardContent>
           <CardFooter className="flex flex-col">
             <Button className="w-full">Login</Button>
-            <p className="mt-2 text-xs text-center">
+            <p className="mt-5 text-xs text-center">
               {' '}
               Não possui uma conta?{' '}
-              <Link
-                href="/register"
-                className=" bg-gradient-to-tr from-blue-300 to-green-500 text-transparent bg-clip-text hover:underline"
-              >
-                Sign up
+              <Link href="/register" className=" font-bold hover:underline">
+                Registre-se
               </Link>
             </p>
           </CardFooter>
