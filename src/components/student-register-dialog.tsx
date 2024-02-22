@@ -11,16 +11,22 @@ import {
     DialogTrigger,
     DialogClose
 } from "@/components/ui/dialog"
+import {
+    TooltipProvider,
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent
+} from "@radix-ui/react-tooltip"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Label } from "@/components/ui/label"
-import { PlusIcon } from '@radix-ui/react-icons'
-import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
+import { PlusIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
+import { useState, useEffect } from "react"
 
-function validateEmails(emails: string): Array<{ email: string, isValid: Boolean }> {
-    const emailArray = emails.split(',').map((email) : string => email.trim())
+function validateEmails(emails: string): Array<{ email: string, isValid: boolean }> {
+    const emailArray = emails.split(',').map((email): string => email.trim())
     const emailValidation = []
     for (let email of emailArray) {
         let isValid = true
@@ -70,6 +76,7 @@ function ConfirmationDialogContent(props: {
 
 function InputDialogContent(props: {
     emails: string,
+    error: boolean,
     handleTextAreaChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
     handleSubmit: () => void
 
@@ -77,16 +84,34 @@ function InputDialogContent(props: {
     return (
         <>
             <DialogHeader>
-                <DialogTitle>Register new students</DialogTitle>
+                <div className="flex items-end">
+                    <DialogTitle>Register new students</DialogTitle>
+                    {
+                        props.error ?
+                            <TooltipProvider delayDuration={200}>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <ExclamationTriangleIcon className="ml-2 w-[16px] h-[16px] text-red-500 hover:cursor-pointer leading-0" />
+                                    </TooltipTrigger>
+                                    <TooltipContent side="top" sideOffset={10}>
+                                        <p className="bg-red-600 py-2 px-4 rounded">Enter the e-mails in the box below.</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                            :
+                            null
+                    }
+                </div>
+
                 <DialogDescription>
                     Add new students to the Edge Academy program. Insert below the
                     "@edge.ufal.br" email addresses of the students you want to add
                     separated by commas.
                 </DialogDescription>
-            </DialogHeader>
+            </DialogHeader >
             <div className="grid gap-4 py-4">
-                <Label htmlFor="student-emails">E-mails</Label>
-                <Textarea className="h-[160px]"
+                <Label htmlFor="student-emails" className={`${props.error ? 'text-red-500' : ''}`}>E-mails</Label>
+                <Textarea className={`h-[160px] ${props.error ? 'border-red-500' : ''}`}
                     placeholder="Type the student e-mails here, separated by commas."
                     id="student-emails"
                     value={props.emails}
@@ -97,7 +122,9 @@ function InputDialogContent(props: {
                 <DialogClose asChild>
                     <Button type="button" variant="secondary">Cancel</Button>
                 </DialogClose>
-                <Button type="submit" onClick={props.handleSubmit}>Submit</Button>
+                <Button type="submit" onClick={props.handleSubmit}
+                    disabled={props.error}
+                    variant={`${props.error ? 'destructive' : 'default'}`}>Submit</Button>
             </DialogFooter>
         </>
     )
@@ -109,12 +136,15 @@ export function StudentRegisterDialog() {
     const [emails, setEmails] = useState<string>("")
     const [showDialog, setShowDialog] = useState<boolean>(false)
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false)
-    const [validatedEmails, setValidatedEmails] = useState<Array<{ email: string, isValid: Boolean }>>([])
+    const [validatedEmails, setValidatedEmails] = useState<Array<{ email: string, isValid: boolean }>>([])
+    const [error, setError] = useState<boolean>(false)
 
     function handleDialogOpen(): void {
         // This is necessary to always open the dialog on the input page.
         setShowConfirmation(false)
         setShowDialog(true)
+        setError(false)
+        setValidatedEmails([])
     }
 
     function onShowDialogChange(): void {
@@ -125,16 +155,25 @@ export function StudentRegisterDialog() {
     }
 
     function handleTextAreaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+        setError(false)
         setEmails(event.target.value)
     }
 
-    function handleSubmit() :void {
+    function handleSubmit(): void {
+        setError(false)
+
+        if (emails.trim() === "") {
+            setError(true)
+            return
+        }
         setValidatedEmails(validateEmails(emails))
         setShowConfirmation(true)
     }
 
     function handleGoBack(): void {
         setShowConfirmation(false)
+        setError(false)
+
     }
 
     function handleConfirm(): void {
@@ -152,19 +191,20 @@ export function StudentRegisterDialog() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 {
-                    showConfirmation 
-                    ?
-                    <ConfirmationDialogContent
-                        validatedEmails={validatedEmails}
-                        handleConfirm={handleConfirm}
-                        handleGoBack={handleGoBack}
-                    />
-                    :
-                    <InputDialogContent
-                        emails={emails}
-                        handleTextAreaChange={handleTextAreaChange}
-                        handleSubmit={handleSubmit}
-                    />
+                    showConfirmation
+                        ?
+                        <ConfirmationDialogContent
+                            validatedEmails={validatedEmails}
+                            handleConfirm={handleConfirm}
+                            handleGoBack={handleGoBack}
+                        />
+                        :
+                        <InputDialogContent
+                            emails={emails}
+                            error={error}
+                            handleTextAreaChange={handleTextAreaChange}
+                            handleSubmit={handleSubmit}
+                        />
                 }
             </DialogContent>
         </Dialog>
