@@ -43,6 +43,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>
 
 // receber da API
 const defaultValues: Partial<ProfileFormValues> = {
+  username: 'shadcn',
   bio: 'I own a computer.',
   urls: [
     { value: 'https://shadcn.com' },
