@@ -1,19 +1,20 @@
+'use client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import { useRouter } from 'next/navigation'
 
 export function UserSheet() {
+  const router = useRouter()
+
+  const id = 'user_ID'
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -27,35 +28,22 @@ export function UserSheet() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Editar perfil</SheetTitle>
+          <SheetTitle>Informações</SheetTitle>
           <SheetDescription>
-            Faça alterações em seu perfil aqui. Clique em salvar quando
-            terminar.
+            Acesse suas configurações e perfil.
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Nome
-            </Label>
-            <Input id="name" value="Dirceu Caetano" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              value="@dirceucaetano"
-              className="col-span-3"
-            />
-          </div>
+          <Button onClick={() => router.push('/settings')}>
+            Acessar Configurações
+          </Button>
+
+          {/* coloar o user_ID do usuario que esta logado ali (se for aluno), caso seja instrutor esse botao nao deve aparecer */}
+          <Button onClick={() => router.push(`/alunos/${id}`)}>
+            {' '}
+            Acessar Perfil
+          </Button>
         </div>
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Salvar</Button>
-          </SheetClose>
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   )
