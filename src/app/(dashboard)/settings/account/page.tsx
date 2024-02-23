@@ -2,12 +2,15 @@ import { Separator } from '@/components/ui/separator'
 import { AccountForm } from './account-form'
 
 const getData = async () => {
-  const res = await fetch(`http://localhost:3333/profile-settings`, {
-    // next: {
-    //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
-    // },
-    cache: 'no-store',
-  })
+  const res = await fetch(
+    `https://https://json-server-edge-academy.vercel.app/account`,
+    {
+      // next: {
+      //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
+      // },
+      cache: 'no-store',
+    },
+  )
 
   if (!res.ok) {
     return null

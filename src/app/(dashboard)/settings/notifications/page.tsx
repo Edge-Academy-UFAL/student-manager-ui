@@ -1,12 +1,15 @@
 import { NotificationsForm } from './notifications-form'
 
 const getData = async () => {
-  const res = await fetch(`http://localhost:3333/notifications`, {
-    // next: {
-    //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
-    // },
-    cache: 'no-store',
-  })
+  const res = await fetch(
+    `https://https://json-server-edge-academy.vercel.app/notifications`,
+    {
+      // next: {
+      //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
+      // },
+      cache: 'no-store',
+    },
+  )
 
   if (!res.ok) {
     return null
