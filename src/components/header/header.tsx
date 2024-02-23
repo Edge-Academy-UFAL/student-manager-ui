@@ -1,7 +1,6 @@
 'use client'
 import { Cat, Users } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { ModeToggle } from '../theme-toggle'
 import { Separator } from '../ui/separator'
 import { NavLink } from './nav-link'
 import { UserSheet } from './user-sheet'
@@ -57,7 +56,7 @@ const Header = () => {
         <nav className="flex items-center gap-4 lg:gap-6">{navLinks}</nav>
       </div>
       <div className="flex items-center gap-4 lg:gap-6 ">
-        <ModeToggle />
+        {/* <ModeToggle /> */}
         <Separator
           orientation="vertical"
           className="h-6 dark:bg-[#2d2d37]"
