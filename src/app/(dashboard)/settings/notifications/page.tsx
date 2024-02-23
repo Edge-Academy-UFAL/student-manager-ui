@@ -2,7 +2,7 @@ import { NotificationsForm } from './notifications-form'
 
 const getData = async () => {
   const res = await fetch(
-    `https://https://json-server-edge-academy.vercel.app/notifications`,
+    `https://json-server-edge-academy.vercel.app/notifications`,
     {
       // next: {
       //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada

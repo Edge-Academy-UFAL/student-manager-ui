@@ -3,7 +3,7 @@ import { AccountForm } from './account-form'
 
 const getData = async () => {
   const res = await fetch(
-    `https://https://json-server-edge-academy.vercel.app/account`,
+    `https://json-server-edge-academy.vercel.app/account`,
     {
       // next: {
       //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada

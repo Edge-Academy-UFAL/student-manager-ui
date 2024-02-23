@@ -3,7 +3,7 @@ import { AppearanceForm } from './appearance-form'
 
 const getData = async () => {
   const res = await fetch(
-    `https://https://json-server-edge-academy.vercel.app/appearance`,
+    `https://json-server-edge-academy.vercel.app/appearance`,
     {
       // next: {
       //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada

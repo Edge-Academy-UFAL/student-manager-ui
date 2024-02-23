@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 
 const getData = async () => {
   const res = await fetch(
-    `https:/https://json-server-edge-academy.vercel.app/students`,
+    `https://json-server-edge-academy.vercel.app/students`,
     {
       // next: {
       //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
