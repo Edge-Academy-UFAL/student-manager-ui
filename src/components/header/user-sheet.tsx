@@ -19,11 +19,8 @@ export function UserSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Avatar className="hover:cursor-pointer">
-          <AvatarImage
-            src="https://media.discordapp.net/attachments/714891795129171983/1208605498815938590/8_orgid_55e84459-0f48-4ee1-9a01-9aa6365d593c.jpg?ex=65e3e495&is=65d16f95&hm=052aed2c6bb8f73bc582eabe248809ba492cc0e8490186a057031e65d40349c0&=&format=webp"
-            alt="@shadcn"
-          />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage alt="@shadcn" />
+          <AvatarFallback>R</AvatarFallback>
         </Avatar>
       </SheetTrigger>
       <SheetContent>

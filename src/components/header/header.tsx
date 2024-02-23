@@ -48,7 +48,7 @@ const Header = () => {
           className="flex gap-4 hover:cursor-pointer"
           onClick={() => router.push('/')}
         >
-          <h1 className="flex items-center gap-1.5 text-base transition-colors font-medium bg-gradient-to-r p-[0.35rem] rounded-lg  from-[#5dead3] to-[#92d625] text-white shadow-sm">
+          <h1 className="flex items-center gap-1.5 text-base transition-colors font-medium bg-gradient-to-r py-[0.35rem] px-3 rounded-lg border hover:bg-accent">
             Edge Academy
           </h1>
         </div>
