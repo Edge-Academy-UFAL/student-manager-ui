@@ -8,18 +8,22 @@ const devURL = `http://localhost:3333/profile-settings`
 // se quiser testar com dados no localhost basta mudar a url para "devURL" e rodar "pnpm json-server server.json -w -p 3333" no terminal
 // lembrar de trocar de volta para a url do "prodURL" antes de fazer o commit para não dar erro no build
 const getData = async () => {
-  const res = await fetch(prodURL, {
-    // next: {
-    //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
-    // },
-    cache: 'no-store',
-  })
+  try {
+    const res = await fetch(prodURL, {
+      // next: {
+      //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
+      // },
+      cache: 'no-store',
+    })
 
-  if (!res.ok) {
-    return null
+    if (!res.ok) {
+      throw new Error('Erro ao buscar os dados')
+    }
+
+    return res.json()
+  } catch (error) {
+    throw new Error('Erro de conexão com o servidor')
   }
-
-  return res.json()
 }
 
 export default async function SettingsProfilePage() {
