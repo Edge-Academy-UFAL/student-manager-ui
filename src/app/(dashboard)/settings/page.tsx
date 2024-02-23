@@ -1,6 +1,25 @@
 import { Separator } from '@/components/ui/separator'
 import { ProfileForm } from './profile-form'
-export default function SettingsProfilePage() {
+
+const getData = async () => {
+  const res = await fetch(`http://localhost:3333/profile-settings`, {
+    // next: {
+    //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
+    // },
+    cache: 'no-store',
+  })
+
+  if (!res.ok) {
+    return null
+  }
+
+  return res.json()
+}
+
+export default async function SettingsProfilePage() {
+  const data = await getData()
+  console.log(data)
+
   return (
     <div className="space-y-6">
       <div>

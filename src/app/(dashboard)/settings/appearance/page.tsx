@@ -1,7 +1,25 @@
 import { Separator } from '@/components/ui/separator'
 import { AppearanceForm } from './appearance-form'
 
-export default function SettingsAppearancePage() {
+const getData = async () => {
+  const res = await fetch(`http://localhost:3333/notifications`, {
+    // next: {
+    //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
+    // },
+    cache: 'no-store',
+  })
+
+  if (!res.ok) {
+    return null
+  }
+
+  return res.json()
+}
+
+export default async function SettingsAppearancePage() {
+  const data = await getData()
+  console.log(data)
+
   return (
     <div className="space-y-6">
       <div>

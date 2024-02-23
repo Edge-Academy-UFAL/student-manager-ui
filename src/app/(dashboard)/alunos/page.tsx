@@ -1,29 +1,31 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import DataTableDemo from '@/components/table'
-import { tableData } from '@/lib/utils'
+import { notFound } from 'next/navigation'
 
-// const getData = async () => {
-//   const res = await fetch(`http://localhost:3000/api/students`, {
-//     cache: 'no-store', // o ideal é que tenha cache pois os dados não mudam constantemente mas por enquanto vou deixar sem cache
-//   })
+const getData = async () => {
+  const res = await fetch(`http://localhost:3333/students`, {
+    next: {
+      revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
+    },
+  })
 
-//   if (!res.ok) {
-//     return null
-//   }
+  if (!res.ok) {
+    return null
+  }
 
-//   return res.json()
-// }
+  return res.json()
+}
 
 const StudentSearchPage = async () => {
-  // const data = await getData()
+  const data = await getData()
 
-  // if (!data) {
-  //   return notFound()
-  // }
+  if (!data) {
+    return notFound()
+  }
 
   return (
     <div>
-      <DataTableDemo data={tableData} />
+      <DataTableDemo data={data} />
     </div>
   )
 }
