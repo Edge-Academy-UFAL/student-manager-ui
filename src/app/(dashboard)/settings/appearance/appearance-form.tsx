@@ -17,6 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { useToast } from '@/components/ui/use-toast'
 import { useTheme } from 'next-themes'
+import { useEffect } from 'react'
 
 const appearanceFormSchema = z.object({
   theme: z.enum(['light', 'dark'], {
@@ -31,14 +32,19 @@ const defaultValues: Partial<AppearanceFormValues> = {
   theme: 'light',
 }
 
-export function AppearanceForm() {
+export function AppearanceForm({ data }: { data: AppearanceFormValues }) {
   const form = useForm<AppearanceFormValues>({
     resolver: zodResolver(appearanceFormSchema),
-    defaultValues,
+    defaultValues: data || defaultValues,
   })
 
   const { toast } = useToast()
   const { setTheme } = useTheme()
+
+  useEffect(() => {
+    console.log('TEMA', data.theme)
+    setTheme(data.theme)
+  }, [data])
 
   function onSubmit(data: AppearanceFormValues) {
     setTheme(data.theme)
