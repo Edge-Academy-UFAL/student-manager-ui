@@ -51,10 +51,10 @@ const defaultValues: Partial<ProfileFormValues> = {
   ],
 }
 
-export function ProfileForm() {
+export function ProfileForm({ data }: { data: ProfileFormValues }) {
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues,
+    defaultValues: data || defaultValues,
     mode: 'onChange',
   })
 
