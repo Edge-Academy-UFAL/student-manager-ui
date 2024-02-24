@@ -18,7 +18,6 @@ const getData = async () => {
     if (!res.ok) {
       throw new Error('Erro ao buscar os dados')
     }
-
     return res.json()
   } catch (error) {
     throw new Error('Erro de conexão com o servidor')
@@ -27,7 +26,6 @@ const getData = async () => {
 
 export default async function SettingsNotificationsPage() {
   const data = await getData()
-  console.log(data)
 
   return (
     <div className="space-y-6">
@@ -37,7 +35,7 @@ export default async function SettingsNotificationsPage() {
           Configure como você deseja receber notificações.
         </p>
       </div>
-      <NotificationsForm />
+      <NotificationsForm data={data} />
     </div>
   )
 }
