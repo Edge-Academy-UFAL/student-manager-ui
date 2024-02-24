@@ -33,10 +33,10 @@ const defaultValues: Partial<NotificationsFormValues> = {
   type: 'all',
 }
 
-export function NotificationsForm() {
+export function NotificationsForm({ data }: { data: NotificationsFormValues }) {
   const form = useForm<NotificationsFormValues>({
     resolver: zodResolver(notificationsFormSchema),
-    defaultValues,
+    defaultValues: data || defaultValues,
   })
 
   const { toast } = useToast()

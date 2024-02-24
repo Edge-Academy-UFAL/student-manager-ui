@@ -2,8 +2,8 @@
 import { Separator } from '@/components/ui/separator'
 import { AccountForm } from './account-form'
 
-const prodURL = `https://json-server-edge-academy.vercel.app/appearance`
-const devURL = `http://localhost:3333/appearance`
+const prodURL = `https://json-server-edge-academy.vercel.app/account`
+const devURL = `http://localhost:3333/account`
 
 // se quiser testar com dados no localhost basta mudar a url para "devURL" e rodar "pnpm json-server server.json -w -p 3333" no terminal
 // lembrar de trocar de volta para a url do "prodURL" antes de fazer o commit para não dar erro no build
@@ -43,7 +43,7 @@ export default async function SettingsAccountPage() {
         </p>
       </div>
       <Separator />
-      <AccountForm />
+      <AccountForm data={data} />
     </div>
   )
 }

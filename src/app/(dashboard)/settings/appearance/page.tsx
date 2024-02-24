@@ -8,27 +8,22 @@ const devURL = `http://localhost:3333/appearance`
 // se quiser testar com dados no localhost basta mudar a url para "devURL" e rodar "pnpm json-server server.json -w -p 3333" no terminal
 // lembrar de trocar de volta para a url do "prodURL" antes de fazer o commit para não dar erro no build
 const getData = async () => {
-  try {
-    const res = await fetch(prodURL, {
-      // next: {
-      //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
-      // },
-      cache: 'no-store',
-    })
+  const res = await fetch(prodURL, {
+    // next: {
+    //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
+    // },
+    cache: 'no-store',
+  })
 
-    if (!res.ok) {
-      throw new Error('Erro ao buscar os dados')
-    }
-
-    return res.json()
-  } catch (error) {
-    throw new Error('Erro de conexão com o servidor')
+  if (!res.ok) {
+    return null
   }
+
+  return res.json()
 }
 
 export default async function SettingsAppearancePage() {
   const data = await getData()
-  console.log(data)
 
   return (
     <div className="space-y-6">
@@ -40,7 +35,7 @@ export default async function SettingsAppearancePage() {
         </p>
       </div>
       <Separator />
-      <AppearanceForm />
+      <AppearanceForm data={data} />
     </div>
   )
 }
