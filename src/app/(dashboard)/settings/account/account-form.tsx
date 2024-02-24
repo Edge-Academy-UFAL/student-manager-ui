@@ -37,9 +37,7 @@ const accountFormSchema = z.object({
     .max(30, {
       message: 'Name must not be longer than 30 characters.',
     }),
-  dob: z.date({
-    required_error: 'A date of birth is required.',
-  }),
+  dob: z.date().optional(),
 })
 
 type AccountFormValues = z.infer<typeof accountFormSchema>
@@ -50,15 +48,16 @@ const defaultValues: Partial<AccountFormValues> = {
   dob: new Date('2023-01-23'),
 }
 
-export function AccountForm() {
+export function AccountForm({ data }: { data: AccountFormValues }) {
   const form = useForm<AccountFormValues>({
     resolver: zodResolver(accountFormSchema),
-    defaultValues,
+    defaultValues: data || defaultValues,
   })
 
   const { toast } = useToast()
 
   function onSubmit(data: AccountFormValues) {
+    console.log(data)
     toast({
       title: 'Você enviou os seguintes valores:',
       description: (
