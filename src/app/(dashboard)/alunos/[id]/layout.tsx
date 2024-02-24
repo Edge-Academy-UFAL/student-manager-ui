@@ -1,4 +1,4 @@
-import StudentProfileHeader from '@/components/profile/student-profile'
+import StudentPageHeader from '@/components/student-page-header'
 
 const StudentLayout = ({
   children,
@@ -7,7 +7,7 @@ const StudentLayout = ({
 }>) => {
   return (
     <div>
-      <StudentProfileHeader />
+      <StudentPageHeader />
       {children}
     </div>
   )

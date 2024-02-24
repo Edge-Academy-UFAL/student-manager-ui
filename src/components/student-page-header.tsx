@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
-import { Separator } from '../ui/separator'
+import { Separator } from './ui/separator'
 
-const StudentProfileHeader = () => {
+const StudentPageHeader = () => {
   return (
     <div className="h-[calc(100vh-65px)]">
       <div className="flex items-center gap-10 px-10 py-10 dark:bg-[#0c0c0c] bg-[#f7f7f7] border-b">
@@ -50,4 +50,4 @@ const StudentProfileHeader = () => {
   )
 }
 
-export default StudentProfileHeader
+export default StudentPageHeader
