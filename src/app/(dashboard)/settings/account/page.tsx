@@ -37,9 +37,8 @@ export default async function SettingsAccountPage() {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium">Account</h3>
-        <p className="text-sm text-muted-foreground">
-          Update your account settings. Set your preferred language and
-          timezone.
+        <p className="text-sm text-muted-foreground  mt-2">
+          Atualize as informações da sua conta.
         </p>
       </div>
       <Separator />

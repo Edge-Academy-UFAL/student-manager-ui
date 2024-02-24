@@ -150,7 +150,7 @@ export function ProfileForm({ data }: { data: ProfileFormValues }) {
             Adicionar URL
           </Button>
         </div>
-        <Button type="submit">Update profile</Button>
+        <Button type="submit">Salvar Alterações</Button>
       </form>
     </Form>
   )

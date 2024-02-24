@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { Separator } from '@/components/ui/separator'
 import { NotificationsForm } from './notifications-form'
 
 const prodURL = `https://json-server-edge-academy.vercel.app/notifications`
@@ -31,10 +32,11 @@ export default async function SettingsNotificationsPage() {
     <div className="space-y-6">
       <div>
         <h3 className="text-lg font-medium">Notificações</h3>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground mt-2">
           Configure como você deseja receber notificações.
         </p>
       </div>
+      <Separator />
       <NotificationsForm data={data} />
     </div>
   )
