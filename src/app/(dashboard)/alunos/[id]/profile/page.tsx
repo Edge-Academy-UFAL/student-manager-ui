@@ -1,5 +1,3 @@
-import StudentProfile from '@/components/profile/student-profile'
-
 interface StudentProfilePageProps {
   params: { id: string }
 }
@@ -17,18 +15,14 @@ interface StudentProfilePageProps {
 // }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const StudentProfilePage = ({ params }: StudentProfilePageProps) => {
+const StudentProfile = ({ params }: StudentProfilePageProps) => {
   // const data = getData(params.id)
 
   // if (!data) {
   //   return notFound();
   // }
 
-  return (
-    <div>
-      <StudentProfile />
-    </div>
-  )
+  return <></>
 }
 
-export default StudentProfilePage
+export default StudentProfile
