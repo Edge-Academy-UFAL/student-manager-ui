@@ -5,8 +5,8 @@ import { Separator } from './ui/separator'
 const StudentPageHeader = () => {
   return (
     <div className="h-[calc(100vh-65px)]">
-      <div className="flex items-center gap-10 px-10 py-10 dark:bg-[#0c0c0c] bg-[#f7f7f7] border-b">
-        <Avatar className="h-[190px] w-[190px]">
+      <div className="flex items-center gap-10 px-10 py-4 dark:bg-[#0c0c0c] bg-[#f7f7f7] border-b">
+        <Avatar className="h-[155px] w-[155px]">
           <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
@@ -20,7 +20,7 @@ const StudentPageHeader = () => {
 
           <ul className="flex h-5 items-center space-x-4  mt-3">
             <li className="hover:decoration-2 hover:underline">
-              <Link href="https://github.com/rafaelrlc">Perfil</Link>
+              <Link href="/alunos/id/profile">Perfil</Link>
             </li>
             <Separator orientation="vertical" />
 
