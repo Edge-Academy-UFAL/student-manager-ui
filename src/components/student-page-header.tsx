@@ -4,7 +4,7 @@ import { Separator } from './ui/separator'
 
 const StudentPageHeader = () => {
   return (
-    <div className="h-[calc(100vh-65px)]">
+    <div className="">
       <div className="flex items-center gap-10 px-10 py-4 dark:bg-[#0c0c0c] bg-[#f7f7f7] border-b">
         <Avatar className="h-[155px] w-[155px]">
           <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
