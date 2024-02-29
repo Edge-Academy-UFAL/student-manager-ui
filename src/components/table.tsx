@@ -141,7 +141,9 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={() => router.push('/alunos/' + payment.id)}
+                onClick={() =>
+                  router.push('/alunos/' + payment.id + '/profile')
+                }
               >
                 Visualizar Perfil
               </DropdownMenuItem>
