@@ -2,7 +2,7 @@ import StudentActivities from '@/components/student-activities/student-activitie
 
 const StudentActivitiesPage = () => {
   return (
-    <div className="p-5">
+    <div>
       <StudentActivities />
     </div>
   )
