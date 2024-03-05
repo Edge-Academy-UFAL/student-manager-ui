@@ -1,5 +1,11 @@
+import StudentActivities from '@/components/student-activities/student-activities'
+
 const StudentActivitiesPage = () => {
-  return <div>StudentActivitiesPage</div>
+  return (
+    <div>
+      <StudentActivities />
+    </div>
+  )
 }
 
 export default StudentActivitiesPage
