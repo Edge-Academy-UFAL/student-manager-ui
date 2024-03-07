@@ -80,6 +80,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
     },
     {
       accessorKey: 'foto',
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       header: ({ column }) => {
         return <div></div>
       },
