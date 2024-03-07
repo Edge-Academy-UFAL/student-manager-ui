@@ -8,7 +8,7 @@ const devURL = `http://localhost:3333/students`
 // lembrar de trocar de volta para a url do "prodURL" antes de fazer o commit para não dar erro no build
 const getData = async () => {
   try {
-    const res = await fetch(prodURL, {
+    const res = await fetch(devURL, {
       // next: {
       //   revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
       // },
@@ -30,6 +30,8 @@ const StudentSearchPage = async () => {
   if (!data) {
     throw new Error('Erro ao buscar os dados')
   }
+
+  console.log(data)
 
   return (
     <div>

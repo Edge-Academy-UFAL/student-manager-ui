@@ -10,6 +10,8 @@ import {
   ChevronDownIcon,
   DotsHorizontalIcon,
 } from '@radix-ui/react-icons'
+
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -47,6 +49,7 @@ export type Student = {
   email: string
   nome: string
   turma: string
+  foto: string
 }
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
@@ -74,6 +77,18 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       ),
       enableSorting: false,
       enableHiding: false,
+    },
+    {
+      accessorKey: 'foto',
+      header: ({ column }) => {
+        return <div></div>
+      },
+      cell: ({ row }) => (
+        <Avatar>
+          <AvatarImage src={row.getValue('foto')} alt="@shadcn" />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
+      ),
     },
     {
       accessorKey: 'nome',

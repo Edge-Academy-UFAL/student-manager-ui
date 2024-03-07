@@ -24,218 +24,250 @@
      "id": "m52384i1",
      "status": "success",
      "email": "ana@edge.ufal.br",
-     "nome": "Ana 1231231",
-     "turma": "1"
+     "nome": "Ana Oliveira",
+     "turma": "1",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
+
    },
    {
      "id": "m5gr84i2",
      "status": "success",
      "email": "rodrigo@edge.ufal.br",
      "nome": "Rodrigo Santos",
-     "turma": "1"
+     "turma": "1",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i3",
      "status": "pending",
      "email": "maria@edge.ufal.br",
      "nome": "Maria Oliveira",
-     "turma": "1"
+     "turma": "1",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i4",
      "status": "success",
      "email": "lucas@edge.ufal.br",
      "nome": "Lucas Pereira",
-     "turma": "1"
+     "turma": "1",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i5",
      "status": "failed",
      "email": "carol@edge.ufal.br",
      "nome": "Carol Souza",
-     "turma": "1"
+     "turma": "1",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i6",
      "status": "success",
      "email": "rafael@edge.ufal.br",
      "nome": "Rafael Lima",
-     "turma": "2"
+     "turma": "2",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i7",
      "status": "success",
      "email": "julia@edge.ufal.br",
      "nome": "Júlia Costa",
-     "turma": "3"
+     "turma": "3",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i8",
      "status": "pending",
      "email": "gabriel@edge.ufal.br",
      "nome": "Gabriel Oliveira",
-     "turma": "4"
+     "turma": "4",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i9",
      "status": "success",
      "email": "ken@edge.ufal.br",
      "nome": "Ken Silva",
-     "turma": "2"
+     "turma": "2",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i10",
      "status": "failed",
      "email": "camila@edge.ufal.br",
      "nome": "Camila Santos",
-     "turma": "2"
+     "turma": "2",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i11",
      "status": "success",
      "email": "felipe@edge.ufal.br",
      "nome": "Felipe Oliveira",
-     "turma": "2"
+     "turma": "2",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i12",
      "status": "pending",
      "email": "isabela@edge.ufal.br",
      "nome": "Isabela Silva",
-     "turma": "4"
+     "turma": "4",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i13",
      "status": "success",
      "email": "pedro@edge.ufal.br",
      "nome": "Pedro Santos",
-     "turma": "3"
+     "turma": "3",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i14",
      "status": "failed",
      "email": "lara@edge.ufal.br",
      "nome": "Lara Oliveira",
-     "turma": "3"
+     "turma": "3",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i15",
      "status": "success",
      "email": "vinicius@edge.ufal.br",
      "nome": "Vinícius Costa",
-     "turma": "1"
+     "turma": "1",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i16",
      "status": "success",
      "email": "clara@edge.ufal.br",
      "nome": "Clara Santos",
-     "turma": "1"
+     "turma": "1",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i17",
      "status": "pending",
      "email": "leonardo@edge.ufal.br",
      "nome": "Leonardo Oliveira",
-     "turma": "2"
+     "turma": "2",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i18",
      "status": "success",
      "email": "mariana@edge.ufal.br",
      "nome": "Mariana Silva",
-     "turma": "2"
+     "turma": "2",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i19",
      "status": "failed",
      "email": "gustavo@edge.ufal.br",
      "nome": "Gustavo Costa",
-     "turma": "3"
+     "turma": "3",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i20",
      "status": "success",
      "email": "lucia@edge.ufal.br",
      "nome": "Lúcia Oliveira",
-     "turma": "3"
+     "turma": "3",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i21",
      "status": "failed",
      "email": "paulo@edge.ufal.br",
      "nome": "Paulo Silva",
-     "turma": "4"
+     "turma": "4",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i22",
      "status": "success",
      "email": "natalia@edge.ufal.br",
      "nome": "Natália Costa",
-     "turma": "1"
+     "turma": "1",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i23",
      "status": "success",
      "email": "thiago@edge.ufal.br",
      "nome": "Thiago Santos",
-     "turma": "2"
+     "turma": "2",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i24",
      "status": "pending",
      "email": "alice@edge.ufal.br",
      "nome": "Alice Silva",
-     "turma": "4"
+     "turma": "4",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i25",
      "status": "success",
      "email": "marcos@edge.ufal.br",
      "nome": "Marcos Oliveira",
-     "turma": "3"
+     "turma": "3",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i26",
      "status": "failed",
      "email": "caroline@edge.ufal.br",
      "nome": "Caroline Santos",
-     "turma": "1"
+     "turma": "1",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i27",
      "status": "success",
      "email": "leonel@edge.ufal.br",
      "nome": "Leonel Costa",
-     "turma": "2"
+     "turma": "2",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i28",
      "status": "pending",
      "email": "amanda@edge.ufal.br",
      "nome": "Amanda Silva",
-     "turma": "3"
+     "turma": "3",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5gr84i29",
      "status": "success",
      "email": "bruno@edge.ufal.br",
      "nome": "Bruno Oliveira",
-     "turma": "4"
+     "turma": "4",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m5rr84i29",
      "status": "success",
      "email": "bruno2@edge.ufal.br",
      "nome": "Bruno2",
-     "turma": "4"
+     "turma": "4",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    },
    {
      "id": "m22284i29",
      "status": "success",
      "email": "bruno3@edge.ufal.br",
      "nome": "Bruno3",
-     "turma": "4"
+     "turma": "4",
+     "foto" : "https://media.discordapp.net/attachments/896621717559074836/1215294624978042951/User_icon.png?ex=65fc3a51&is=65e9c551&hm=9ac44caeca2a06ab9d760d645c6ca2562c3561a5680b0d170f97774963efea38&=&format=webp&quality=lossless&width=1024&height=1024"
    }
  ] 
 }
