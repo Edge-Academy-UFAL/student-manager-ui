@@ -40,7 +40,7 @@ export default function LoginAccount() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<LoginSchema>({
     resolver: zodResolver(LoginSchema),
   })
 
