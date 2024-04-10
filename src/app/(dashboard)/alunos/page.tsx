@@ -1,29 +1,40 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import DataTableDemo from '@/components/table'
-import { tableData } from '@/lib/utils'
 
-// const getData = async () => {
-//   const res = await fetch(`http://localhost:3000/api/students`, {
-//     cache: 'no-store', // o ideal é que tenha cache pois os dados não mudam constantemente mas por enquanto vou deixar sem cache
-//   })
+const prodURL = `https://json-server-edge-academy.vercel.app/students`
+const devURL = `http://localhost:3333/students`
 
-//   if (!res.ok) {
-//     return null
-//   }
+// se quiser testar com dados no localhost basta mudar a url para "devURL" e rodar "pnpm json-server server.json -w -p 3333" no terminal
+// lembrar de trocar de volta para a url do "prodURL" antes de fazer o commit para não dar erro no build
+const getData = async () => {
+  try {
+    const res = await fetch(prodURL, {
+      next: {
+        revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
+      },
+    })
 
-//   return res.json()
-// }
+    if (!res.ok) {
+      return null
+    }
+    return res.json()
+  } catch (error) {
+    throw new Error('Erro de conexão com o servidor')
+  }
+}
 
 const StudentSearchPage = async () => {
-  // const data = await getData()
+  const data = await getData()
 
-  // if (!data) {
-  //   return notFound()
-  // }
+  if (!data) {
+    throw new Error('Erro ao buscar os dados')
+  }
+
+  console.log(data)
 
   return (
     <div>
-      <DataTableDemo data={tableData} />
+      <DataTableDemo data={data} />
     </div>
   )
 }
