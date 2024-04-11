@@ -61,10 +61,11 @@ function ConfirmationDialogContent(props: {
     return (
         <>
             <DialogHeader>
-                <DialogTitle>Are you sure?</DialogTitle>
+                <DialogTitle>Verifique os e-mails inseridos</DialogTitle>
                 <DialogDescription>
-                    These are the e-mails typed. Please verify if they are correct before submiting.
-                    Invalid e-mails will not be registered.
+                    Abaixo estão listados os e-mails inseridos. Verifique se há
+                    algum problema antes de enviar as mensagens de cadastro.
+                    E-mails inválidos serão mostrados em vermelho.
                 </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -80,8 +81,8 @@ function ConfirmationDialogContent(props: {
                 </ScrollArea>
             </div>
             <DialogFooter>
-                <Button variant="secondary" type="submit" onClick={props.handleGoBack}>Go back</Button>
-                <Button type="submit" onClick={props.handleConfirm}>Confirm</Button>
+                <Button variant="secondary" type="submit" onClick={props.handleGoBack}>Voltar</Button>
+                <Button type="submit" onClick={props.handleConfirm}>Confirmar</Button>
             </DialogFooter>
         </>
     )
@@ -102,7 +103,7 @@ function InputDialogContent(props: {
         <>
             <DialogHeader>
                 <div className="flex items-end">
-                    <DialogTitle>Register new students</DialogTitle>
+                    <DialogTitle>Registro de novos alunos</DialogTitle>
                     {
                         props.error ?
                             <TooltipProvider delayDuration={200}>
@@ -111,7 +112,7 @@ function InputDialogContent(props: {
                                         <ExclamationTriangleIcon className="ml-2 w-[16px] h-[16px] text-red-500 hover:cursor-pointer leading-0" />
                                     </TooltipTrigger>
                                     <TooltipContent side="top" sideOffset={10}>
-                                        <p className="bg-red-600 py-2 px-4 rounded">Enter the e-mails in the box below.</p>
+                                        <p className="bg-red-600 py-2 px-4 rounded">Insira os e-mails na área abaixo</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -121,9 +122,9 @@ function InputDialogContent(props: {
                 </div>
 
                 <DialogDescription>
-                    Add new students to the Edge Academy program. Insert below the
-                    "@edge.ufal.br" email addresses of the students you want to add
-                    separated by commas.
+                    Adicione novos alunos ao programa Edge Academy. Insira abaixo os e-mails
+                    do Edge separados por vírgula. Insira também o nome da nova turma e a data
+                    de ingresso.
                 </DialogDescription>
             </DialogHeader >
             <div className="grid gap-4 py-4">
@@ -154,11 +155,11 @@ function InputDialogContent(props: {
             </div>
             <DialogFooter>
                 <DialogClose asChild>
-                    <Button type="button" variant="secondary">Cancel</Button>
+                    <Button type="button" variant="secondary">Cancelar</Button>
                 </DialogClose>
                 <Button type="submit" onClick={props.handleSubmit}
                     disabled={props.error}
-                    variant={`${props.error ? 'destructive' : 'default'}`}>Submit</Button>
+                    variant={`${props.error ? 'destructive' : 'default'}`}>Submeter</Button>
             </DialogFooter>
         </>
     )
