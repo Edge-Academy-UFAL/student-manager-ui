@@ -33,6 +33,12 @@ interface fromData {
     emails: string
 }
 
+enum DialogPage {
+    Input,
+    EmailConfirmation,
+    SubmissionMessage
+}
+
 function validateEmails(emails: string): Array<{ email: string, isValid: boolean }> {
     const emailArray = emails.split(',').map((email): string => email.trim())
     const emailValidation = []
@@ -130,9 +136,10 @@ function InputDialogContent(props: {
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="admission-date" className={`${labelColor}`}>Data de ingresso</Label>
                     <div className="grid grid-cols-2 gap-x-2.5">
-                        <MonthSelect onChange={value => props.handleFormDataChange("admissionMonth", value)} error={props.error} />
-                        <YearSelect startingYears={2016} onChange={value => props.handleFormDataChange("admissionYear", value)}
-                            error={props.error} />
+                        <MonthSelect value={props.formData.admissionMonth} error={props.error}
+                            onChange={value => props.handleFormDataChange("admissionMonth", value)} />
+                        <YearSelect value={props.formData.admissionYear} startingYears={2016} error={props.error}
+                            onChange={value => props.handleFormDataChange("admissionYear", value)} />
                     </div>
                 </div>
                 <div className="grid w-full items-center gap-1.5">
@@ -157,6 +164,32 @@ function InputDialogContent(props: {
     )
 }
 
+function SubmissionMessageDialogContent(props: {
+    handleFinalize: () => void;
+}) {
+    return (
+        <>
+            <DialogHeader>
+                <div className="flex items-end">
+                    <DialogTitle>Convites Enviados!</DialogTitle>
+                </div>
+
+                <DialogDescription>
+                    Os convites foram enviados aos estudantes. Aguarde até que todos preencham seus cadastros.
+                </DialogDescription>
+            </DialogHeader >
+            <div className="grid gap-4 py-4">
+
+            </div>
+            <DialogFooter>
+                <DialogClose asChild>
+                    <Button type="button" variant='default' onClick={props.handleFinalize}>Ok</Button>
+                </DialogClose>
+
+            </DialogFooter>
+        </>
+    )
+}
 
 export function StudentRegisterDialog() {
 
@@ -166,14 +199,14 @@ export function StudentRegisterDialog() {
         admissionYear: '',
         emails: ''
     })
-    const [showDialog, setShowDialog] = useState<boolean>(false)
-    const [showConfirmation, setShowConfirmation] = useState<boolean>(false)
-    const [validatedEmails, setValidatedEmails] = useState<Array<{ email: string, isValid: boolean }>>([])
-    const [error, setError] = useState<boolean>(false)
+    const [showDialog, setShowDialog] = useState<boolean>(false);
+    const [dialogPage, setDialogPage] = useState<DialogPage>(DialogPage.Input);
+    const [validatedEmails, setValidatedEmails] = useState<Array<{ email: string, isValid: boolean }>>([]);
+    const [error, setError] = useState<boolean>(false);
 
     function handleDialogOpen(): void {
         // This is necessary to always open the dialog on the input page.
-        setShowConfirmation(false)
+        setDialogPage(DialogPage.Input)
         setShowDialog(true)
         setError(false)
         setValidatedEmails([])
@@ -208,17 +241,29 @@ export function StudentRegisterDialog() {
         }
 
         setValidatedEmails(validateEmails(formData.emails))
-        setShowConfirmation(true)
+        setDialogPage(DialogPage.EmailConfirmation);
     }
 
     function handleGoBack(): void {
-        setShowConfirmation(false)
+        setDialogPage(DialogPage.Input);
         setError(false)
     }
 
     function handleConfirm(): void {
         console.log("enviei para o backend")
         console.log(validatedEmails)
+        setDialogPage(DialogPage.SubmissionMessage)
+    }
+
+    function handleFinalize(): void {
+        setFormData({
+            studentGroup: '',
+            admissionMonth: '',
+            admissionYear: '',
+            emails: ''
+        })
+        setValidatedEmails([])
+        setError(false)
     }
 
     return (
@@ -231,20 +276,27 @@ export function StudentRegisterDialog() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 {
-                    showConfirmation
-                        ?
-                        <ConfirmationDialogContent
-                            validatedEmails={validatedEmails}
-                            handleConfirm={handleConfirm}
-                            handleGoBack={handleGoBack}
-                        />
-                        :
-                        <InputDialogContent
-                            formData={formData}
-                            error={error}
-                            handleFormDataChange={handleFormDataChange}
-                            handleSubmit={handleSubmit}
-                        />
+                    dialogPage === DialogPage.Input &&
+                    <InputDialogContent
+                        formData={formData}
+                        error={error}
+                        handleFormDataChange={handleFormDataChange}
+                        handleSubmit={handleSubmit}
+                    />
+                }
+                {
+                    dialogPage === DialogPage.EmailConfirmation &&
+                    <ConfirmationDialogContent
+                        validatedEmails={validatedEmails}
+                        handleConfirm={handleConfirm}
+                        handleGoBack={handleGoBack}
+                    />
+                }
+                {
+                    dialogPage === DialogPage.SubmissionMessage &&
+                    <SubmissionMessageDialogContent
+                        handleFinalize={handleFinalize}
+                    />
                 }
             </DialogContent>
         </Dialog>

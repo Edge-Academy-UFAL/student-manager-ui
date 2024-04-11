@@ -10,7 +10,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-function MonthSelect(props: { onChange: (value: string) => void, error: boolean }) {
+function MonthSelect(props: { onChange: (value: string) => void, error: boolean, value: string }) {
 
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
@@ -21,7 +21,7 @@ function MonthSelect(props: { onChange: (value: string) => void, error: boolean 
     return (
         <Select onValueChange={props.onChange}>
             <SelectTrigger className={`${inputColor}`}>
-                <SelectValue placeholder="Mês" />
+                <SelectValue placeholder={props.value ? props.value : "Mês"} />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
@@ -37,7 +37,7 @@ function MonthSelect(props: { onChange: (value: string) => void, error: boolean 
     )
 }
 
-function YearSelect(props: { startingYears: number, onChange: (value: string) => void, error: boolean }) {
+function YearSelect(props: { startingYears: number, onChange: (value: string) => void, error: boolean, value: string }) {
     const currentYear = new Date().getFullYear()
     const years = Array.from(
         new Array(currentYear - props.startingYears + 1),
@@ -49,7 +49,7 @@ function YearSelect(props: { startingYears: number, onChange: (value: string) =>
     return (
         <Select onValueChange={props.onChange}>
             <SelectTrigger className={`${inputColor}`}>
-                <SelectValue placeholder="Ano" />
+                <SelectValue placeholder={props.value ? props.value : "Ano"} />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
