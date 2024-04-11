@@ -168,34 +168,79 @@ function InputDialogContent(props: {
 }
 
 function SubmissionMessageDialogContent(props: {
-    handleFinalize: () => void;
+    handleFinalize: () => void,
+    handleGoBack: () => void
 }) {
-    return (
-        <>
+
+    const typeOfMessage = 1;
+
+    // When a backend problem occours
+    if (typeOfMessage === 0) {
+        return (
+            <>
+                <DialogHeader>
+                    <div className="flex items-end">
+                        <DialogTitle>Problemas no envio!</DialogTitle>
+                    </div>
+                    <DialogDescription>
+                        Atenção! Não foi possível completar a operação. Tente novamente mais tarde.
+                    </DialogDescription>
+                </DialogHeader >
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type="button" variant='secondary'>Cancelar</Button>
+                    </DialogClose>
+                    <Button type="button" variant='default' onClick={props.handleGoBack}>Voltar</Button>
+                </DialogFooter>
+            </>
+        )
+        // when one or more of the e-mails are no sent
+    } else if (typeOfMessage === 1) {
+        return (
+            <>
+                <DialogHeader>
+                    <div className="flex items-end">
+                        <DialogTitle>Problemas no envio!</DialogTitle>
+                    </div>
+                    <DialogDescription>
+                        Atenção! Não foi possível enviar um ou mais convites. Os e-mails que falharam estão listados abaixo.
+                    </DialogDescription>
+                </DialogHeader >
+                <div className="grid gap-4 py-4">
+                    vários emails aqui
+                    um
+                    dois
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild>
+                        <Button type="button" variant='secondary'>Cancelar</Button>
+                    </DialogClose>
+                    <Button type="button" variant='default' onClick={props.handleGoBack}>Voltar</Button>
+                </DialogFooter>
+            </>
+        )
+        // when the process finishs successfully
+    } else if (typeOfMessage === 2) {
+        return (<>
             <DialogHeader>
                 <div className="flex items-end">
                     <DialogTitle>Convites Enviados!</DialogTitle>
                 </div>
-
                 <DialogDescription>
                     Os convites foram enviados aos estudantes. Aguarde até que todos preencham seus cadastros.
                 </DialogDescription>
             </DialogHeader >
-            <div className="grid gap-4 py-4">
-
-            </div>
             <DialogFooter>
                 <DialogClose asChild>
                     <Button type="button" variant='default' onClick={props.handleFinalize}>Ok</Button>
                 </DialogClose>
-
             </DialogFooter>
-        </>
-    )
+        </>)
+    }
+
 }
 
 export function StudentRegisterDialog() {
-
     const [formData, setFormData] = useState<fromData>({
         studentGroup: '',
         admissionMonth: '',
@@ -255,6 +300,9 @@ export function StudentRegisterDialog() {
     function handleConfirm(): void {
         console.log("enviei para o backend")
         console.log(validatedEmails)
+
+        // backend request logic
+
         setDialogPage(DialogPage.SubmissionMessage)
     }
 
@@ -299,6 +347,7 @@ export function StudentRegisterDialog() {
                     dialogPage === DialogPage.SubmissionMessage &&
                     <SubmissionMessageDialogContent
                         handleFinalize={handleFinalize}
+                        handleGoBack={handleGoBack}
                     />
                 }
             </DialogContent>
