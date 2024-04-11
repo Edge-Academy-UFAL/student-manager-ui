@@ -58,6 +58,7 @@ function ConfirmationDialogContent(props: {
     handleConfirm: () => void,
     handleGoBack: () => void
 }) {
+    const invalidEmailCount = props.validatedEmails.filter(email => !email.isValid).length;
     return (
         <>
             <DialogHeader>
@@ -82,7 +83,8 @@ function ConfirmationDialogContent(props: {
             </div>
             <DialogFooter>
                 <Button variant="secondary" type="submit" onClick={props.handleGoBack}>Voltar</Button>
-                <Button type="submit" onClick={props.handleConfirm}>Confirmar</Button>
+                <Button type="submit" disabled={invalidEmailCount > 0 ? true : false}
+                    onClick={props.handleConfirm}>Confirmar</Button>
             </DialogFooter>
         </>
     )
