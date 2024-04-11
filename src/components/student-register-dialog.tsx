@@ -18,12 +18,13 @@ import {
     TooltipContent
 } from "@radix-ui/react-tooltip"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { PlusIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { useState, useEffect } from "react"
+import { MonthSelect, YearSelect } from "@/components/custom-select"
 
 function validateEmails(emails: string): Array<{ email: string, isValid: boolean }> {
     const emailArray = emails.split(',').map((email): string => email.trim())
@@ -110,13 +111,26 @@ function InputDialogContent(props: {
                 </DialogDescription>
             </DialogHeader >
             <div className="grid gap-4 py-4">
-                <Label htmlFor="student-emails" className={`${props.error ? 'text-red-500' : ''}`}>E-mails</Label>
-                <Textarea className={`h-[160px] ${props.error ? 'border-red-500' : ''}`}
-                    placeholder="Type the student e-mails here, separated by commas."
-                    id="student-emails"
-                    value={props.emails}
-                    onChange={props.handleTextAreaChange}
-                />
+                <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="student-group">Turma</Label>
+                    <Input type="student-group" id="student-group" placeholder="Identificação da turma" />
+                </div>
+                <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="admission-date">Data de ingresso</Label>
+                    <div className="grid grid-cols-2 gap-x-2.5">
+                        <MonthSelect />
+                        <YearSelect startingYears={2016} />
+                    </div>
+                </div>
+                <div className="grid w-full items-center gap-1.5">
+                    <Label htmlFor="student-emails" className={`${props.error ? 'text-red-500' : ''}`}>E-mails</Label>
+                    <Textarea className={`h-[160px] ${props.error ? 'border-red-500' : ''}`}
+                        placeholder="Type the student e-mails here, separated by commas."
+                        id="student-emails"
+                        value={props.emails}
+                        onChange={props.handleTextAreaChange}
+                    />
+                </div>
             </div>
             <DialogFooter>
                 <DialogClose asChild>
