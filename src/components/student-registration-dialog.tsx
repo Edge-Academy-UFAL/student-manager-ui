@@ -114,7 +114,7 @@ function InputDialogContent(props: {
                                         <ExclamationTriangleIcon className="ml-2 w-[16px] h-[16px] text-red-500 hover:cursor-pointer leading-0" />
                                     </TooltipTrigger>
                                     <TooltipContent side="top" sideOffset={10}>
-                                        <p className="bg-red-600 py-2 px-4 rounded">Insira os e-mails na área abaixo</p>
+                                        <p className="bg-red-600 py-2 px-4 rounded">Preencha os dados faltantes</p>
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
@@ -240,7 +240,7 @@ function SubmissionMessageDialogContent(props: {
 
 }
 
-export function StudentRegisterDialog() {
+export function StudentRegistrationDialog() {
     const [formData, setFormData] = useState<fromData>({
         studentGroup: '',
         admissionMonth: '',

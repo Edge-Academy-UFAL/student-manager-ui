@@ -52,7 +52,7 @@ export type Student = {
   foto: string
 }
 
-import { StudentRegisterDialog } from './student-register-dialog'
+import { StudentRegistrationDialog } from './student-registration-dialog'
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
   const router = useRouter()
@@ -212,7 +212,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
           className="max-w-sm"
         />
         <div className="ml-auto">
-          <StudentRegisterDialog />
+          <StudentRegistrationDialog />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-2">
