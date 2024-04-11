@@ -10,14 +10,17 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-function MonthSelect() {
+function MonthSelect(props: { onChange: (value: string) => void, error: boolean }) {
 
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]
 
+
+    let inputColor = props.error ? 'border-red-500' : '';
+
     return (
-        <Select>
-            <SelectTrigger>
+        <Select onValueChange={props.onChange}>
+            <SelectTrigger className={`${inputColor}`}>
                 <SelectValue placeholder="Mês" />
             </SelectTrigger>
             <SelectContent>
@@ -34,16 +37,18 @@ function MonthSelect() {
     )
 }
 
-function YearSelect(props: { startingYears: number }) {
+function YearSelect(props: { startingYears: number, onChange: (value: string) => void, error: boolean }) {
     const currentYear = new Date().getFullYear()
     const years = Array.from(
         new Array(currentYear - props.startingYears + 1),
         (_, index) => (currentYear - props.startingYears) - index + props.startingYears
     )
 
+    let inputColor = props.error ? 'border-red-500' : '';
+
     return (
-        <Select>
-            <SelectTrigger>
+        <Select onValueChange={props.onChange}>
+            <SelectTrigger className={`${inputColor}`}>
                 <SelectValue placeholder="Ano" />
             </SelectTrigger>
             <SelectContent>

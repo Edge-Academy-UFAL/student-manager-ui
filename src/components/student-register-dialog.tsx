@@ -26,6 +26,13 @@ import { PlusIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { useState, useEffect } from "react"
 import { MonthSelect, YearSelect } from "@/components/custom-select"
 
+interface fromData {
+    studentGroup: string,
+    admissionMonth: string,
+    admissionYear: string,
+    emails: string
+}
+
 function validateEmails(emails: string): Array<{ email: string, isValid: boolean }> {
     const emailArray = emails.split(',').map((email): string => email.trim())
     const emailValidation = []
@@ -76,12 +83,15 @@ function ConfirmationDialogContent(props: {
 }
 
 function InputDialogContent(props: {
-    emails: string,
+    formData: fromData,
     error: boolean,
-    handleTextAreaChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void,
+    handleFormDataChange: (field: string, value: any) => void,
     handleSubmit: () => void
-
 }) {
+
+    let labelColor = props.error ? 'text-red-500' : '';
+    let inputColor = props.error ? 'border-red-500' : '';
+
     return (
         <>
             <DialogHeader>
@@ -112,23 +122,26 @@ function InputDialogContent(props: {
             </DialogHeader >
             <div className="grid gap-4 py-4">
                 <div className="grid w-full items-center gap-1.5">
-                    <Label htmlFor="student-group">Turma</Label>
-                    <Input type="student-group" id="student-group" placeholder="Identificação da turma" />
+                    <Label htmlFor="student-group" className={`${labelColor}`}>Turma</Label>
+                    <Input type="student-group" id="student-group" placeholder="Identificação da turma"
+                        value={props.formData.studentGroup} className={`${inputColor}`}
+                        onChange={event => props.handleFormDataChange("studentGroup", event.target.value)} />
                 </div>
                 <div className="grid w-full items-center gap-1.5">
-                    <Label htmlFor="admission-date">Data de ingresso</Label>
+                    <Label htmlFor="admission-date" className={`${labelColor}`}>Data de ingresso</Label>
                     <div className="grid grid-cols-2 gap-x-2.5">
-                        <MonthSelect />
-                        <YearSelect startingYears={2016} />
+                        <MonthSelect onChange={value => props.handleFormDataChange("admissionMonth", value)} error={props.error} />
+                        <YearSelect startingYears={2016} onChange={value => props.handleFormDataChange("admissionYear", value)}
+                            error={props.error} />
                     </div>
                 </div>
                 <div className="grid w-full items-center gap-1.5">
-                    <Label htmlFor="student-emails" className={`${props.error ? 'text-red-500' : ''}`}>E-mails</Label>
-                    <Textarea className={`h-[160px] ${props.error ? 'border-red-500' : ''}`}
+                    <Label htmlFor="student-emails" className={`${labelColor}`}>E-mails</Label>
+                    <Textarea className={`h-[160px] ${inputColor}`}
                         placeholder="Type the student e-mails here, separated by commas."
                         id="student-emails"
-                        value={props.emails}
-                        onChange={props.handleTextAreaChange}
+                        value={props.formData.emails}
+                        onChange={event => props.handleFormDataChange("emails", event.target.value)}
                     />
                 </div>
             </div>
@@ -147,7 +160,12 @@ function InputDialogContent(props: {
 
 export function StudentRegisterDialog() {
 
-    const [emails, setEmails] = useState<string>("")
+    const [formData, setFormData] = useState<fromData>({
+        studentGroup: '',
+        admissionMonth: '',
+        admissionYear: '',
+        emails: ''
+    })
     const [showDialog, setShowDialog] = useState<boolean>(false)
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false)
     const [validatedEmails, setValidatedEmails] = useState<Array<{ email: string, isValid: boolean }>>([])
@@ -168,26 +186,34 @@ export function StudentRegisterDialog() {
         showDialog && setShowDialog(false)
     }
 
-    function handleTextAreaChange(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    const handleFormDataChange = (field: string, value: any) => {
         setError(false)
-        setEmails(event.target.value)
+        setFormData(prevState => ({ ...prevState, [field]: value }));
+    };
+
+    function formDataIsValid(formData: fromData): boolean {
+        if (formData.emails.trim() === "" || formData.admissionMonth === "" ||
+            formData.admissionYear === "" || formData.studentGroup === "") {
+            setError(true)
+            return false
+        }
+        return true
     }
 
     function handleSubmit(): void {
         setError(false)
 
-        if (emails.trim() === "") {
-            setError(true)
+        if (!formDataIsValid(formData)) {
             return
         }
-        setValidatedEmails(validateEmails(emails))
+
+        setValidatedEmails(validateEmails(formData.emails))
         setShowConfirmation(true)
     }
 
     function handleGoBack(): void {
         setShowConfirmation(false)
         setError(false)
-
     }
 
     function handleConfirm(): void {
@@ -214,9 +240,9 @@ export function StudentRegisterDialog() {
                         />
                         :
                         <InputDialogContent
-                            emails={emails}
+                            formData={formData}
                             error={error}
-                            handleTextAreaChange={handleTextAreaChange}
+                            handleFormDataChange={handleFormDataChange}
                             handleSubmit={handleSubmit}
                         />
                 }
