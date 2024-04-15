@@ -53,6 +53,7 @@ export type Student = {
 }
 
 import { StudentRegistrationDialog } from './student-registration-dialog'
+import TableFiltersDropdown from './table-filter'
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
   const router = useRouter()
@@ -211,12 +212,11 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
           }
           className="max-w-sm"
         />
-        <div className="ml-auto">
-          <StudentRegistrationDialog />
+        <div className="ml-auto flex gap-2.5">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-2">
-                Filtro <ChevronDownIcon className="ml-2 h-4 w-4" />
+                Filtro de Coluna <ChevronDownIcon className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -239,6 +239,8 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
+          <TableFiltersDropdown />
+          <StudentRegistrationDialog />
         </div>
 
       </div>
