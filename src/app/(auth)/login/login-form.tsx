@@ -12,10 +12,14 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useAuth } from '@/app/contexts/auth'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useToast } from '@/components/ui/use-toast'
 
 const loginFormSchema = z.object({
-  email: z.string().email(),
-  password: z.string().max(20),
+  email: z.string().email('Adicione um email válido'),
+  password: z.string().max(20, 'A senha deve ter no máximo 20 caracteres'),
 })
 
 type LoginFormValue = z.infer<typeof loginFormSchema>
@@ -25,9 +29,45 @@ export function LoginForm() {
     resolver: zodResolver(loginFormSchema),
   })
 
-  function onSubmit(data: LoginFormValue) {
-    // TODO: SEND REQUEST TO BACKEND
-    console.log(data)
+  const { login, isAuthenticated } = useAuth()
+  const router = useRouter()
+  const {toast} = useToast()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/')
+    }
+  })
+
+  async function onSubmit(data: LoginFormValue) {
+    const res = await login(data.email, data.password)
+
+
+    if(res === 200) {
+      toast({
+        title: 'Login feito com sucesso',
+        description: 'Seja bem vindo!',
+      })
+
+      router.push('/')
+    }
+
+    if (res >= 400 && res < 500) {
+      form.setError('email', { message: '' })
+      form.setError('password', { message: '' })
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao fazer login',
+        description: 'Email ou senha inválidos',
+      })
+    }
+    
+    if (res >= 500) {
+      toast({
+        title: 'Não foi possível fazer login',
+        description: 'Tente novamente mais tarde',
+      })
+    }
   }
 
   return (
