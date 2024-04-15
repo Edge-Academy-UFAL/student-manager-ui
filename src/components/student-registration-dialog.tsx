@@ -25,7 +25,7 @@ import { Badge } from "@/components/ui/badge"
 import { PlusIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { useState, useEffect } from "react"
 import { MonthSelect, YearSelect } from "@/components/custom-select"
-
+import { LoadingSpinner } from "./loading-spinner"
 interface fromData {
     studentGroup: string,
     admissionMonth: string,
@@ -36,7 +36,8 @@ interface fromData {
 enum DialogPage {
     Input,
     EmailConfirmation,
-    SubmissionMessage
+    SubmissionMessage,
+    LoadingPage
 }
 
 function validateEmails(emails: string): Array<{ email: string, isValid: boolean }> {
@@ -169,13 +170,12 @@ function InputDialogContent(props: {
 
 function SubmissionMessageDialogContent(props: {
     handleFinalize: () => void,
-    handleGoBack: () => void
+    handleGoBack: () => void,
+    typeOfMessage: number
 }) {
 
-    const typeOfMessage = 1;
-
     // When a backend problem occours
-    if (typeOfMessage === 0) {
+    if (props.typeOfMessage === 0) {
         return (
             <>
                 <DialogHeader>
@@ -195,7 +195,7 @@ function SubmissionMessageDialogContent(props: {
             </>
         )
         // when one or more of the e-mails are no sent
-    } else if (typeOfMessage === 1) {
+    } else if (props.typeOfMessage === 1) {
         return (
             <>
                 <DialogHeader>
@@ -220,7 +220,7 @@ function SubmissionMessageDialogContent(props: {
             </>
         )
         // when the process finishs successfully
-    } else if (typeOfMessage === 2) {
+    } else if (props.typeOfMessage === 2) {
         return (<>
             <DialogHeader>
                 <div className="flex items-end">
@@ -240,6 +240,28 @@ function SubmissionMessageDialogContent(props: {
 
 }
 
+function LoadingDialogContent(props: {
+    title: string,
+    message: string
+}) {
+
+    return (
+        <>
+            <DialogHeader>
+                <DialogTitle>{props.title}</DialogTitle>
+                <DialogDescription>
+                    {props.message}
+                </DialogDescription>
+            </DialogHeader >
+            <div className="flex flex-col items-center justify-center w-full h-[160px]">
+                <LoadingSpinner size={50}></LoadingSpinner>
+                <p className="text-slate-300">Carregando...</p>
+            </div>
+        </>
+
+    )
+}
+
 export function StudentRegistrationDialog() {
     const [formData, setFormData] = useState<fromData>({
         studentGroup: '',
@@ -251,6 +273,7 @@ export function StudentRegistrationDialog() {
     const [dialogPage, setDialogPage] = useState<DialogPage>(DialogPage.Input);
     const [validatedEmails, setValidatedEmails] = useState<Array<{ email: string, isValid: boolean }>>([]);
     const [error, setError] = useState<boolean>(false);
+    const [loadingPageData, setLoadingPageData] = useState<{ title: string, message: string }>({ title: "", message: "" })
 
     function handleDialogOpen(): void {
         // This is necessary to always open the dialog on the input page.
@@ -297,13 +320,40 @@ export function StudentRegistrationDialog() {
         setError(false)
     }
 
-    function handleConfirm(): void {
-        console.log("enviei para o backend")
-        console.log(validatedEmails)
+    async function handleConfirm() {
+        console.log("Sending emails...")
+        setLoadingPageData({ title: "Enviando convites.", message: "Por favor aguarde." })
+        setDialogPage(DialogPage.LoadingPage)
+        // // set loading state
 
-        // backend request logic
+        // // get session credentials
 
-        setDialogPage(DialogPage.SubmissionMessage)
+        // // prepare data
+        // const emailStrings: Array<string> = validatedEmails.map(email => email.email);
+
+        // // fetch
+        // const res = await fetch(
+        //     `${process.env.backendRoute}/api/v1/register`,
+        //     {
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             // 'Authorization': `Bearer session-token`
+        //         },
+        //         body: JSON.stringify(emailStrings),
+        //         method: 'POST'
+        //     }
+        // )
+
+        // if (!res.ok) {
+        //     // Set loading state to false
+        //     // Handle error display
+        //     console.log("Erro")
+        //     return null;
+        // }
+
+        // // Set loading state to false
+        // // show success confirmation message
+        // //      setDialogPage(DialogPage.SubmissionMessage)
     }
 
     function handleFinalize(): void {
@@ -348,7 +398,12 @@ export function StudentRegistrationDialog() {
                     <SubmissionMessageDialogContent
                         handleFinalize={handleFinalize}
                         handleGoBack={handleGoBack}
+                        typeOfMessage={2}
                     />
+                }
+                {
+                    dialogPage === DialogPage.LoadingPage &&
+                    <LoadingDialogContent {...loadingPageData} />
                 }
             </DialogContent>
         </Dialog>
