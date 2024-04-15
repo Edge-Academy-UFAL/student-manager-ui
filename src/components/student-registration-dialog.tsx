@@ -26,6 +26,7 @@ import { PlusIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { useState, useEffect } from "react"
 import { MonthSelect, YearSelect } from "@/components/custom-select"
 import { LoadingSpinner } from "./loading-spinner"
+
 interface fromData {
     studentGroup: string,
     admissionMonth: string,
@@ -36,8 +37,14 @@ interface fromData {
 enum DialogPage {
     Input,
     EmailConfirmation,
-    SubmissionMessage,
-    LoadingPage
+    BackendResponse,
+    Loading
+}
+
+enum BackendResponseType {
+    Success,
+    InvitationSendingError,
+    AnotherError
 }
 
 function validateEmails(emails: string): Array<{ email: string, isValid: boolean }> {
@@ -54,42 +61,16 @@ function validateEmails(emails: string): Array<{ email: string, isValid: boolean
     return emailValidation
 }
 
-function ConfirmationDialogContent(props: {
-    validatedEmails: Array<{ email: string, isValid: Boolean }>,
-    handleConfirm: () => void,
-    handleGoBack: () => void
-}) {
-    const invalidEmailCount = props.validatedEmails.filter(email => !email.isValid).length;
-    return (
-        <>
-            <DialogHeader>
-                <DialogTitle>Verifique os e-mails inseridos</DialogTitle>
-                <DialogDescription>
-                    Abaixo estão listados os e-mails inseridos. Verifique se há
-                    algum problema antes de enviar as mensagens de cadastro.
-                    E-mails inválidos serão mostrados em vermelho.
-                </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-                <Label htmlFor="student-emails">E-mails</Label>
-                <ScrollArea className="h-24 w-full rounded-md ">
-                    {props.validatedEmails.map((email, index) => (
-                        email.isValid
-                            ?
-                            <Badge className="w-full">{email.email}</Badge>
-                            :
-                            <Badge className="w-full" variant="destructive">{email.email}</Badge>
-                    ))}
-                </ScrollArea>
-            </div>
-            <DialogFooter>
-                <Button variant="secondary" type="submit" onClick={props.handleGoBack}>Voltar</Button>
-                <Button type="submit" disabled={invalidEmailCount > 0 ? true : false}
-                    onClick={props.handleConfirm}>Confirmar</Button>
-            </DialogFooter>
-        </>
-    )
+function formDataIsValid(formData: fromData): boolean {
+    if (formData.emails.trim() === "" || formData.admissionMonth === "" ||
+        formData.admissionYear === "" || formData.studentGroup === "") {
+        return false
+    }
+    return true
+}
 
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function InputDialogContent(props: {
@@ -168,14 +149,53 @@ function InputDialogContent(props: {
     )
 }
 
-function SubmissionMessageDialogContent(props: {
+function EmailConfirmationDialogContent(props: {
+    validatedEmails: Array<{ email: string, isValid: Boolean }>,
+    handleConfirm: () => void,
+    handleGoBack: () => void
+}) {
+    const invalidEmailCount = props.validatedEmails.filter(email => !email.isValid).length;
+    return (
+        <>
+            <DialogHeader>
+                <DialogTitle>Verifique os e-mails inseridos</DialogTitle>
+                <DialogDescription>
+                    Abaixo estão listados os e-mails inseridos. Verifique se há
+                    algum problema antes de enviar as mensagens de cadastro.
+                    E-mails inválidos serão mostrados em vermelho.
+                </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+                <Label htmlFor="student-emails">E-mails</Label>
+                <ScrollArea className="h-24 w-full rounded-md ">
+                    {props.validatedEmails.map((email, index) => (
+                        email.isValid
+                            ?
+                            <Badge className="w-full">{email.email}</Badge>
+                            :
+                            <Badge className="w-full" variant="destructive">{email.email}</Badge>
+                    ))}
+                </ScrollArea>
+            </div>
+            <DialogFooter>
+                <Button variant="secondary" type="submit" onClick={props.handleGoBack}>Voltar</Button>
+                <Button type="submit" disabled={invalidEmailCount > 0 ? true : false}
+                    onClick={props.handleConfirm}>Confirmar</Button>
+            </DialogFooter>
+        </>
+    )
+
+}
+
+function BackendResponseDialogContent(props: {
     handleFinalize: () => void,
     handleGoBack: () => void,
-    typeOfMessage: number
+    typeOfResponse: BackendResponseType,
+    responseCode: string,
+    invalidEmails?: Array<string>
 }) {
-
     // When a backend problem occours
-    if (props.typeOfMessage === 0) {
+    if (props.typeOfResponse === BackendResponseType.AnotherError) {
         return (
             <>
                 <DialogHeader>
@@ -195,7 +215,7 @@ function SubmissionMessageDialogContent(props: {
             </>
         )
         // when one or more of the e-mails are no sent
-    } else if (props.typeOfMessage === 1) {
+    } else if (props.typeOfResponse === BackendResponseType.InvitationSendingError) {
         return (
             <>
                 <DialogHeader>
@@ -220,7 +240,7 @@ function SubmissionMessageDialogContent(props: {
             </>
         )
         // when the process finishs successfully
-    } else if (props.typeOfMessage === 2) {
+    } else if (props.typeOfResponse === BackendResponseType.Success) {
         return (<>
             <DialogHeader>
                 <div className="flex items-end">
@@ -270,14 +290,25 @@ export function StudentRegistrationDialog() {
         emails: ''
     })
     const [showDialog, setShowDialog] = useState<boolean>(false);
-    const [dialogPage, setDialogPage] = useState<DialogPage>(DialogPage.Input);
     const [validatedEmails, setValidatedEmails] = useState<Array<{ email: string, isValid: boolean }>>([]);
     const [error, setError] = useState<boolean>(false);
-    const [loadingPageData, setLoadingPageData] = useState<{ title: string, message: string }>({ title: "", message: "" })
+    const [dialogState, _setDialogState] = useState<{ page: DialogPage, data: Record<string, unknown> }>({
+        page: DialogPage.Input,
+        data: {}
+    })
+
+    function setDialogState(page: DialogPage, data?: Record<string, unknown>) {
+        if (data) {
+            _setDialogState({ page: page, data: data });
+        } else {
+            _setDialogState({ page: page, data: {} })
+        }
+
+    }
 
     function handleDialogOpen(): void {
         // This is necessary to always open the dialog on the input page.
-        setDialogPage(DialogPage.Input)
+        setDialogState(DialogPage.Input)
         setShowDialog(true)
         setError(false)
         setValidatedEmails([])
@@ -290,48 +321,46 @@ export function StudentRegistrationDialog() {
         showDialog && setShowDialog(false)
     }
 
-    const handleFormDataChange = (field: string, value: any) => {
+    function handleFormDataChange(field: string, value: any): void {
         setError(false)
         setFormData(prevState => ({ ...prevState, [field]: value }));
     };
-
-    function formDataIsValid(formData: fromData): boolean {
-        if (formData.emails.trim() === "" || formData.admissionMonth === "" ||
-            formData.admissionYear === "" || formData.studentGroup === "") {
-            setError(true)
-            return false
-        }
-        return true
-    }
 
     function handleSubmit(): void {
         setError(false)
 
         if (!formDataIsValid(formData)) {
+            setError(true)
             return
         }
 
         setValidatedEmails(validateEmails(formData.emails))
-        setDialogPage(DialogPage.EmailConfirmation);
+        setDialogState(DialogPage.EmailConfirmation)
     }
 
     function handleGoBack(): void {
-        setDialogPage(DialogPage.Input);
+        setDialogState(DialogPage.Input);
         setError(false)
     }
 
     async function handleConfirm() {
         console.log("Sending emails...")
-        setLoadingPageData({ title: "Enviando convites.", message: "Por favor aguarde." })
-        setDialogPage(DialogPage.LoadingPage)
-        // // set loading state
 
-        // // get session credentials
+        setDialogState(DialogPage.Loading,
+            {
+                title: "Enviando convites.",
+                message: "Os convites estão sendo enviados para os alunos. Por favor, aguard."
+            })
 
-        // // prepare data
-        // const emailStrings: Array<string> = validatedEmails.map(email => email.email);
+        // set loading state
+        await sleep(5000);
 
-        // // fetch
+        // get session credentials
+
+        // prepare data
+        const emailStrings: Array<string> = validatedEmails.map(email => email.email);
+
+        // fetch
         // const res = await fetch(
         //     `${process.env.backendRoute}/api/v1/register`,
         //     {
@@ -344,6 +373,7 @@ export function StudentRegistrationDialog() {
         //     }
         // )
 
+        // Validate response
         // if (!res.ok) {
         //     // Set loading state to false
         //     // Handle error display
@@ -351,9 +381,11 @@ export function StudentRegistrationDialog() {
         //     return null;
         // }
 
-        // // Set loading state to false
-        // // show success confirmation message
-        // //      setDialogPage(DialogPage.SubmissionMessage)
+        setDialogState(DialogPage.BackendResponse, {
+            typeOfResponse: BackendResponseType.Success,
+            responseCode: "201",
+            invalidEmails: [],
+        })
     }
 
     function handleFinalize(): void {
@@ -377,7 +409,7 @@ export function StudentRegistrationDialog() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 {
-                    dialogPage === DialogPage.Input &&
+                    dialogState.page === DialogPage.Input &&
                     <InputDialogContent
                         formData={formData}
                         error={error}
@@ -386,24 +418,31 @@ export function StudentRegistrationDialog() {
                     />
                 }
                 {
-                    dialogPage === DialogPage.EmailConfirmation &&
-                    <ConfirmationDialogContent
+                    dialogState.page === DialogPage.EmailConfirmation &&
+                    <EmailConfirmationDialogContent
                         validatedEmails={validatedEmails}
                         handleConfirm={handleConfirm}
                         handleGoBack={handleGoBack}
                     />
                 }
                 {
-                    dialogPage === DialogPage.SubmissionMessage &&
-                    <SubmissionMessageDialogContent
+                    dialogState.page === DialogPage.BackendResponse &&
+                    <BackendResponseDialogContent
                         handleFinalize={handleFinalize}
                         handleGoBack={handleGoBack}
-                        typeOfMessage={2}
+                        {...dialogState.data as
+                        {
+                            typeOfResponse: BackendResponseType,
+                            responseCode: string,
+                            invalidEmails: Array<string>
+                        }
+                        }
                     />
                 }
                 {
-                    dialogPage === DialogPage.LoadingPage &&
-                    <LoadingDialogContent {...loadingPageData} />
+                    dialogState.page === DialogPage.Loading &&
+                    <LoadingDialogContent {...dialogState.data as
+                        { title: string, message: string }} />
                 }
             </DialogContent>
         </Dialog>
