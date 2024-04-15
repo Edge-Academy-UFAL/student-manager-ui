@@ -12,9 +12,20 @@ import {
 import { useToast } from '@/components/ui/use-toast'
 import ReturnButton from './return-button'
 import { LoginForm } from '@/app/(auth)/login/login-form'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuth } from '@/app/contexts/auth'
 
 export default function LoginAccount() {
   const { toast } = useToast()
+  const { isAuthenticated } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/')
+    }
+  })
 
   function handleForgotPassword() {
     toast({
@@ -25,7 +36,6 @@ export default function LoginAccount() {
 
   return (
     <div className="relative flex flex-col justify-center items-center min-h-screen overflow-hidden">
-      <ReturnButton />
       <div className="w-full m-auto lg:max-w-lg">
         <Card>
           <CardHeader className="space-y-1">

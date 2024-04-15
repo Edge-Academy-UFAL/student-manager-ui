@@ -4,6 +4,7 @@ import { Providers } from './providers'
 
 import { Toaster } from '@/components/ui/toaster'
 import './globals.css'
+import { ProtectRoute } from '../components/auth/ProtectAuth'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -19,7 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={GeistMono.className}>
         <Providers>
-          <main>{children}</main>
+          <ProtectRoute>
+            <main>{children}</main>
+          </ProtectRoute>
         </Providers>
         <Toaster />
       </body>
