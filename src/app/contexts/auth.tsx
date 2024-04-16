@@ -22,12 +22,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     async function loadUserFromCookies() {
       const token = getCookie('token')
       if (token) {
-        const user = await fetch('http://127.0.0.1:8080/api/v1/auth/me', {
+        const res = await fetch('http://127.0.0.1:8080/api/v1/auth/me', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }).then((res) => res.json())
-        setUser(user)
+        })
+
+        if (res.ok) {
+          const user = await res.json()
+          setUser(user)
+        } else {
+          logout()
+        }
       }
     }
     loadUserFromCookies()
