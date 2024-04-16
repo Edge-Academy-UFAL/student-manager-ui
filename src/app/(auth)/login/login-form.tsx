@@ -31,7 +31,7 @@ export function LoginForm() {
 
   const { login, isAuthenticated } = useAuth()
   const router = useRouter()
-  const {toast} = useToast()
+  const { toast } = useToast()
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -42,8 +42,7 @@ export function LoginForm() {
   async function onSubmit(data: LoginFormValue) {
     const res = await login(data.email, data.password)
 
-
-    if(res === 200) {
+    if (res === 200) {
       toast({
         title: 'Login feito com sucesso',
         description: 'Seja bem vindo!',
@@ -61,7 +60,7 @@ export function LoginForm() {
         description: 'Email ou senha inválidos',
       })
     }
-    
+
     if (res >= 500) {
       toast({
         title: 'Não foi possível fazer login',
