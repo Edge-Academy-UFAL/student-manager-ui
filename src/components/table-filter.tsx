@@ -52,7 +52,10 @@ const formSchema = z.object({
     }).length(6, {
         message: "O período de ingresso tem apenas 6 caracteres."
     }).optional().or(z.literal('')),
-    admissionSemestreFilterOption: z.nativeEnum(NumberFilteringOption)
+    admissionSemestreFilterOption: z.nativeEnum(NumberFilteringOption),
+    currentSemester: z.coerce.number().min(1).max(15).optional().or(z.literal("")),
+    currentSemesterFilterOption: z.nativeEnum(NumberFilteringOption)
+    
 
 })
 
@@ -63,7 +66,9 @@ function FilterForm() {
             csCheckbox: true,
             ceCheckbox: true,
             admissionSemester: "",
-            admissionSemestreFilterOption: NumberFilteringOption.GreaterThan
+            admissionSemestreFilterOption: NumberFilteringOption.GreaterThan,
+            currentSemester: "",
+            currentSemesterFilterOption: NumberFilteringOption.GreaterThan
         },
     })
 
@@ -151,8 +156,33 @@ function FilterForm() {
                     </div>
                     {errors.admissionSemester && <FormMessage>{errors.admissionSemester.message}</FormMessage>}
                 </div>
-                <div>
-                    <FormLabel>Período Atual</FormLabel>
+                <div className="w-full flex flex-col gap-1">
+                    <FormLabel className={errors.currentSemester ? "text-destructive" : ""}>
+                        Período Atual
+                    </FormLabel>
+                    <div className="flex gap-2.5 w-full">
+                        <FormField
+                            control={form.control}
+                            name="currentSemesterFilterOption"
+                            render={({ field }) => (
+                                <FormItem className="basis-2/5">
+                                    <FilterOptionSelect onChange={field.onChange} defaultValue={field.value}/>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="currentSemester"
+                            render={({ field }) => (
+                                <FormItem className="basis-3/5">
+                                    <FormControl>
+                                        <Input type="number" placeholder="5" {...field}/>
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    {errors.currentSemester && <FormMessage>{errors.currentSemester.message}</FormMessage>}
                 </div>
                 <div>
                     <FormLabel>Índice de rendimento acadêmico (IRA/CR)</FormLabel>
