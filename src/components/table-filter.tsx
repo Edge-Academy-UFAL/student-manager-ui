@@ -40,19 +40,21 @@ import {
 } from "@/components/ui/select"
 
 enum NumberFilteringOption {
-    GreaterThan,
-    LessThan,
-    EqualTo,
-    GreaterOrEqualTo,
-    LessOrEqualTo
+    GreaterThan = "Maior que",
+    LessThan = "Menor que",
+    EqualTo = "Igual a",
+    GreaterOrEqualTo = "Maior ou igual a",
+    LessOrEqualTo = "Menor ou igual a"
 }
 
 const formSchema = z.object({
     csCheckbox: z.boolean().default(false).optional(),
     ceCheckbox: z.boolean().default(false).optional(),
-    admissionSemester: z.string().regex(/\d\d\d\d.\d/i, {
-        message: "O padrão para o período de ingresso é, por exemplo, \"2022.2\""
-    }).trim(),
+    admissionSemester: z.string().regex(/\d\d\d\d.[12]/i, {
+        message: "O período de ingresso tem padrão ano.semestre (e.g. 2022.2). Os valores do semestre só podem ser 1 ou 2."
+    }).length(6, {
+        message: "O período de ingresso tem apenas 6 caracteres."
+    }).optional().or(z.literal('')),
     admissionSemestreFilterOption: z.nativeEnum(NumberFilteringOption)
 
 })
@@ -75,16 +77,23 @@ function FilterForm() {
     }
 
     function onTest() {
+        // for (let value in NumberFilteringOption) {
+            //     console.log(value);
+            // }
         console.log(NumberFilteringOption)
-        for (let value in NumberFilteringOption) {
-            console.log(value);
-        }
+        console.log(NumberFilteringOption.GreaterThan)
+        const a = Object.values(NumberFilteringOption).map((value) => {
+            return value
+        })
+        console.log(a)
+
     }
 
+    const errors = form.formState.errors;
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-start gap-3">
-                <div>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-start gap-5">
+                <div className="w-full flex flex-col gap-1">
                     <FormLabel>Curso</FormLabel>
                     <div className="flex flex-row items-start space-x-5 space-y-0">
                         <FormField
@@ -117,43 +126,51 @@ function FilterForm() {
                         />
                     </div>
                 </div>
-                <div>
-                    <FormLabel>Período de ingresso na UFAL</FormLabel>
-                    <FormField
-                        control={form.control}
-                        name="admissionSemestreFilterOption"
-                        render={({ field }) => (
-                            <FormItem>
-                                <Select onValueChange={field.onChange} defaultValue={field.value.toString()}>
+                <div className="w-full flex flex-col gap-1">
+                    <FormLabel className={errors.admissionSemester ? "text-destructive" : ""}>
+                        Período de ingresso na UFAL
+                    </FormLabel>
+                    <div className="flex gap-2.5 w-full">
+                        <FormField
+                            control={form.control}
+                            name="admissionSemestreFilterOption"
+                            render={({ field }) => (
+                                <FormItem className="basis-2/5">
+                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                        <FormControl>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {
+                                                Object.values(NumberFilteringOption)
+                                                    .map((value) => {
+                                                        return (
+                                                            <SelectItem key={value} value={value}>
+                                                                {value}
+                                                            </SelectItem>
+                                                        )
+                                                    })
+                                            }
+                                        </SelectContent>
+                                    </Select>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="admissionSemester"
+                            render={({ field }) => (
+                                <FormItem className="basis-3/5">
                                     <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue />
-                                        </SelectTrigger>
+                                        <Input placeholder="2022.2" {...field}/>
                                     </FormControl>
-                                    <SelectContent>
-                                        {Object.entries(NumberFilteringOption)
-                                            .filter(([name]) => isNaN(Number(name)))
-                                            .map(([name, value]) => (
-                                                <SelectItem key={value} value={value.toString()}>
-                                                    {name}
-                                                </SelectItem>
-                                            ))}
-                                    </SelectContent>
-                                </Select>
-                            </FormItem>
-                        )}
-                    />
-                    <FormField
-                        control={form.control}
-                        name="admissionSemester"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormControl>
-                                    <Input placeholder="2022.2" {...field} />
-                                </FormControl>
-                            </FormItem>
-                        )}
-                    />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    {errors.admissionSemester && <FormMessage>{errors.admissionSemester.message}</FormMessage>}
                 </div>
                 <div>
                     <FormLabel>Período Atual</FormLabel>
@@ -176,7 +193,7 @@ function TableFiltersDropdown() {
             <DropdownMenuTrigger asChild>
                 <Button variant="outline">Filtros</Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="py-4 px-7">
+            <DropdownMenuContent className="py-4 px-7 w-[560px]">
                 <FilterForm></FilterForm>
             </DropdownMenuContent>
         </DropdownMenu>
