@@ -31,7 +31,7 @@ import UploadProfilePic from './uploadProfilePic'
 
 import { RegisterSchema } from '@/lib/schemas'
 
-import { Eye, EyeOff, MessageCircleQuestion, CircleHelp } from 'lucide-react'
+import { Eye, EyeOff, MessageCircleQuestion } from 'lucide-react'
 
 export default function SignUp() {
   const {
