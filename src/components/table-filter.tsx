@@ -56,9 +56,7 @@ const formSchema = z.object({
     })).optional()
 })
 
-function FilterForm(props: {
-    studentGroups: Array<number>
-}) {
+function FilterForm(props: {studentGroups: Array<number>}) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -74,17 +72,16 @@ function FilterForm(props: {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
-    }
-
     const errors = form.formState.errors;
 
     const studentGroupOptions: Option[] = props.studentGroups.map((item) => {
         return { label: `Turma ${item}`, value: `turma ${item}` }
     })
+
+    function onSubmit(values: z.infer<typeof formSchema>) {
+        // Apply filters
+        console.log(values)
+    }
 
     return (
         <Form {...form}>
@@ -239,6 +236,9 @@ function FilterForm(props: {
 }
 
 function TableFiltersDropdown() {
+
+    // Must receive the function that alters the table visualization
+    // Must receive the student data to extract the studentGroups
 
     const studentGroups = [1, 2, 3, 4, 5];
 
