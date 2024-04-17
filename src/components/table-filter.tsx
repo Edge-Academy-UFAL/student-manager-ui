@@ -53,10 +53,18 @@ const formSchema = z.object({
         message: "O período de ingresso tem apenas 6 caracteres."
     }).optional().or(z.literal('')),
     admissionSemestreFilterOption: z.nativeEnum(NumberFilteringOption),
-    currentSemester: z.coerce.number().min(1).max(15).optional().or(z.literal("")),
-    currentSemesterFilterOption: z.nativeEnum(NumberFilteringOption)
-    
-
+    currentSemester: z.coerce.number().min(1, {
+        message: "Período atual menor que 1 não faz sentido."
+    }).max(15, {
+        message: "O período atual não pode ser maior que 15 (prazo máximo para o curso de Engenharia)."
+    }).optional().or(z.literal("")),
+    currentSemesterFilterOption: z.nativeEnum(NumberFilteringOption),
+    cr: z.coerce.number().min(0.1, {
+        message: "O IRA/CR deve ser maior que 0.1."
+    }).max(10, {
+        message: "Não faz sentido o IRA/CR ser maior que 10."
+    }).optional().or(z.literal("")),
+    crFilterOption: z.nativeEnum(NumberFilteringOption)
 })
 
 function FilterForm() {
@@ -68,7 +76,9 @@ function FilterForm() {
             admissionSemester: "",
             admissionSemestreFilterOption: NumberFilteringOption.GreaterThan,
             currentSemester: "",
-            currentSemesterFilterOption: NumberFilteringOption.GreaterThan
+            currentSemesterFilterOption: NumberFilteringOption.GreaterThan,
+            cr: "",
+            crFilterOption: NumberFilteringOption.GreaterThan
         },
     })
 
@@ -184,8 +194,33 @@ function FilterForm() {
                     </div>
                     {errors.currentSemester && <FormMessage>{errors.currentSemester.message}</FormMessage>}
                 </div>
-                <div>
-                    <FormLabel>Índice de rendimento acadêmico (IRA/CR)</FormLabel>
+                <div className="w-full flex flex-col gap-1">
+                    <FormLabel className={errors.cr ? "text-destructive" : ""}>
+                        Índice de rendimento acadêmico (IRA/CR)
+                    </FormLabel>
+                    <div className="flex gap-2.5 w-full">
+                        <FormField
+                            control={form.control}
+                            name="crFilterOption"
+                            render={({ field }) => (
+                                <FormItem className="basis-2/5">
+                                    <FilterOptionSelect onChange={field.onChange} defaultValue={field.value}/>
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="cr"
+                            render={({ field }) => (
+                                <FormItem className="basis-3/5">
+                                    <FormControl>
+                                        <Input type="number" lang="pt-br" placeholder="8,5" {...field}/>
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                    {errors.cr && <FormMessage>{errors.cr.message}</FormMessage>}
                 </div>
                 <div>
                     <FormLabel>Turma</FormLabel>
