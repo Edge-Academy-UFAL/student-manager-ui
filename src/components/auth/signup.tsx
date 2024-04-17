@@ -10,6 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
@@ -23,7 +31,7 @@ import UploadProfilePic from './uploadProfilePic'
 
 import { RegisterSchema } from '@/lib/schemas'
 
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, MessageCircleQuestion, CircleHelp } from 'lucide-react'
 
 export default function SignUp() {
   const {
@@ -170,10 +178,28 @@ export default function SignUp() {
                 </p>
               </div>
               <div className="grid gap-3">
-                <Label>Ano letivo de Ingresso*</Label>
+                <div className="flex items-center">
+                  <Label>Ano letivo de Ingresso*</Label>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <MessageCircleQuestion
+                          size={15}
+                          className="ml-2 hover:cursor-pointer hover:text-muted-foreground"
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>
+                          Período que o aluno ingressou na unidade acadêmica.
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+
                 <Input
                   {...register('entrySemester')}
-                  placeholder="Ex: 2021.1, 2022.2"
+                  placeholder="Ex: 2021.1, 2023.2"
                 />
                 <p className="text-red-500 text-xs">
                   {errors?.entrySemester?.message}
