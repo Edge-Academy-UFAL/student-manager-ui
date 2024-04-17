@@ -35,26 +35,56 @@ export default function SignUp() {
   })
 
   const { toast } = useToast()
-  // const { push } = useRouter()
 
   const [course, setCourse] = useState('Ciência da Computação')
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const submitHandler = (data: RegisterSchema) => {
-    console.log(data)
+    // remover caracteres não numéricos dos telefones
+    const phone = data.phone.replace(/\D/g, '')
+    const secondaryPhone = data.secondaryPhone?.replace(/\D/g, '')
+
+    // converter data de nascimento para o formato dd-mm-yyyy
+    const birthdate = data.birthdate.split('-').reverse().join('-')
+    console.log(birthdate)
+
+    // converter curso para COMPUTER_SCIENCE ou COMPUTER_ENGINEERING
+    const course =
+      data.course === 'Ciência da Computação'
+        ? 'COMPUTER_SCIENCE'
+        : 'COMPUTER_ENGINEERING'
+
+    const dataToSend = {
+      name: data.name,
+      birthdate,
+      password: data.password,
+      course,
+      registration: data.registrationNumber,
+      phone,
+      secondaryPhone,
+      period: data.semester,
+      entryPeriod: data.entrySemester,
+      photo: null,
+      activationCode: null,
+    }
+
     toast({
       title: 'Você enviou os seguintes valores:',
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          <code className="text-white">
+            {JSON.stringify(dataToSend, null, 2)}
+          </code>
         </pre>
       ),
     })
+
+    // enviar os dados para a API
   }
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen overflow-hidden">
+    <div className="flex flex-col justify-center items-center min-h-screen overflow-hidden py-10">
       <ReturnButton />
       <form
         className="w-full m-auto lg:max-w-4xl"
@@ -62,7 +92,7 @@ export default function SignUp() {
       >
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">
+            <CardTitle className="text-xl text-center">
               Cadastro de Aluno
             </CardTitle>
             <CardDescription className="text-center">
@@ -87,9 +117,14 @@ export default function SignUp() {
               </div>
               <div className="grid gap-3">
                 <Label>Data de Nascimento*</Label>
-                <Input type="date" {...register('dateOfBirth')} />
+                <Input
+                  type="date"
+                  min="1900-01-01"
+                  max="2024-01-01"
+                  {...register('birthdate')}
+                />
                 <p className="text-red-500 text-xs">
-                  {errors?.dateOfBirth?.message}
+                  {errors?.birthdate?.message}
                 </p>
               </div>
               <div className="grid gap-3">
@@ -102,17 +137,15 @@ export default function SignUp() {
               <div className="grid gap-3">
                 <Label>Telefone*</Label>
                 <Input
-                  {...register('phoneNumber')}
+                  {...register('phone')}
                   placeholder="(99) 9999-9999"
                   pattern="(\([0-9]{2}\))\s([9]{1})([0-9]{4})-([0-9]{4})"
                 />
 
-                <p className="text-red-500 text-xs">
-                  {errors?.phoneNumber?.message}
-                </p>
+                <p className="text-red-500 text-xs">{errors?.phone?.message}</p>
               </div>
               <div className="grid gap-3">
-                <Label>Período*</Label>
+                <Label>Período Atual*</Label>
                 <Input
                   type="number"
                   min="1"
@@ -128,16 +161,16 @@ export default function SignUp() {
               <div className="grid gap-3">
                 <Label>Telefone Secundário</Label>
                 <Input
-                  {...register('secondaryPhoneNumber')}
+                  {...register('secondaryPhone')}
                   placeholder="(99) 9999-9999"
                   pattern="(\([0-9]{2}\))\s([9]{1})([0-9]{4})-([0-9]{4})"
                 />
                 <p className="text-red-500 text-xs">
-                  {errors?.secondaryPhoneNumber?.message}
+                  {errors?.secondaryPhone?.message}
                 </p>
               </div>
               <div className="grid gap-3">
-                <Label>Período de Ingresso*</Label>
+                <Label>Ano letivo de Ingresso*</Label>
                 <Input
                   {...register('entrySemester')}
                   placeholder="Ex: 2021.1, 2022.2"

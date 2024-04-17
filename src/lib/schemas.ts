@@ -31,11 +31,11 @@ export const RegisterSchema = z
           'O ano do período de ingresso não pode ser posterior ao ano atual e deve estar no formato ANO.SEMESTRE_LETIVO (ex: 2020.1, 2020.2, 2024.1, 2024.2)',
       },
     ),
-    phoneNumber: z
+    phone: z
       .string()
       .min(10, 'Número de telefone inválido.')
       .max(15, 'Número de telefone inválido.'),
-    secondaryPhoneNumber: z
+    secondaryPhone: z
       .string()
       .min(10, 'Número de telefone inválido.')
       .max(15, 'Número de telefone inválido.')
@@ -45,14 +45,16 @@ export const RegisterSchema = z
       .string()
       .min(3, 'Preencha com seu nome completo.')
       .max(30, 'Limite de 30 caracteres atingido')
-      .regex(/^[a-zA-Z]+$/, 'O nome deve conter apenas letras A-Z a-z.'),
+      .regex(
+        /^[a-zA-Z\sáéíóúãáçÃÁÉÍÓÚ]+$/,
+        'O nome deve conter apenas letras A-Z a-z, espaços e acentos.',
+      ),
+
     course: z.enum(['Ciência da Computação', 'Engenharia de Computação']),
     registrationNumber: z.string().refine((value) => /^\d{8}$/.test(value), {
       message: 'Formato de matrícula inválido',
     }),
-    dateOfBirth: z
-      .string()
-      .min(1, { message: 'Insira sua data de nascimento.' }),
+    birthdate: z.string().min(1, { message: 'Insira sua data de nascimento.' }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
