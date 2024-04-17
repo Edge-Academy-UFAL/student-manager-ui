@@ -39,13 +39,10 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-enum NumberFilteringOption {
-    GreaterThan = "Maior que",
-    LessThan = "Menor que",
-    EqualTo = "Igual a",
-    GreaterOrEqualTo = "Maior ou igual a",
-    LessOrEqualTo = "Menor ou igual a"
-}
+import {
+    FilterOptionSelect,
+    NumberFilteringOption
+} from "@/components/custom-select"
 
 const formSchema = z.object({
     csCheckbox: z.boolean().default(false).optional(),
@@ -136,25 +133,7 @@ function FilterForm() {
                             name="admissionSemestreFilterOption"
                             render={({ field }) => (
                                 <FormItem className="basis-2/5">
-                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            {
-                                                Object.values(NumberFilteringOption)
-                                                    .map((value) => {
-                                                        return (
-                                                            <SelectItem key={value} value={value}>
-                                                                {value}
-                                                            </SelectItem>
-                                                        )
-                                                    })
-                                            }
-                                        </SelectContent>
-                                    </Select>
+                                    <FilterOptionSelect onChange={field.onChange} defaultValue={field.value}/>
                                 </FormItem>
                             )}
                         />

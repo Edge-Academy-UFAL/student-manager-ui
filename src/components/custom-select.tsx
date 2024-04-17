@@ -10,6 +10,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
+import { FormControl } from "./ui/form";
+
 function MonthSelect(props: { onChange: (value: string) => void, error: boolean, value: string }) {
 
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -65,4 +67,39 @@ function YearSelect(props: { startingYears: number, onChange: (value: string) =>
     )
 }
 
-export { MonthSelect, YearSelect }
+enum NumberFilteringOption {
+    GreaterThan = "Maior que",
+    LessThan = "Menor que",
+    EqualTo = "Igual a",
+    GreaterOrEqualTo = "Maior ou igual a",
+    LessOrEqualTo = "Menor ou igual a"
+}
+
+function FilterOptionSelect(props: {
+    onChange: (...event: any[]) => void,
+    defaultValue?: string
+}) {
+    return (
+        <Select onValueChange={props.onChange} defaultValue={props.defaultValue}>
+            <FormControl>
+                <SelectTrigger>
+                    <SelectValue />
+                </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+                {
+                    Object.values(NumberFilteringOption)
+                        .map((value) => {
+                            return (
+                                <SelectItem key={value} value={value}>
+                                    {value}
+                                </SelectItem>
+                            )
+                        })
+                }
+            </SelectContent>
+        </Select>
+    )
+}
+
+export { MonthSelect, YearSelect, FilterOptionSelect, NumberFilteringOption }
