@@ -2,15 +2,6 @@ import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -19,7 +10,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -31,13 +21,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import MultipleSelector, { Option } from "@/components/ui/multiple-selector"
 
 import {
     FilterOptionSelect,
@@ -64,10 +48,17 @@ const formSchema = z.object({
     }).max(10, {
         message: "Não faz sentido o IRA/CR ser maior que 10."
     }).optional().or(z.literal("")),
-    crFilterOption: z.nativeEnum(NumberFilteringOption)
+    crFilterOption: z.nativeEnum(NumberFilteringOption),
+    studentGroups: z.array(z.object({
+        label: z.string(),
+        value: z.string(),
+        disable: z.boolean().optional(),
+    })).optional()
 })
 
-function FilterForm() {
+function FilterForm(props: {
+    studentGroups: Array<number>
+}) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -78,7 +69,8 @@ function FilterForm() {
             currentSemester: "",
             currentSemesterFilterOption: NumberFilteringOption.GreaterThan,
             cr: "",
-            crFilterOption: NumberFilteringOption.GreaterThan
+            crFilterOption: NumberFilteringOption.GreaterThan,
+            studentGroups: []
         },
     })
 
@@ -88,20 +80,12 @@ function FilterForm() {
         console.log(values)
     }
 
-    function onTest() {
-        // for (let value in NumberFilteringOption) {
-            //     console.log(value);
-            // }
-        console.log(NumberFilteringOption)
-        console.log(NumberFilteringOption.GreaterThan)
-        const a = Object.values(NumberFilteringOption).map((value) => {
-            return value
-        })
-        console.log(a)
-
-    }
-
     const errors = form.formState.errors;
+
+    const studentGroupOptions: Option[] = props.studentGroups.map((item) => {
+        return { label: `Turma ${item}`, value: `turma ${item}` }
+    })
+
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col items-start gap-5">
@@ -222,23 +206,55 @@ function FilterForm() {
                     </div>
                     {errors.cr && <FormMessage>{errors.cr.message}</FormMessage>}
                 </div>
-                <div>
-                    <FormLabel>Turma</FormLabel>
+                <div className="w-full flex flex-col gap-1">
+                    <FormLabel>Turmas</FormLabel>
+                    <FormField
+                        control={form.control}
+                        name="studentGroups"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormControl>
+                                    <MultipleSelector
+                                        value={field.value}
+                                        onChange={field.onChange}
+                                        defaultOptions={studentGroupOptions}
+                                        placeholder="Selecione turmas..."
+                                        emptyIndicator={
+                                            <p className="text-center text-md leading-10 text-gray-600 dark:text-gray-400">
+                                                Essa turma não existe.
+                                            </p>
+                                        }
+                                        positionFixed={true}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                 </div>
-                <Button type="submit">Submit</Button>
+                <Button type="submit" className="ms-auto">Salvar</Button>
             </form>
         </Form >
     )
 }
 
 function TableFiltersDropdown() {
+
+    const studentGroups = [1, 2, 3, 4, 5];
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="outline">Filtros</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="py-4 px-7 w-[560px]">
-                <FilterForm></FilterForm>
+                <div className="flex flex-col space-y-1.5 text-center sm:text-left pb-6 pt-3">
+                    <h2 className="text-lg font-semibold leading-none tracking-tight">Filtros</h2>
+                    <p className="text-sm text-muted-foreground">
+                        Adicione filtros limitar a visualização de alunos na lista.
+                    </p>
+                </div>
+                <FilterForm studentGroups={studentGroups}></FilterForm>
             </DropdownMenuContent>
         </DropdownMenu>
     )
