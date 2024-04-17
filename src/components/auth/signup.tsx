@@ -92,13 +92,13 @@ export default function SignUp() {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen overflow-hidden py-10">
+    <div className="flex flex-col justify-center items-center min-h-screen overflow-hidden md:py-10">
       <ReturnButton />
       <form
         className="w-full m-auto lg:max-w-4xl"
         onSubmit={handleSubmit(submitHandler)}
       >
-        <Card>
+        <Card className="md:rounded-xl rounded-none">
           <CardHeader className="space-y-1">
             <CardTitle className="text-xl text-center">
               Cadastro de Aluno
@@ -136,7 +136,7 @@ export default function SignUp() {
                 </p>
               </div>
               <div className="grid gap-3">
-                <Label>Número de matricula*</Label>
+                <Label>Número de Matrícula*</Label>
                 <Input {...register('registrationNumber')} />
                 <p className="text-red-500 text-xs">
                   {errors?.registrationNumber?.message}
