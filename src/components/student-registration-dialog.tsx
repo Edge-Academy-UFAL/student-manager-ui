@@ -59,7 +59,11 @@ function validateEmails(emails: string): Array<{ email: string, isValid: boolean
     const emailValidation = []
     for (let email of emailArray) {
         let isValid = true
-        if (!email.includes('@edge.ufal.br')) {
+
+        // Counts how many times "@edge.ufal.br" appears in a email
+        // for the cases where the instructor forgots an comma
+        const emailAtCount = email.toLowerCase().split("@edge.ufal.br".toLowerCase()).length - 1;
+        if (emailAtCount != 1 || email.includes(" ") || email.includes("\n")) {
             isValid = false
         }
         const obj = { email: email, isValid: isValid }
