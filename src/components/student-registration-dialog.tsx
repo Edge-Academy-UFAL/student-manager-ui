@@ -84,7 +84,8 @@ function InputDialogContent(props: {
     formData: fromData,
     error: boolean,
     handleFormDataChange: (field: string, value: any) => void,
-    handleSubmit: () => void
+    handleSubmit: () => void,
+    handleFinalize: () => void
 }) {
 
     let labelColor = props.error ? 'text-red-500' : '';
@@ -145,9 +146,7 @@ function InputDialogContent(props: {
                 </div>
             </div>
             <DialogFooter>
-                <DialogClose asChild>
-                    <Button type="button" variant="secondary">Cancelar</Button>
-                </DialogClose>
+                <Button type="button" variant='secondary' onClick={props.handleFinalize}>Cancelar</Button>
                 <Button type="submit" onClick={props.handleSubmit}
                     disabled={props.error}
                     variant={`${props.error ? 'destructive' : 'default'}`}>Submeter</Button>
@@ -221,9 +220,7 @@ function BackendResponseDialogContent(props: {
                     </DialogDescription>
                 </DialogHeader >
                 <DialogFooter>
-                    <DialogClose asChild>
-                        <Button type="button" variant='secondary'>Cancelar</Button>
-                    </DialogClose>
+                    <Button type="button" variant='secondary' onClick={props.handleFinalize}>Cancelar</Button>
                     <Button type="button" variant='default' onClick={props.handleTryAgain}>Voltar ao início</Button>
                 </DialogFooter>
             </>
@@ -249,9 +246,7 @@ function BackendResponseDialogContent(props: {
                     </ScrollArea>
                 </div>
                 <DialogFooter>
-                    <DialogClose asChild>
-                        <Button type="button" variant='secondary'>Cancelar</Button>
-                    </DialogClose>
+                    <Button type="button" variant='secondary' onClick={props.handleFinalize}>Cancelar</Button>
                     <Button type="button" variant='default' onClick={() => props.handleTryAgainWithInvalidEmails(props.invalidEmails)}>Voltar ao início</Button>
                 </DialogFooter>
             </>
@@ -290,7 +285,7 @@ function LoadingDialogContent(props: {
             </DialogHeader >
             <div className="flex flex-col items-center justify-center w-full h-[160px]">
                 <LoadingSpinner size={50}></LoadingSpinner>
-                <p className="text-slate-300">Carregando...</p>
+                <p>Carregando...</p>
             </div>
         </>
 
@@ -438,19 +433,19 @@ export function StudentRegistrationDialog() {
     function handleFinalize(): void {
         setShowDialog(false)
 
-        setFormData({
-            studentGroup: '',
-            admissionMonth: '',
-            admissionYear: '',
-            emails: ''
-        })
         setValidatedEmails([])
         setError(false)
         
         // This is necessary to wait the dialog to close
-        // before the page is changed. Otherwise, the input page
-        // flikers right before the dialog closes.
+        // before the dialog is changed. Otherwise, the user
+        // sees the dialog change after it clicks to close.
         setTimeout(() => {
+            setFormData({
+                studentGroup: '',
+                admissionMonth: '',
+                admissionYear: '',
+                emails: ''
+            })
             setDialogState(DialogPage.Input)
         }, 100)
     }
@@ -471,6 +466,7 @@ export function StudentRegistrationDialog() {
                         error={error}
                         handleFormDataChange={handleFormDataChange}
                         handleSubmit={handleSubmit}
+                        handleFinalize={handleFinalize}
                     />
                 }
                 {
