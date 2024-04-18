@@ -175,11 +175,9 @@ function EmailConfirmationDialogContent(props: {
                 <Label htmlFor="student-emails">E-mails</Label>
                 <ScrollArea className="h-24 w-full rounded-md ">
                     {props.validatedEmails.map((email, index) => (
-                        email.isValid
-                            ?
-                            <Badge className="w-full">{email.email}</Badge>
-                            :
-                            <Badge className="w-full" variant="destructive">{email.email}</Badge>
+                        <Badge key={index} className="w-full" variant={email.isValid ? "outline" : "destructive"}>
+                            {email.email}
+                        </Badge>
                     ))}
                 </ScrollArea>
             </div>
