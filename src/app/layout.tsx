@@ -4,7 +4,7 @@ import { Providers } from './providers'
 
 import { Toaster } from '@/components/ui/toaster'
 import './globals.css'
-import { ProtectRoute } from '../components/auth/ProtectAuth'
+// import { ProtectRoute } from '../components/auth/ProtectAuth'
 
 export const metadata: Metadata = {
   title: 'Create Next App',

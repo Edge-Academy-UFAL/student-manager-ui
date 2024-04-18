@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { MoveRight, MoveLeft } from 'lucide-react'
 
 const ReturnButton = ({

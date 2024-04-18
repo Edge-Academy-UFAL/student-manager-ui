@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     }
     loadUserFromCookies()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const login = async (email: string, password: string) => {
