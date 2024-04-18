@@ -25,7 +25,13 @@ import {
 } from '@/components/ui/popover'
 
 import { format } from 'date-fns'
-import { CalendarIcon, Eye, EyeOff, MessageCircleQuestion } from 'lucide-react'
+import {
+  CalendarIcon,
+  Eye,
+  EyeOff,
+  MessageCircleQuestion,
+  Trash2,
+} from 'lucide-react'
 import { Calendar } from '@/components/ui/calendar'
 
 import {
@@ -37,6 +43,8 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 
+import sample from '@/assets/image2.jpg'
+
 import { Input } from '@/components/ui/input'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -46,6 +54,9 @@ import { useForm } from 'react-hook-form'
 import { RegisterSchema } from '@/lib/schemas'
 
 import { Button } from '../ui/button'
+import Image from 'next/image'
+import ImageUpload from './upload-photo'
+import { useImage } from '@/contexts/image-upload'
 
 const SignUpForm = () => {
   const form = useForm<RegisterSchema>({
@@ -53,12 +64,12 @@ const SignUpForm = () => {
   })
 
   const { toast } = useToast()
+  const { imageUrl, setImageUrl } = useImage()
 
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const submitHandler = (data: RegisterSchema) => {
-    console.log(data)
     // remover caracteres não numéricos dos telefones
     const phone = data.phone.replace(/\D/g, '')
     const secondaryPhone = data.secondaryPhone?.replace(/\D/g, '')
@@ -96,13 +107,12 @@ const SignUpForm = () => {
         </pre>
       ),
     })
-
     // enviar os dados para a API
   }
   return (
     <Form {...form}>
       <form
-        className="w-[60vw] space-y-7"
+        className="w-full md:w-[60vw] space-y-7"
         onSubmit={form.handleSubmit(submitHandler)}
       >
         <div className="md:grid md:grid-cols-2 gap-5">
@@ -127,14 +137,14 @@ const SignUpForm = () => {
               name="course"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Curso*</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select o seu curso" />
+                        <SelectValue placeholder="Selecione o seu curso" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
@@ -287,7 +297,7 @@ const SignUpForm = () => {
                     </TooltipProvider>
                   </FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} placeholder="Ex: 2021.1, 2023.2" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -362,6 +372,35 @@ const SignUpForm = () => {
               />
             </div>
           </div>{' '}
+        </div>
+
+        {/* <Upload de Foto de Perfil /> */}
+        <div className=" px-0 flex items-stretch justify-normal gap-x-6">
+          <Image
+            width={1000}
+            height={1000}
+            className=" shadow-sm w-24 h-24 border rounded-md object-cover"
+            src={imageUrl || sample}
+            alt="sample pfp"
+          />
+          <div className=" space-y-2">
+            <h1 className=" font-semibold">Foto de Perfil</h1>
+            <div className=" text-gray-500 text-xs">
+              Insira sua foto de perfil em formato PNG ou JPEG, com tamanho
+              máximo de 15MB.
+            </div>
+            <div className=" flex items-center justify-normal gap-x-2">
+              <ImageUpload />
+              <Button
+                size={'icon'}
+                variant={'outline'}
+                type="button"
+                onClick={() => setImageUrl(null)}
+              >
+                <Trash2 size={15} />
+              </Button>
+            </div>
+          </div>
         </div>
         <Button className="w-full ">Cadastrar</Button>
       </form>
