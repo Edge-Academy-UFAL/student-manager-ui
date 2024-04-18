@@ -13,7 +13,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { LoginForm } from '@/app/(auth)/login/login-form'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/app/contexts/auth'
+import { useAuth } from '@/contexts/auth'
 
 export default function LoginAccount() {
   const { toast } = useToast()

@@ -1,5 +1,5 @@
 'use client'
-import { useAuth } from '@/app/contexts/auth'
+import { useAuth } from '@/contexts/auth'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
