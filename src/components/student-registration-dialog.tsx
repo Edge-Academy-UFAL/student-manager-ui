@@ -26,12 +26,19 @@ import { PlusIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { useState, useEffect } from "react"
 import { MonthSelect, YearSelect } from "@/components/custom-select"
 import { LoadingSpinner } from "./loading-spinner"
+import { useAuth } from '@/app/contexts/auth'
+import { getCookie } from 'cookies-next'
 
 interface fromData {
     studentGroup: string,
     admissionMonth: string,
     admissionYear: string,
     emails: string
+}
+
+interface BackendResponse {
+    failedEmails: Array<string>,
+    successfulEmails: Array<string>
 }
 
 enum DialogPage {
@@ -152,7 +159,7 @@ function InputDialogContent(props: {
 function EmailConfirmationDialogContent(props: {
     validatedEmails: Array<{ email: string, isValid: Boolean }>,
     handleConfirm: () => void,
-    handleGoBack: () => void
+    handleTryAgain: () => void
 }) {
     const invalidEmailCount = props.validatedEmails.filter(email => !email.isValid).length;
     return (
@@ -178,7 +185,7 @@ function EmailConfirmationDialogContent(props: {
                 </ScrollArea>
             </div>
             <DialogFooter>
-                <Button variant="secondary" type="submit" onClick={props.handleGoBack}>Voltar</Button>
+                <Button variant="secondary" type="submit" onClick={props.handleTryAgain}>Voltar</Button>
                 <Button type="submit" disabled={invalidEmailCount > 0 ? true : false}
                     onClick={props.handleConfirm}>Confirmar</Button>
             </DialogFooter>
@@ -189,7 +196,8 @@ function EmailConfirmationDialogContent(props: {
 
 function BackendResponseDialogContent(props: {
     handleFinalize: () => void,
-    handleGoBack: () => void,
+    handleTryAgain: () => void,
+    handleTryAgainWithInvalidEmails: (invalidEmails: Array<string> | undefined) => void,
     typeOfResponse: BackendResponseType,
     responseCode: string,
     invalidEmails?: Array<string>
@@ -203,14 +211,20 @@ function BackendResponseDialogContent(props: {
                         <DialogTitle>Problemas no envio!</DialogTitle>
                     </div>
                     <DialogDescription>
-                        Atenção! Não foi possível completar a operação. Tente novamente mais tarde.
+                        Atenção! Não foi possível completar a operação. Tente novamente.
+                        <h2 className="text-sm text-muted-foreground py-4">
+                            Código de erro: 
+                            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
+                                 {props.responseCode}
+                            </code>
+                        </h2>
                     </DialogDescription>
                 </DialogHeader >
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button type="button" variant='secondary'>Cancelar</Button>
                     </DialogClose>
-                    <Button type="button" variant='default' onClick={props.handleGoBack}>Voltar</Button>
+                    <Button type="button" variant='default' onClick={props.handleTryAgain}>Voltar ao início</Button>
                 </DialogFooter>
             </>
         )
@@ -226,16 +240,19 @@ function BackendResponseDialogContent(props: {
                         Atenção! Não foi possível enviar um ou mais convites. Os e-mails que falharam estão listados abaixo.
                     </DialogDescription>
                 </DialogHeader >
-                <div className="grid gap-4 py-4">
-                    vários emails aqui
-                    um
-                    dois
+                <div className="grid gap-4 pb-1 pt-4">
+                    <Label htmlFor="student-emails">E-mails inválidos</Label>
+                    <ScrollArea className="h-36 w-full rounded-md">
+                        {props.invalidEmails?.map((email, index) => (
+                            <Badge className="w-full" key={index} variant="destructive">{email}</Badge>
+                        ))}
+                    </ScrollArea>
                 </div>
                 <DialogFooter>
                     <DialogClose asChild>
                         <Button type="button" variant='secondary'>Cancelar</Button>
                     </DialogClose>
-                    <Button type="button" variant='default' onClick={props.handleGoBack}>Voltar</Button>
+                    <Button type="button" variant='default' onClick={() => props.handleTryAgainWithInvalidEmails(props.invalidEmails)}>Voltar ao início</Button>
                 </DialogFooter>
             </>
         )
@@ -252,7 +269,7 @@ function BackendResponseDialogContent(props: {
             </DialogHeader >
             <DialogFooter>
                 <DialogClose asChild>
-                    <Button type="button" variant='default' onClick={props.handleFinalize}>Ok</Button>
+                    <Button type="button" variant='default' onClick={props.handleFinalize}>Finalizar</Button>
                 </DialogClose>
             </DialogFooter>
         </>)
@@ -295,7 +312,7 @@ export function StudentRegistrationDialog() {
     const [dialogState, _setDialogState] = useState<{ page: DialogPage, data: Record<string, unknown> }>({
         page: DialogPage.Input,
         data: {}
-    })
+    })    
 
     function setDialogState(page: DialogPage, data?: Record<string, unknown>) {
         if (data) {
@@ -308,10 +325,10 @@ export function StudentRegistrationDialog() {
 
     function handleDialogOpen(): void {
         // This is necessary to always open the dialog on the input page.
-        setDialogState(DialogPage.Input)
+        // setDialogState(DialogPage.Input)
         setShowDialog(true)
         setError(false)
-        setValidatedEmails([])
+        // setValidatedEmails([])
     }
 
     function onShowDialogChange(): void {
@@ -338,52 +355,84 @@ export function StudentRegistrationDialog() {
         setDialogState(DialogPage.EmailConfirmation)
     }
 
-    function handleGoBack(): void {
-        setDialogState(DialogPage.Input);
+    function handleTryAgain() {
         setError(false)
+        setValidatedEmails([])
+        setDialogState(DialogPage.Input);
+    }
+
+    function handleTryAgainWithInvalidEmails(invalidEmails: Array<string> | undefined) {
+        if (!invalidEmails) {
+            invalidEmails = []
+        }
+        setError(false)
+        handleFormDataChange("emails", invalidEmails.join(", "))
+        setValidatedEmails([])
+        setDialogState(DialogPage.Input);
     }
 
     async function handleConfirm() {
-        console.log("Sending emails...")
+        // console.log("Sending emails...")
 
         setDialogState(DialogPage.Loading,
             {
                 title: "Enviando convites.",
-                message: "Os convites estão sendo enviados para os alunos. Por favor, aguard."
+                message: "Os convites estão sendo enviados para os alunos. Por favor, aguarde."
             })
-
-        // set loading state
-        await sleep(5000);
-
-        // get session credentials
 
         // prepare data
         const emailStrings: Array<string> = validatedEmails.map(email => email.email);
 
-        // fetch
-        // const res = await fetch(
-        //     `${process.env.backendRoute}/api/v1/register`,
-        //     {
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             // 'Authorization': `Bearer session-token`
-        //         },
-        //         body: JSON.stringify(emailStrings),
-        //         method: 'POST'
-        //     }
-        // )
+        const res = await fetch(
+            `${process.env.backendRoute}/api/v1/register`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getCookie("token")}`
+                },
+                body: JSON.stringify({ emails: emailStrings }),
+                method: 'POST'
+            }
+        )
 
-        // Validate response
-        // if (!res.ok) {
-        //     // Set loading state to false
-        //     // Handle error display
-        //     console.log("Erro")
-        //     return null;
+        // console.log(res.json())
+        // console.log(res.body)
+        // console.log(res.status)
+        // const res = {
+        //     ok: false,
+        //     status: "400"
         // }
 
+        // Validate response
+        if (!res.ok) {
+            const data: BackendResponse = await res.json() as BackendResponse
+            // const data : { failedEmails : Array<string>} = {
+            //     failedEmails: []
+            // }
+            // // data.failedEmails.push("brother@edge.ufal.br")
+            // // data.failedEmails.push("rodrigo.pães@edge.ufal.br")
+
+            // Depending on the type of error, a different error dialog is shown
+            if (data.failedEmails.length == 0) {
+                setDialogState(DialogPage.BackendResponse, {
+                    typeOfResponse: BackendResponseType.AnotherError,
+                    responseCode: res.status,
+                    invalidEmails: [],
+                })
+            } else {
+                setDialogState(DialogPage.BackendResponse, {
+                    typeOfResponse: BackendResponseType.InvitationSendingError,
+                    responseCode: res.status,
+                    invalidEmails: data.failedEmails,
+                })
+            }
+            return null;
+        }
+
+        // Successful dialog is shown
         setDialogState(DialogPage.BackendResponse, {
             typeOfResponse: BackendResponseType.Success,
-            responseCode: "201",
+            responseCode: res.status,
             invalidEmails: [],
         })
     }
@@ -422,14 +471,15 @@ export function StudentRegistrationDialog() {
                     <EmailConfirmationDialogContent
                         validatedEmails={validatedEmails}
                         handleConfirm={handleConfirm}
-                        handleGoBack={handleGoBack}
+                        handleTryAgain={handleTryAgain}
                     />
                 }
                 {
                     dialogState.page === DialogPage.BackendResponse &&
                     <BackendResponseDialogContent
                         handleFinalize={handleFinalize}
-                        handleGoBack={handleGoBack}
+                        handleTryAgain={handleTryAgain}
+                        handleTryAgainWithInvalidEmails={handleTryAgainWithInvalidEmails}
                         {...dialogState.data as
                         {
                             typeOfResponse: BackendResponseType,
