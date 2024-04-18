@@ -42,6 +42,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import { DeleteStudent } from './delete-student'
+
 export type Student = {
   id: string
   email: string
@@ -146,6 +148,9 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 Visualizar Perfil
               </DropdownMenuItem>
               <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
+              <DropdownMenuItem onClick={(e) => e.preventDefault()}>
+                <DeleteStudent nome = {payment.nome}/>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )
