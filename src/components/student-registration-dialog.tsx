@@ -268,9 +268,7 @@ function BackendResponseDialogContent(props: {
                 </DialogDescription>
             </DialogHeader >
             <DialogFooter>
-                <DialogClose asChild>
-                    <Button type="button" variant='default' onClick={props.handleFinalize}>Finalizar</Button>
-                </DialogClose>
+                <Button type="button" variant='default' onClick={props.handleFinalize}>Finalizar</Button>
             </DialogFooter>
         </>)
     }
@@ -399,7 +397,7 @@ export function StudentRegistrationDialog() {
         // console.log(res.body)
         // console.log(res.status)
         // const res = {
-        //     ok: false,
+        //     ok: true,
         //     status: "400"
         // }
 
@@ -438,6 +436,8 @@ export function StudentRegistrationDialog() {
     }
 
     function handleFinalize(): void {
+        setShowDialog(false)
+
         setFormData({
             studentGroup: '',
             admissionMonth: '',
@@ -446,6 +446,13 @@ export function StudentRegistrationDialog() {
         })
         setValidatedEmails([])
         setError(false)
+        
+        // This is necessary to wait the dialog to close
+        // before the page is changed. Otherwise, the input page
+        // flikers right before the dialog closes.
+        setTimeout(() => {
+            setDialogState(DialogPage.Input)
+        }, 100)
     }
 
     return (
