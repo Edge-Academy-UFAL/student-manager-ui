@@ -9,7 +9,6 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogClose
 } from "@/components/ui/dialog"
 import {
     TooltipProvider,
@@ -23,10 +22,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { PlusIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { MonthSelect, YearSelect } from "@/components/custom-select"
 import { LoadingSpinner } from "./loading-spinner"
-import { useAuth } from '@/app/contexts/auth'
 import { getCookie } from 'cookies-next'
 
 interface fromData {
@@ -78,10 +76,6 @@ function formDataIsValid(formData: fromData): boolean {
         return false
     }
     return true
-}
-
-function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function InputDialogContent(props: {
@@ -319,11 +313,9 @@ export function StudentRegistrationDialog() {
     }
 
     function handleDialogOpen(): void {
-        // This is necessary to always open the dialog on the input page.
-        // setDialogState(DialogPage.Input)
+        // This is necessary to remove error indicators when re-opening the dialog.
         setShowDialog(true)
         setError(false)
-        // setValidatedEmails([])
     }
 
     function onShowDialogChange(): void {
@@ -367,8 +359,7 @@ export function StudentRegistrationDialog() {
     }
 
     async function handleConfirm() {
-        // console.log("Sending emails...")
-
+        // Set loading state
         setDialogState(DialogPage.Loading,
             {
                 title: "Enviando convites.",
@@ -389,23 +380,9 @@ export function StudentRegistrationDialog() {
                 method: 'POST'
             }
         )
-
-        // console.log(res.json())
-        // console.log(res.body)
-        // console.log(res.status)
-        // const res = {
-        //     ok: true,
-        //     status: "400"
-        // }
-
         // Validate response
         if (!res.ok) {
             const data: BackendResponse = await res.json() as BackendResponse
-            // const data : { failedEmails : Array<string>} = {
-            //     failedEmails: []
-            // }
-            // // data.failedEmails.push("brother@edge.ufal.br")
-            // // data.failedEmails.push("rodrigo.pães@edge.ufal.br")
 
             // Depending on the type of error, a different error dialog is shown
             if (data.failedEmails.length == 0) {
