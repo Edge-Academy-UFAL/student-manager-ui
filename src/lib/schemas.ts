@@ -16,7 +16,7 @@ export const RegisterSchema = z
       ),
     confirmPassword: z.string(),
 
-    semester: z
+    semester: z.coerce
       .number()
       .min(1, 'Semestre Inválido.')
       .max(8, 'Semestre Inválido.'),
@@ -54,7 +54,7 @@ export const RegisterSchema = z
     registrationNumber: z.string().refine((value) => /^\d{8}$/.test(value), {
       message: 'Formato de matrícula inválido',
     }),
-    birthdate: z.string().min(1, { message: 'Insira sua data de nascimento.' }),
+    birthdate: z.date(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
