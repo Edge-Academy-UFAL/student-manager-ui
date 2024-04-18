@@ -43,14 +43,14 @@ export default function LoginAccount() {
               Entre com seu e-mail e senha para acessar
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="py-3">
             <LoginForm />
           </CardContent>
           <CardFooter className="flex flex-col">
             <Button
               variant="link"
               onClick={handleForgotPassword}
-              className="text-xs text-center"
+              className="text-sm text-center"
             >
               Esqueceu sua senha?
             </Button>

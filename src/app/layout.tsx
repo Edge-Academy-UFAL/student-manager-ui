@@ -20,9 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={GeistMono.className}>
         <Providers>
-          <ProtectRoute>
-            <main>{children}</main>
-          </ProtectRoute>
+          {/* <ProtectRoute> */}
+          <main>{children}</main>
+          {/* </ProtectRoute> */}
         </Providers>
         <Toaster />
       </body>
