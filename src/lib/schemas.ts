@@ -1,11 +1,6 @@
 import { z } from 'zod'
-const MAX_FILE_SIZE = 2000000 // 2MB
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
-]
+const MAX_FILE_SIZE = 1024 * 1024 * 5
+const ACCEPTED_IMAGE_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
 
 export const RegisterSchema = z
   .object({
@@ -58,13 +53,18 @@ export const RegisterSchema = z
       ),
     image: z
       .any()
-      .refine((files) => files?.length >= 1, { message: 'Photo is required.' })
-      .refine((files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type), {
-        message: '.jpg, .jpeg, .png and .webp files are accepted.',
-      })
-      .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, {
-        message: `Max file size is 2MB.`,
-      }),
+      .refine((files) => files, { message: 'Campo Obrigatório.' })
+      .refine(
+        (files) => {
+          return files?.[0]?.size <= MAX_FILE_SIZE
+        },
+        `Tamanho máximo de arquivo excedido. O arquivo deve ter no máximo 5MB
+      .`,
+      )
+      .refine(
+        (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
+        'Apenas formatos .jpg, .jpeg, .png são permitidos.',
+      ),
     course: z.enum(['Ciência da Computação', 'Engenharia de Computação']),
     registrationNumber: z.string().refine((value) => /^\d{8}$/.test(value), {
       message: 'Formato de matrícula inválido',
@@ -77,3 +77,10 @@ export const RegisterSchema = z
   })
 
 export type RegisterSchema = z.infer<typeof RegisterSchema>
+
+export const LoginFormSchema = z.object({
+  email: z.string().email('Adicione um email válido'),
+  password: z.string().max(20, 'A senha deve ter no máximo 20 caracteres'),
+})
+
+export type LoginFormSchema = z.infer<typeof LoginFormSchema>
