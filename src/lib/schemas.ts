@@ -1,4 +1,11 @@
 import { z } from 'zod'
+const MAX_FILE_SIZE = 2000000 // 2MB
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+]
 
 export const RegisterSchema = z
   .object({
@@ -17,7 +24,7 @@ export const RegisterSchema = z
     confirmPassword: z.string(),
 
     semester: z.coerce
-      .number()
+      .string()
       .min(1, 'Semestre Inválido.')
       .max(8, 'Semestre Inválido.'),
     entrySemester: z.string().refine(
@@ -49,7 +56,15 @@ export const RegisterSchema = z
         /^[a-zA-Z\sáéíóúãáçÃÁÉÍÓÚ]+$/,
         'O nome deve conter apenas letras A-Z a-z, espaços e acentos.',
       ),
-
+    image: z
+      .any()
+      .refine((files) => files?.length >= 1, { message: 'Photo is required.' })
+      .refine((files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type), {
+        message: '.jpg, .jpeg, .png and .webp files are accepted.',
+      })
+      .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, {
+        message: `Max file size is 2MB.`,
+      }),
     course: z.enum(['Ciência da Computação', 'Engenharia de Computação']),
     registrationNumber: z.string().refine((value) => /^\d{8}$/.test(value), {
       message: 'Formato de matrícula inválido',
