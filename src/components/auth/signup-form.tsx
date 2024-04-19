@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 
-import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Button } from '../ui/button'
 
@@ -39,25 +38,21 @@ import {
   CalendarIcon,
   Eye,
   EyeOff,
+  ImageIcon,
   MessageCircleQuestion,
-  Trash2,
+  Upload,
 } from 'lucide-react'
 
 import { Calendar } from '@/components/ui/calendar'
 import { format } from 'date-fns'
+import { cn } from '@/lib/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useToast } from '../ui/use-toast'
 import { useForm } from 'react-hook-form'
 
 import { RegisterSchema } from '@/lib/schemas'
-
-import ImageUpload from './upload-photo'
-
-import { useImage } from '@/contexts/image-upload'
-import sample from '@/assets/naruto.jpg'
-
-import { cn, formatDate } from '@/lib/utils'
+import { formatSignUpData } from '@/lib/functions/formatSignUpData'
 
 const SignUpForm = () => {
   const form = useForm<RegisterSchema>({
@@ -65,38 +60,14 @@ const SignUpForm = () => {
   })
 
   const { toast } = useToast()
-  const { imageUrl, setImageUrl, imageFile } = useImage()
 
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+
   const submitHandler = async (data: RegisterSchema) => {
-    // remover caracteres não numéricos dos telefones
-    const phone = data.phone.replace(/\D/g, '')
-    const secondaryPhone = data.secondaryPhone?.replace(/\D/g, '') ?? ''
-
-    // converter data de nascimento para o formato dd-mm-yyyy
-    const birthdate = formatDate(data.birthdate)
-
-    // converter curso para COMPUTER_SCIENCE ou COMPUTER_ENGINEERING
-    const course =
-      data.course === 'Ciência da Computação'
-        ? 'COMPUTER_SCIENCE'
-        : 'COMPUTER_ENGINEERING'
-
-    const dataToSend = {
-      name: data.name,
-      birthdate,
-      password: data.password,
-      course,
-      registration: data.registrationNumber,
-      phone,
-      secondaryPhone,
-      period: data.semester,
-      entryPeriod: data.entrySemester,
-      photo: null,
-      activationCode: null,
-    }
+    const dataToSend = formatSignUpData(data)
 
     toast({
       title: 'Você enviou os seguintes valores:',
@@ -111,19 +82,17 @@ const SignUpForm = () => {
 
     // enviar os dados para a API
 
-    const profilePic = imageFile || null
-
     const formData = new FormData()
-    formData.append('name', data.name)
-    formData.append('birthdate', birthdate)
-    formData.append('course', course)
-    formData.append('photo', profilePic) // Adiciona o arquivo de imagem ao FormData
-    formData.append('registration', data.registrationNumber)
-    formData.append('phone', phone)
-    formData.append('secondaryPhone', secondaryPhone)
-    formData.append('period', data.semester.toString())
-    formData.append('entryPeriod', data.entrySemester)
-    formData.append('password', data.password)
+    formData.append('name', dataToSend.name)
+    formData.append('birthdate', dataToSend.birthdate)
+    formData.append('course', dataToSend.course)
+    formData.append('photo', data.image) // Adiciona o arquivo de imagem ao FormData
+    formData.append('registration', dataToSend.registration)
+    formData.append('phone', dataToSend.phone)
+    formData.append('secondaryPhone', dataToSend.secondaryPhone)
+    formData.append('period', dataToSend.period.toString())
+    formData.append('entryPeriod', dataToSend.entryPeriod)
+    formData.append('password', dataToSend.password)
 
     // try {
     //   const response = await fetch('URL_DO_SERVIDOR', {
@@ -434,18 +403,25 @@ const SignUpForm = () => {
         {/* <Upload de Foto de Perfil /> */}
 
         <div className=" px-0 flex items-stretch justify-normal gap-x-6">
-          <Image
-            width={1000}
-            height={1000}
-            className=" shadow-sm w-24 h-24 border rounded-md object-cover"
-            src={imageUrl || sample}
-            alt="sample pfp"
-          />
+          {selectedImage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={URL.createObjectURL(selectedImage)}
+              alt="Selected"
+              className="rounded-xl w-[100px] h-[100px] shadow-sm object-cover"
+            />
+          ) : (
+            <div className="inline-flex items-center justify-between h-[100px] w-[100px]">
+              <div className="p-6 border justify-center items-center flex rounded-xl">
+                <ImageIcon size={56} />
+              </div>
+            </div>
+          )}
           <div className="space-y-2">
             <h1 className="font-semibold">Foto de Perfil</h1>
             <div className="text-gray-500 text-xs">
               Insira sua foto de perfil em formato PNG ou JPEG, com tamanho
-              máximo de 15MB.
+              máximo de 5MB.
             </div>
             <div className="flex items-center justify-normal gap-x-2">
               <FormField
@@ -454,21 +430,34 @@ const SignUpForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <ImageUpload {...field} />
+                      <Button size="lg" type="button">
+                        <input
+                          type="file"
+                          className="hidden"
+                          id="fileInput"
+                          onBlur={field.onBlur}
+                          name={field.name}
+                          onChange={(e) => {
+                            field.onChange(e.target.files)
+                            setSelectedImage(e.target.files?.[0] || null)
+                          }}
+                          ref={field.ref}
+                        />
+                        <label
+                          htmlFor="fileInput"
+                          className="text-neutral-90  rounded-md cursor-pointer inline-flex items-center"
+                        >
+                          <Upload className="mr-2" />
+                          <span className="whitespace-nowrap">
+                            Fazer Upload
+                          </span>
+                        </label>
+                      </Button>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-
-              <Button
-                size={'icon'}
-                variant={'outline'}
-                type="button"
-                onClick={() => setImageUrl(null)}
-              >
-                <Trash2 size={15} />
-              </Button>
             </div>
           </div>
         </div>

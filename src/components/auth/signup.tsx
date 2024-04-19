@@ -8,14 +8,9 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 
-import ReturnButton from './return-button'
-
-import { useRouter } from 'next/navigation'
 import SignUpForm from './signup-form'
 
 export default function SignUp() {
-  const { push } = useRouter()
-
   return (
     <div className="flex flex-col justify-center items-center md:py-10">
       <Card className="md:rounded-xl rounded-none relative">
