@@ -167,7 +167,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               </DropdownMenuItem>
               <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
               <DropdownMenuItem onClick={(e) => e.preventDefault()}>
-                <DeleteStudent nome = {payment.nome}/>
+                <DeleteStudent nome = {payment.nome} email = {payment.email}/>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

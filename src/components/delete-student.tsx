@@ -1,3 +1,4 @@
+import { useAuth } from "@/app/contexts/auth"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,8 +11,38 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { useToast } from "./ui/use-toast"
 
-export function DeleteStudent(props: { nome: string }) {
+export function DeleteStudent(props: { nome: string, email: string }) {
+
+  const { token } = useAuth()
+  const { toast } = useToast()
+
+  async function handleDelete() {
+    const res = await fetch('http://localhost:8080/api/v1/students/' + props.email, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+    )
+
+    if(res.ok){
+      toast({
+        title: 'Aluno removido com sucesso',
+        description: 'O aluno foi removido com sucesso',
+      })
+    }
+    else{
+      toast({
+        variant: 'destructive',
+        title: 'Não foi possível remover o aluno',
+        description: 'Tente novamente mais tarde',
+      })
+    }
+  }
+
   return (
     <AlertDialog>
       <AlertDialogTrigger className = 'w-full h-full' asChild>
@@ -19,7 +50,7 @@ export function DeleteStudent(props: { nome: string }) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Você tem certeza disso?</AlertDialogTitle>
+          <AlertDialogTitle>Deseja remover o aluno {props.nome}?</AlertDialogTitle>
           <AlertDialogDescription>
             Ao confirmar você estará desligando o aluno {props.nome}. Esta ação não pode ser desfeita. 
             Isto irá deletar permanentemente sua conta e remover seus dados de nossos servidores.
@@ -27,7 +58,9 @@ export function DeleteStudent(props: { nome: string }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction>Continuar</AlertDialogAction>
+          <AlertDialogAction onClick={() => handleDelete()}>
+            Continuar
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
