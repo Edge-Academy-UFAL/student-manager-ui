@@ -39,7 +39,8 @@ export function LoginForm() {
     }
   })
 
-  async function onSubmit(data: LoginFormValue) {
+  async function onSubmit(data: LoginFormValue, e?: Event) {
+    e?.preventDefault()
     const res = await login(data.email, data.password)
 
     if (res === 200) {
@@ -71,7 +72,10 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={form.handleSubmit((data, e: unknown) => onSubmit(data, e))}
+        className="space-y-8"
+      >
         <FormField
           control={form.control}
           name="email"
