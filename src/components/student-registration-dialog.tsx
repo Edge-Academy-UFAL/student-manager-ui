@@ -168,7 +168,7 @@ function InputDialogContent(props: {
           </Label>
           <Textarea
             className={`h-[160px] ${inputColor}`}
-            placeholder="Type the student e-mails here, separated by commas."
+            placeholder="Digite os e-mails aqui. Lembre-se de separá-los por vírgulas."
             id="student-emails"
             value={props.formData.emails}
             onChange={(event) =>
