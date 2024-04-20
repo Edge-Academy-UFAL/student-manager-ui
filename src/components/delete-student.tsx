@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { useToast } from "./ui/use-toast"
 
-export function DeleteStudent(props: { nome: string, email: string }) {
+export function DeleteStudent(props: { name: string, email: string }) {
 
   const { token } = useAuth()
   const { toast } = useToast()
@@ -50,9 +50,9 @@ export function DeleteStudent(props: { nome: string, email: string }) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Deseja remover o aluno {props.nome}?</AlertDialogTitle>
+          <AlertDialogTitle>Deseja remover o aluno {props.name}?</AlertDialogTitle>
           <AlertDialogDescription>
-            Ao confirmar você estará desligando o aluno {props.nome}. Esta ação não pode ser desfeita. 
+            Ao confirmar você estará desligando o aluno {props.name}. Esta ação não pode ser desfeita. 
             Isto irá deletar permanentemente sua conta e remover seus dados de nossos servidores.
           </AlertDialogDescription>
         </AlertDialogHeader>

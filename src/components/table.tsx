@@ -49,8 +49,8 @@ import { DeleteStudent } from './delete-student'
 export type Student = {
   id: string
   email: string
-  nome: string
-  turma: string
+  name: string
+  studentGroup: string
   foto: string
 }
 
@@ -94,7 +94,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       ),
     },
     {
-      accessorKey: 'nome',
+      accessorKey: 'name',
       header: ({ column }) => {
         return (
           <Button
@@ -106,7 +106,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
           </Button>
         )
       },
-      cell: ({ row }) => <div>{row.getValue('nome')}</div>,
+      cell: ({ row }) => <div>{row.getValue('name')}</div>,
     },
 
     {
@@ -127,7 +127,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       ),
     },
     {
-      accessorKey: 'turma',
+      accessorKey: 'studentGroup',
       header: ({ column }) => {
         return (
           <Button
@@ -140,7 +140,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         )
       },
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('turma')}</div>
+        <div className="capitalize">{row.getValue('studentGroup')}</div>
       ),
     },
     {
@@ -167,7 +167,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               </DropdownMenuItem>
               <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
               <DropdownMenuItem onClick={(e) => e.preventDefault()}>
-                <DeleteStudent nome = {payment.nome} email = {payment.email}/>
+                <DeleteStudent name = {payment.name} email = {payment.email}/>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -208,9 +208,9 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       <div className="flex items-center py-4">
         <Input
           placeholder="Buscar por nome..."
-          value={(table.getColumn('nome')?.getFilterValue() as string) ?? ''}
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn('nome')?.setFilterValue(event.target.value)
+            table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -234,7 +234,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                       column.toggleVisibility(!!value)
                     }
                   >
-                    {column.id}
+                    {column.id == 'studentGroup' ? 'Turma' : column.id}
                   </DropdownMenuCheckboxItem>
                 )
               })}
