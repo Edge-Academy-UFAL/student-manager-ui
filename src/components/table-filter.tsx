@@ -380,6 +380,7 @@ function FilterForm(props: {
                   <FilterOptionSelect
                     onChange={field.onChange}
                     defaultValue={field.value}
+                    disabled={true}
                   />
                 </FormItem>
               )}
@@ -394,6 +395,7 @@ function FilterForm(props: {
                       type="number"
                       lang="pt-br"
                       placeholder="8,5"
+                      disabled={true}
                       {...field}
                     />
                   </FormControl>
