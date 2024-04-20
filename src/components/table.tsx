@@ -44,6 +44,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import { StudentRegistrationDialog } from './student-registration-dialog'
+import { TableFiltersDropdown, tableGlobalFilterFn } from './table-filter'
+
 export type Student = {
   id: string
   email: string
@@ -51,9 +54,6 @@ export type Student = {
   turma: string
   foto: string
 }
-
-import { StudentRegistrationDialog } from './student-registration-dialog'
-import {TableFiltersDropdown, tableGlobalFilterFn} from './table-filter'
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
   const router = useRouter()
@@ -178,12 +178,11 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   )
-  const [globalFilter, setGlobalFilter] = React.useState('')
+  const [globalFilter, setGlobalFilter] = React.useState({})
 
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
-  
 
   const table = useReactTable({
     data,
@@ -203,7 +202,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       columnFilters,
       columnVisibility,
       rowSelection,
-      globalFilter
+      globalFilter,
     },
   })
 
@@ -245,13 +244,18 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <TableFiltersDropdown 
+          <TableFiltersDropdown
             setGlobalFilter={setGlobalFilter}
-            studentGroups={Array.from(new Set(data.map(obj => { return Number(obj.turma)})))}
+            studentGroups={Array.from(
+              new Set(
+                data.map((obj) => {
+                  return Number(obj.turma)
+                }),
+              ),
+            )}
           />
           <StudentRegistrationDialog />
         </div>
-
       </div>
       <div className="rounded-md border ">
         <Table>
@@ -264,9 +268,9 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   )
                 })}
