@@ -44,6 +44,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import { StudentRegistrationDialog } from './student-registration-dialog'
+
 export type Student = {
   id: string
   email: string
@@ -51,8 +53,6 @@ export type Student = {
   turma: string
   foto: string
 }
-
-import { StudentRegistrationDialog } from './student-registration-dialog'
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
   const router = useRouter()
@@ -240,7 +240,6 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-
       </div>
       <div className="rounded-md border ">
         <Table>
@@ -253,9 +252,9 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   )
                 })}
