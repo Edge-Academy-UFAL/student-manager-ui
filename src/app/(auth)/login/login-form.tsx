@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -12,21 +11,16 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useAuth } from '@/app/contexts/auth'
+import { useAuth } from '@/contexts/auth'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/ui/use-toast'
 
-const loginFormSchema = z.object({
-  email: z.string().email('Adicione um email válido'),
-  password: z.string().max(20, 'A senha deve ter no máximo 20 caracteres'),
-})
-
-type LoginFormValue = z.infer<typeof loginFormSchema>
+import { LoginFormSchema } from '@/lib/schemas'
 
 export function LoginForm() {
-  const form = useForm<LoginFormValue>({
-    resolver: zodResolver(loginFormSchema),
+  const form = useForm<LoginFormSchema>({
+    resolver: zodResolver(LoginFormSchema),
   })
 
   const { login, isAuthenticated } = useAuth()

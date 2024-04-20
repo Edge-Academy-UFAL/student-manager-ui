@@ -13,7 +13,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { LoginForm } from '@/app/(auth)/login/login-form'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/app/contexts/auth'
+import { useAuth } from '@/contexts/auth'
 
 export default function LoginAccount() {
   const { toast } = useToast()
@@ -43,14 +43,14 @@ export default function LoginAccount() {
               Entre com seu e-mail e senha para acessar
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="py-3">
             <LoginForm />
           </CardContent>
           <CardFooter className="flex flex-col">
             <Button
               variant="link"
               onClick={handleForgotPassword}
-              className="text-xs text-center"
+              className="text-sm text-center"
             >
               Esqueceu sua senha?
             </Button>
