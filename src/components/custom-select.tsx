@@ -21,13 +21,13 @@ function MonthSelect(props: { onChange: (value: string) => void, error: boolean,
     return (
         <Select onValueChange={props.onChange}>
             <SelectTrigger className={`${inputColor}`}>
-                <SelectValue placeholder={props.value ? props.value : "Mês"} />
+                <SelectValue placeholder={props.value ? months[Number(props.value) - 1] : "Mês"} />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
                     {
                         months.map((month, index) => {
-                            return <SelectItem key={index} value={month}>{month}</SelectItem>
+                            return <SelectItem key={index} value={(index + 1).toString()}>{month}</SelectItem>
                         })
                     }
                 </SelectGroup>

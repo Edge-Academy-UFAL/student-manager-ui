@@ -72,7 +72,8 @@ function validateEmails(emails: string): Array<{ email: string, isValid: boolean
 
 function formDataIsValid(formData: fromData): boolean {
     if (formData.emails.trim() === "" || formData.admissionMonth === "" ||
-        formData.admissionYear === "" || formData.studentGroup === "") {
+        formData.admissionYear === "" || formData.studentGroup === "" ||
+        isNaN(Number(formData.studentGroup)) || Number(formData.studentGroup) <= 0) {
         return false
     }
     return true
@@ -120,7 +121,7 @@ function InputDialogContent(props: {
             <div className="grid gap-4 py-4">
                 <div className="grid w-full items-center gap-1.5">
                     <Label htmlFor="student-group" className={`${labelColor}`}>Turma</Label>
-                    <Input type="student-group" id="student-group" placeholder="Identificação da turma"
+                    <Input type="number" id="student-group" placeholder="Identificação da turma"
                         value={props.formData.studentGroup} className={`${inputColor}`}
                         onChange={event => props.handleFormDataChange("studentGroup", event.target.value)} />
                 </div>
@@ -194,7 +195,7 @@ function BackendResponseDialogContent(props: {
     handleTryAgain: () => void,
     handleTryAgainWithInvalidEmails: (invalidEmails: Array<string> | undefined) => void,
     typeOfResponse: BackendResponseType,
-    responseCode: string,
+    responseCode?: string,
     invalidEmails?: Array<string>
 }) {
     // When a backend problem occours
@@ -210,7 +211,7 @@ function BackendResponseDialogContent(props: {
                         <h2 className="text-sm text-muted-foreground py-4">
                             Código de erro: 
                             <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
-                                 {props.responseCode}
+                                 {props.responseCode ? props.responseCode : "NULL"}
                             </code>
                         </h2>
                     </DialogDescription>
@@ -367,46 +368,43 @@ export function StudentRegistrationDialog() {
             })
 
         // prepare data
-        const emailStrings: Array<string> = validatedEmails.map(email => email.email);
-
-        const res = await fetch(
-            `${process.env.backendRoute}/api/v1/register`,
+        const requestData = {
+            emails: validatedEmails.map(email => email.email),
+            entryDate: `${formData.admissionYear}-${formData.admissionMonth.padStart(2, '0')}-01`,
+            studentGroup: Number(formData.studentGroup)
+        }
+        
+        const res = await fetch(`${process.env.backendRoute}/api/v1/register`,
             {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${getCookie("token")}`
                 },
-                body: JSON.stringify({ emails: emailStrings }),
+                body: JSON.stringify(requestData),
                 method: 'POST'
             }
         )
-        // Validate response
-        if (!res.ok) {
+
+        // Validate response and show appropriate response dialog
+        if (res.ok) {
             const data: BackendResponse = await res.json() as BackendResponse
 
-            // Depending on the type of error, a different error dialog is shown
             if (data.failedEmails.length == 0) {
                 setDialogState(DialogPage.BackendResponse, {
-                    typeOfResponse: BackendResponseType.AnotherError,
-                    responseCode: res.status,
-                    invalidEmails: [],
+                    typeOfResponse: BackendResponseType.Success
                 })
             } else {
                 setDialogState(DialogPage.BackendResponse, {
                     typeOfResponse: BackendResponseType.InvitationSendingError,
-                    responseCode: res.status,
                     invalidEmails: data.failedEmails,
                 })
             }
-            return null;
+        } else {
+            setDialogState(DialogPage.BackendResponse, {
+                typeOfResponse: BackendResponseType.AnotherError,
+                responseCode: res.status,
+            })
         }
-
-        // Successful dialog is shown
-        setDialogState(DialogPage.BackendResponse, {
-            typeOfResponse: BackendResponseType.Success,
-            responseCode: res.status,
-            invalidEmails: [],
-        })
     }
 
     function handleFinalize(): void {
