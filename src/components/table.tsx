@@ -53,7 +53,7 @@ export type Student = {
 }
 
 import { StudentRegistrationDialog } from './student-registration-dialog'
-import TableFiltersDropdown from './table-filter'
+import {TableFiltersDropdown, tableGlobalFilterFn} from './table-filter'
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
   const router = useRouter()
@@ -178,9 +178,12 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   )
+  const [globalFilter, setGlobalFilter] = React.useState('')
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+  
 
   const table = useReactTable({
     data,
@@ -193,11 +196,14 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: tableGlobalFilterFn,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter
     },
   })
 
@@ -239,7 +245,10 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <TableFiltersDropdown />
+          <TableFiltersDropdown 
+            setGlobalFilter={setGlobalFilter}
+            studentGroups={Array.from(new Set(data.map(obj => { return Number(obj.turma)})))}
+          />
           <StudentRegistrationDialog />
         </div>
 

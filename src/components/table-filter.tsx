@@ -1,3 +1,6 @@
+'use client'
+
+import * as React from 'react'
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -6,6 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { Checkbox } from "@/components/ui/checkbox"
+
+import { FilterFn } from '@tanstack/react-table'
 
 import {
     Form,
@@ -27,6 +32,107 @@ import {
     FilterOptionSelect,
     NumberFilteringOption
 } from "@/components/custom-select"
+
+function admissionSemesterFilter(rowValue: string, filterValue: string, filterOption: NumberFilteringOption) {
+    const [yearPart, semesterPart] = rowValue.split(".").map((value) => { return Number(value)})
+    const [filterYearPart, filterSemesterPart] = filterValue.split(".").map((value) => { return Number(value)})
+
+    const greaterOrEqualToFn = () => {
+        if (yearPart > filterYearPart) {
+            return true;
+        } else if (yearPart === filterYearPart) {
+            if (semesterPart >= filterSemesterPart) {
+                return true;
+            } 
+        }
+        return false
+    }
+
+    const lessOrEqualToFn = () => {
+        if (yearPart < filterYearPart) {
+            return true;
+        } else if (yearPart === filterYearPart) {
+            if (semesterPart <= filterSemesterPart) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    switch (filterOption) {
+        case NumberFilteringOption.EqualTo:
+            return rowValue === filterValue;  
+        case NumberFilteringOption.GreaterOrEqualTo:
+            return greaterOrEqualToFn();
+        case NumberFilteringOption.GreaterThan:
+            return !lessOrEqualToFn();
+        case NumberFilteringOption.LessOrEqualTo:
+            return lessOrEqualToFn();
+        case NumberFilteringOption.LessThan:
+           return !greaterOrEqualToFn();
+      }
+}
+
+function numberFilter(rowValue: Number, filterValue: Number, filterOption: NumberFilteringOption) {
+    switch (filterOption) {
+        case NumberFilteringOption.EqualTo:
+            return rowValue === filterValue;  
+        case NumberFilteringOption.GreaterOrEqualTo:
+            return rowValue >= filterValue;
+        case NumberFilteringOption.GreaterThan:
+            return rowValue > filterValue;
+        case NumberFilteringOption.LessOrEqualTo:
+            return rowValue <= filterValue;
+        case NumberFilteringOption.LessThan:
+           return rowValue < filterValue;
+      }
+}
+
+function courseFilter(rowValue: string, csCheckboxValue: boolean, ceCheckboxValue: boolean) {
+    if (rowValue === "Ciência da Computação") {
+        return csCheckboxValue;
+    } else if (rowValue === "Engenharia de Computação") {
+        return ceCheckboxValue;
+    }
+}
+
+const tableGlobalFilterFn : FilterFn<any> = (row, columnId, value) => {
+    
+    // fakeData will be replaced by row.original
+    const fakeData = {
+        admissionSemester: "2022.2",
+        currentSemester: 4,
+        course: "Ciência da Computação",
+        cr: 8.51,
+        studentGroup: 2
+    }
+
+    if (!courseFilter(fakeData.course, value.csCheckbox, value.ceCheckbox)) {
+        return false
+    }
+    
+    if (value.admissionSemester !== "" && 
+        !admissionSemesterFilter(fakeData.admissionSemester, value.admissionSemester, value.admissionSemestreFilterOption)) {
+        return false;
+    }
+    
+    if (value.currentSemester !== "" && 
+        !numberFilter(fakeData.currentSemester, value.currentSemester, value.currentSemesterFilterOption)) {
+        return false;
+    }
+    
+    if (value.cr !== "" && 
+        !numberFilter(fakeData.cr, value.cr, value.crFilterOption)) {
+        return false;
+    }
+
+    if (value.studentGroups.length > 0 && 
+        !value.studentGroups.some((obj:any) => obj.hasOwnProperty('group') && Number(obj.group) === fakeData.studentGroup)) {
+        return false;
+    }
+
+    return true;
+}
 
 const formSchema = z.object({
     csCheckbox: z.boolean().default(false).optional(),
@@ -52,11 +158,16 @@ const formSchema = z.object({
     studentGroups: z.array(z.object({
         label: z.string(),
         value: z.string(),
+        group: z.string(),
         disable: z.boolean().optional(),
     })).optional()
 })
 
-function FilterForm(props: {studentGroups: Array<number>}) {
+function FilterForm(props: {
+    studentGroups: Array<number>, 
+    setGlobalFilter: (value: any) => void,
+    setShowDropdown: React.Dispatch<React.SetStateAction<boolean>>
+}) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -75,12 +186,13 @@ function FilterForm(props: {studentGroups: Array<number>}) {
     const errors = form.formState.errors;
 
     const studentGroupOptions: Option[] = props.studentGroups.map((item) => {
-        return { label: `Turma ${item}`, value: `turma ${item}` }
+        return { label: `Turma ${item}`, value: `turma ${item}`, group: item.toString() }
     })
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        // Apply filters
         console.log(values)
+        props.setGlobalFilter(values)
+        props.setShowDropdown(false)
     }
 
     return (
@@ -235,17 +347,17 @@ function FilterForm(props: {studentGroups: Array<number>}) {
     )
 }
 
-function TableFiltersDropdown() {
+function TableFiltersDropdown( props : {
+    setGlobalFilter: (value: any) => void,
+    studentGroups: Array<number>
+}) {
 
-    // Must receive the function that alters the table visualization
-    // Must receive the student data to extract the studentGroups
-
-    const studentGroups = [1, 2, 3, 4, 5];
+    const [showDropdown, setShowDropdown] = React.useState<boolean>(false);
 
     return (
-        <DropdownMenu>
+        <DropdownMenu open={showDropdown} onOpenChange={setShowDropdown}>
             <DropdownMenuTrigger asChild>
-                <Button variant="outline">Filtros</Button>
+                <Button variant="outline" onClick={() => setShowDropdown(true)}>Filtros</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="py-4 px-7 w-[560px]">
                 <div className="flex flex-col space-y-1.5 text-center sm:text-left pb-6 pt-3">
@@ -254,10 +366,14 @@ function TableFiltersDropdown() {
                         Adicione filtros limitar a visualização de alunos na lista.
                     </p>
                 </div>
-                <FilterForm studentGroups={studentGroups}></FilterForm>
+                <FilterForm 
+                    studentGroups={props.studentGroups}
+                    setGlobalFilter={props.setGlobalFilter}
+                    setShowDropdown={setShowDropdown}
+                />
             </DropdownMenuContent>
         </DropdownMenu>
     )
 }
 
-export default TableFiltersDropdown
+export {TableFiltersDropdown, tableGlobalFilterFn}
