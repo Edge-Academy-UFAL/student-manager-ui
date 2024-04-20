@@ -38,7 +38,7 @@ const StudentSearchPage = async () => {
   }
 
   return (
-    <div>
+    <div className='flex justify-center'>
       <DataTableDemo data={data} />
     </div>
   )
