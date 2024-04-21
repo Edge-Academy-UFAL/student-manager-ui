@@ -59,6 +59,7 @@ export type Student = {
   foto: string
   course: string
   period: string
+  entryPeriod: string
 }
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
@@ -285,7 +286,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
             studentGroups={Array.from(
               new Set(
                 data.map((obj) => {
-                  return Number(obj.turma)
+                  return Number(obj.studentGroup)
                 }),
               ),
             )}

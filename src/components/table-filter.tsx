@@ -33,6 +33,20 @@ import {
   NumberFilteringOption,
 } from '@/components/custom-select'
 
+import { Student } from '@/components/table'
+
+interface FilterData {
+  csCheckbox: boolean
+  ceCheckbox: boolean
+  admissionSemester?: string
+  admissionSemestreFilterOption?: NumberFilteringOption
+  currentSemester?: number
+  currentSemesterFilterOption?: NumberFilteringOption
+  cr?: number
+  crFilterOption?: NumberFilteringOption
+  studentGroups?: Array<{ label: string; value: string; group: string }>
+}
+
 function admissionSemesterFilter(
   rowValue: string,
   filterValue: string,
@@ -107,31 +121,31 @@ function courseFilter(
   csCheckboxValue: boolean,
   ceCheckboxValue: boolean,
 ) {
-  if (rowValue === 'Ciência da Computação') {
+  if (rowValue === 'COMPUTER_SCIENCE') {
     return csCheckboxValue
-  } else if (rowValue === 'Engenharia de Computação') {
+  } else if (rowValue === 'COMPUTER_ENGINEERING') {
     return ceCheckboxValue
   }
 }
 
-const tableGlobalFilterFn: FilterFn<object> = (row, columnId, value) => {
-  // fakeData will be replaced by row.original
-  const fakeData = {
-    admissionSemester: '2022.2',
-    currentSemester: 4,
-    course: 'Ciência da Computação',
-    cr: 8.51,
-    studentGroup: 2,
+const tableGlobalFilterFn: FilterFn<Student> = (row, _, value) => {
+  // If no action is taken in the form, value is a empty object.
+  // If no action is taken, no filters are applied
+  if (Object.keys(value).length === 0) {
+    return true
   }
 
-  if (!courseFilter(fakeData.course, value.csCheckbox, value.ceCheckbox)) {
+  // Get the row data
+  const student: Student = row.original
+
+  if (!courseFilter(student.course, value.csCheckbox, value.ceCheckbox)) {
     return false
   }
 
   if (
     value.admissionSemester !== '' &&
     !admissionSemesterFilter(
-      fakeData.admissionSemester,
+      student.entryPeriod,
       value.admissionSemester,
       value.admissionSemestreFilterOption,
     )
@@ -140,9 +154,9 @@ const tableGlobalFilterFn: FilterFn<object> = (row, columnId, value) => {
   }
 
   if (
-    value.currentSemester !== '' &&
+    value.currentSemester &&
     !numberFilter(
-      fakeData.currentSemester,
+      Number(student.period),
       value.currentSemester,
       value.currentSemesterFilterOption,
     )
@@ -150,18 +164,19 @@ const tableGlobalFilterFn: FilterFn<object> = (row, columnId, value) => {
     return false
   }
 
-  if (
-    value.cr !== '' &&
-    !numberFilter(fakeData.cr, value.cr, value.crFilterOption)
-  ) {
-    return false
-  }
+  // This will be available in the future. Do not remove!
+  // if (
+  //   value.cr &&
+  //   !numberFilter(student.cr, value.cr, value.crFilterOption)
+  // ) {
+  //   return false
+  // }
 
   if (
     value.studentGroups.length > 0 &&
     !value.studentGroups.some(
       (obj: object) =>
-        'group' in obj && Number(obj.group) === fakeData.studentGroup,
+        'group' in obj && Number(obj.group) === Number(student.studentGroup),
     )
   ) {
     return false
@@ -224,20 +239,12 @@ function FilterForm(props: {
   studentGroups: Array<number>
   setGlobalFilter: React.Dispatch<React.SetStateAction<object>>
   setShowDropdown: React.Dispatch<React.SetStateAction<boolean>>
+  formData: FilterData
+  setFormData: React.Dispatch<React.SetStateAction<FilterData>>
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      csCheckbox: true,
-      ceCheckbox: true,
-      admissionSemester: '',
-      admissionSemestreFilterOption: NumberFilteringOption.GreaterThan,
-      currentSemester: '',
-      currentSemesterFilterOption: NumberFilteringOption.GreaterThan,
-      cr: '',
-      crFilterOption: NumberFilteringOption.GreaterThan,
-      studentGroups: [],
-    },
+    defaultValues: props.formData,
   })
 
   const errors = form.formState.errors
@@ -250,16 +257,16 @@ function FilterForm(props: {
     }
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  function onSaveFilterForm(values: z.infer<typeof formSchema>) {
     props.setGlobalFilter(values)
     props.setShowDropdown(false)
+    props.setFormData(values as FilterData)
   }
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSaveFilterForm)}
         className="flex flex-col items-start gap-5"
       >
         <div className="w-full flex flex-col gap-1">
@@ -445,6 +452,19 @@ function TableFiltersDropdown(props: {
 }) {
   const [showDropdown, setShowDropdown] = React.useState<boolean>(false)
 
+  // This is needed to persist the filter data when the dropdown is closed
+  const [formData, setFormData] = React.useState<FilterData>({
+    csCheckbox: true,
+    ceCheckbox: true,
+    admissionSemester: '',
+    admissionSemestreFilterOption: NumberFilteringOption.GreaterThan,
+    currentSemester: undefined,
+    currentSemesterFilterOption: NumberFilteringOption.GreaterThan,
+    cr: undefined,
+    crFilterOption: NumberFilteringOption.GreaterThan,
+    studentGroups: [],
+  })
+
   return (
     <DropdownMenu open={showDropdown} onOpenChange={setShowDropdown}>
       <DropdownMenuTrigger asChild>
@@ -465,6 +485,8 @@ function TableFiltersDropdown(props: {
           studentGroups={props.studentGroups}
           setGlobalFilter={props.setGlobalFilter}
           setShowDropdown={setShowDropdown}
+          formData={formData}
+          setFormData={setFormData}
         />
       </DropdownMenuContent>
     </DropdownMenu>
