@@ -48,6 +48,18 @@ interface FilterData {
   studentGroups?: Array<{ label: string; value: string; group: string }>
 }
 
+const filterDefaults: FilterData = {
+  csCheckbox: true,
+  ceCheckbox: true,
+  admissionSemester: '',
+  admissionSemestreFilterOption: NumberFilteringOption.GreaterThan,
+  currentSemester: '',
+  currentSemesterFilterOption: NumberFilteringOption.GreaterThan,
+  cr: '',
+  crFilterOption: NumberFilteringOption.GreaterThan,
+  studentGroups: [],
+}
+
 function admissionSemesterFilter(
   rowValue: string,
   filterValue: string,
@@ -242,6 +254,8 @@ function FilterForm(props: {
   setShowDropdown: React.Dispatch<React.SetStateAction<boolean>>
   formData: FilterData
   setFormData: (value: FilterData) => void
+  activeFilterCount: number
+  setActiveFilterCount: React.Dispatch<React.SetStateAction<number>>
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -262,6 +276,12 @@ function FilterForm(props: {
     props.setGlobalFilter(values)
     props.setShowDropdown(false)
     props.setFormData(values as FilterData)
+  }
+
+  function clearFilters() {
+    props.setGlobalFilter({})
+    props.setShowDropdown(false)
+    props.setFormData(filterDefaults)
   }
 
   return (
@@ -431,7 +451,7 @@ function FilterForm(props: {
                         Essa turma não existe.
                       </p>
                     }
-                    positionFixed={true}
+                    positionFixed={false}
                   />
                 </FormControl>
                 <FormMessage />
@@ -439,9 +459,16 @@ function FilterForm(props: {
             )}
           />
         </div>
-        <Button type="submit" className="ms-auto">
-          Salvar
-        </Button>
+        <div className="flex flex-row items-center justify-end w-full gap-2">
+          <Button
+            variant="outline"
+            disabled={props.activeFilterCount === 0}
+            onClick={clearFilters}
+          >
+            Limpar
+          </Button>
+          <Button type="submit">Salvar</Button>
+        </div>
       </form>
     </Form>
   )
@@ -453,25 +480,13 @@ function TableFiltersDropdown(props: {
 }) {
   const [showDropdown, setShowDropdown] = React.useState<boolean>(false)
 
-  const filterDefaults: FilterData = {
-    csCheckbox: true,
-    ceCheckbox: true,
-    admissionSemester: '',
-    admissionSemestreFilterOption: NumberFilteringOption.GreaterThan,
-    currentSemester: '',
-    currentSemesterFilterOption: NumberFilteringOption.GreaterThan,
-    cr: '',
-    crFilterOption: NumberFilteringOption.GreaterThan,
-    studentGroups: [],
-  }
-
   // This is needed to persist the filter data when the dropdown is closed
   const [formData, _setFormData] = React.useState<FilterData>(filterDefaults)
   const [activeFilterCount, setActiveFilterCount] = React.useState<number>(0)
 
   function countActiveFilters(value: FilterData): number {
     let count: number = 0
-    console.log(value)
+
     if (value.csCheckbox !== true) {
       count += 1
     }
@@ -503,7 +518,7 @@ function TableFiltersDropdown(props: {
     setActiveFilterCount(countActiveFilters(value))
     _setFormData(value)
   }
-  console.log(activeFilterCount)
+
   return (
     <DropdownMenu open={showDropdown} onOpenChange={setShowDropdown}>
       <DropdownMenuTrigger asChild>
@@ -537,6 +552,8 @@ function TableFiltersDropdown(props: {
           setShowDropdown={setShowDropdown}
           formData={formData}
           setFormData={setFormData}
+          activeFilterCount={activeFilterCount}
+          setActiveFilterCount={setActiveFilterCount}
         />
       </DropdownMenuContent>
     </DropdownMenu>
