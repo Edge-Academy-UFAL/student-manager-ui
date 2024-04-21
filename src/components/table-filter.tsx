@@ -34,15 +34,16 @@ import {
 } from '@/components/custom-select'
 
 import { Student } from '@/components/table'
+import { Badge } from '@/components/ui/badge'
 
 interface FilterData {
   csCheckbox: boolean
   ceCheckbox: boolean
   admissionSemester?: string
   admissionSemestreFilterOption?: NumberFilteringOption
-  currentSemester?: number
+  currentSemester?: number | ''
   currentSemesterFilterOption?: NumberFilteringOption
-  cr?: number
+  cr?: number | ''
   crFilterOption?: NumberFilteringOption
   studentGroups?: Array<{ label: string; value: string; group: string }>
 }
@@ -240,7 +241,7 @@ function FilterForm(props: {
   setGlobalFilter: React.Dispatch<React.SetStateAction<object>>
   setShowDropdown: React.Dispatch<React.SetStateAction<boolean>>
   formData: FilterData
-  setFormData: React.Dispatch<React.SetStateAction<FilterData>>
+  setFormData: (value: FilterData) => void
 }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -452,24 +453,73 @@ function TableFiltersDropdown(props: {
 }) {
   const [showDropdown, setShowDropdown] = React.useState<boolean>(false)
 
-  // This is needed to persist the filter data when the dropdown is closed
-  const [formData, setFormData] = React.useState<FilterData>({
+  const filterDefaults: FilterData = {
     csCheckbox: true,
     ceCheckbox: true,
     admissionSemester: '',
     admissionSemestreFilterOption: NumberFilteringOption.GreaterThan,
-    currentSemester: undefined,
+    currentSemester: '',
     currentSemesterFilterOption: NumberFilteringOption.GreaterThan,
-    cr: undefined,
+    cr: '',
     crFilterOption: NumberFilteringOption.GreaterThan,
     studentGroups: [],
-  })
+  }
 
+  // This is needed to persist the filter data when the dropdown is closed
+  const [formData, _setFormData] = React.useState<FilterData>(filterDefaults)
+  const [activeFilterCount, setActiveFilterCount] = React.useState<number>(0)
+
+  function countActiveFilters(value: FilterData): number {
+    let count: number = 0
+    console.log(value)
+    if (value.csCheckbox !== true) {
+      count += 1
+    }
+
+    if (value.ceCheckbox !== true) {
+      count += 1
+    }
+
+    if (value.admissionSemester !== '') {
+      count += 1
+    }
+
+    if (value.currentSemester !== undefined && value.currentSemester !== '') {
+      count += 1
+    }
+
+    if (value.cr !== undefined && value.cr !== '') {
+      count += 1
+    }
+
+    if (value.studentGroups && value.studentGroups.length > 0) {
+      count += 1
+    }
+
+    return count
+  }
+
+  function setFormData(value: FilterData) {
+    setActiveFilterCount(countActiveFilters(value))
+    _setFormData(value)
+  }
+  console.log(activeFilterCount)
   return (
     <DropdownMenu open={showDropdown} onOpenChange={setShowDropdown}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" onClick={() => setShowDropdown(true)}>
-          Filtros
+        <Button
+          className="w-[128px]"
+          variant={activeFilterCount > 0 ? 'default' : 'outline'}
+          onClick={() => setShowDropdown(true)}
+        >
+          {activeFilterCount > 0 ? (
+            <>
+              <Badge variant="secondary">{activeFilterCount}</Badge>
+              <span className="ml-2">Filtros</span>
+            </>
+          ) : (
+            <span>Filtros</span>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="py-4 px-7 w-[560px]">
