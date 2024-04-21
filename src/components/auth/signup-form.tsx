@@ -53,12 +53,14 @@ import { useForm } from 'react-hook-form'
 
 import { RegisterSchema } from '@/lib/schemas'
 import { formatSignUpData } from '@/lib/functions/formatSignUpData'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 const SignUpForm = ({ id }: { id: string }) => {
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(RegisterSchema),
   })
+
+  const email = useSearchParams().get('email')
 
   const { toast } = useToast()
   const { push } = useRouter()
@@ -71,71 +73,62 @@ const SignUpForm = ({ id }: { id: string }) => {
   const submitHandler = async (data: RegisterSchema) => {
     const dataToSend = formatSignUpData(data)
 
-    toast({
-      title: 'Você enviou os seguintes valores:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">
-            {JSON.stringify(dataToSend, null, 2)}
-          </code>
-        </pre>
-      ),
-    })
-
     // enviar os dados para a API
 
     const formData = new FormData()
     formData.append('name', dataToSend.name)
-    formData.append('birthdate', dataToSend.birthdate)
+    formData.append('birthDate', dataToSend.birthdate)
     formData.append('course', dataToSend.course)
-    formData.append('file', data.image)
+    formData.append('file', data.image[0])
     formData.append('registration', dataToSend.registration)
     formData.append('phone', dataToSend.phone)
     formData.append('secondaryPhone', dataToSend.secondaryPhone)
     formData.append('period', dataToSend.period)
     formData.append('entryPeriod', dataToSend.entryPeriod)
     formData.append('password', dataToSend.password)
+    formData.append('email', email || '')
+    formData.append('activationCode', id)
 
-    // try {
-    //   const response = await fetch('http://127.0.0.1:8080/api/v1/students', {
-    //     method: 'POST',
-    //     body: formData,
-    //   })
+    try {
+      const response = await fetch('http://127.0.0.1:8080/api/v1/students', {
+        method: 'POST',
+        body: formData,
+      })
 
-    //   const status = response.status
+      const status = response.status
 
-    //   if (response.ok) {
-    //     if (status === 200) {
-    //       toast({
-    //         title: 'Cadastro realizado com sucesso',
-    //         description: 'Seja bem vindo!',
-    //       })
+      if (response.ok) {
+        if (status === 201) {
+          toast({
+            title: 'Cadastro realizado com sucesso',
+            description: 'Seja bem vindo!',
+          })
 
-    //       push('/registered')
-    //     }
-    //   }
+          push('/registered')
+        }
+      }
 
-    //   if (status >= 400 && status < 500) {
-    //     toast({
-    //       variant: 'destructive',
-    //       title: 'Erro ao fazer o cadastro',
-    //       description: 'Verifique os campos e tente novamente.',
-    //     })
-    //   }
+      if (status >= 400 && status < 500) {
+        toast({
+          variant: 'destructive',
+          title: 'Erro ao fazer o cadastro',
+          description: 'Verifique os campos e tente novamente.',
+        })
+      }
 
-    //   if (status >= 500) {
-    //     toast({
-    //       title: 'Não foi possível fazer login',
-    //       description: 'Tente novamente mais tarde',
-    //     })
-    //   }
-    // } catch (error) {
-    //   console.error('Erro ao enviar o formulário:', error)
-    //   toast({
-    //     title: 'Erro',
-    //     description: 'Erro ao enviar os dados.',
-    //   })
-    // }
+      if (status >= 500) {
+        toast({
+          title: 'Não foi possível fazer o cadastro',
+          description: 'Tente novamente mais tarde',
+        })
+      }
+    } catch (error) {
+      console.error('Erro ao enviar o formulário:', error)
+      toast({
+        title: 'Erro',
+        description: 'Erro ao enviar os dados.',
+      })
+    }
   }
   return (
     <Form {...form}>
