@@ -8,7 +8,7 @@ const devURL = `http://localhost:3333/students`
 // se quiser testar com dados no localhost basta mudar a url para "devURL" e rodar "pnpm json-server server.json -w -p 3333" no terminal
 // lembrar de trocar de volta para a url do "prodURL" antes de fazer o commit para não dar erro no build
 const getData = async () => {
-  const token =  cookies().get('token')?.value;
+  const token = cookies().get('token')?.value
 
   try {
     const res = await fetch('http://127.0.0.1:8080/api/v1/students', {
@@ -38,7 +38,7 @@ const StudentSearchPage = async () => {
   }
 
   return (
-    <div className='flex justify-center'>
+    <div className="flex justify-center">
       <DataTableDemo data={data} />
     </div>
   )

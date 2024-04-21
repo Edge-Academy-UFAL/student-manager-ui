@@ -17,13 +17,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState(null)
-  const [tokenState, setTokenState] = useState <string> ('')
+  const [tokenState, setTokenState] = useState<string>('')
   const router = useRouter()
 
   useEffect(() => {
     async function loadUserFromCookies() {
       const token = getCookie('token')
-      
+
       if (token) {
         setTokenState(token)
         const res = await fetch('http://127.0.0.1:8080/api/v1/auth/me', {
@@ -85,7 +85,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated: !!user, user, login, logout, token: tokenState}}
+      value={{
+        isAuthenticated: !!user,
+        user,
+        login,
+        logout,
+        token: tokenState,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -6,7 +6,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDate(date: Date): string {
-
   const day = date.getDate() // Get the day of the month
   const month = date.getMonth() + 1 // Get the month (0-indexed, so add 1)
   const year = date.getFullYear() // Get the year
@@ -17,7 +16,6 @@ export function formatDate(date: Date): string {
 
   return `${year}-${monthStr}-${dayStr}` // Combine components in dd-mm-yyyy format
 }
-
 
 export function enumToStringCourse(course: string) {
   switch (course) {

@@ -57,7 +57,7 @@ export type Student = {
   studentGroup: string
   foto: string
   course: string
-  period: number
+  period: string
 }
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
@@ -101,18 +101,29 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       },
       cell: ({ row }) => {
         return (
-        <div className='flex flex-row gap-3'>
-          <Avatar>
-            {/* TODO: Add the correct image */}
-            <AvatarImage src={'http://localhost:4566/student-manager-files/'+row.original.photoUrl} alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
-          <div>
-            <div className="font-medium text-base text-bold">{row.getValue('name')}</div>
-            <div className="lowercase text-sm text-neutral-500">{row.original.email}</div>
+          <div className="flex flex-row gap-3">
+            <Avatar>
+              {/* TODO: Add the correct image */}
+              <AvatarImage
+                src={
+                  'http://localhost:4566/student-manager-files/' +
+                  row.original.photoUrl
+                }
+                alt="@shadcn"
+              />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="font-medium text-base text-bold">
+                {row.getValue('name')}
+              </div>
+              <div className="lowercase text-sm text-neutral-500">
+                {row.original.email}
+              </div>
+            </div>
           </div>
-        </div>
-      )},
+        )
+      },
     },
     {
       accessorKey: 'course',
@@ -128,7 +139,9 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         )
       },
       cell: ({ row }) => (
-        <div className="capitalize">{enumToStringCourse(row.getValue('course'))}</div>
+        <div className="capitalize">
+          {enumToStringCourse(row.getValue('course'))}
+        </div>
       ),
     },
     {
@@ -187,7 +200,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               </DropdownMenuItem>
               <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
               <DropdownMenuItem onClick={(e) => e.preventDefault()}>
-                <DeleteStudent name = {payment.name} email = {payment.email}/>
+                <DeleteStudent name={payment.name} email={payment.email} />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -256,7 +269,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {column.id == 'studentGroup' ? 'Turma' : column.id}
+                      {column.id === 'studentGroup' ? 'Turma' : column.id}
                     </DropdownMenuCheckboxItem>
                   )
                 })}

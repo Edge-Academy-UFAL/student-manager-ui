@@ -89,7 +89,6 @@ const SignUpForm = ({ id }: { id: string }) => {
     formData.append('email', email || '')
     formData.append('activationCode', id)
 
-
     try {
       const response = await fetch('http://127.0.0.1:8080/api/v1/students', {
         method: 'POST',

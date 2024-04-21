@@ -57,7 +57,6 @@ export function AccountForm({ data }: { data: AccountFormValues }) {
   const { toast } = useToast()
 
   function onSubmit(data: AccountFormValues) {
-
     toast({
       title: 'Você enviou os seguintes valores:',
       description: (
