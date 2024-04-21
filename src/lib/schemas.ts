@@ -1,4 +1,6 @@
 import { z } from 'zod'
+const MAX_FILE_SIZE = 1024 * 1024 * 5
+const ACCEPTED_IMAGE_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
 
 export const RegisterSchema = z
   .object({
@@ -16,10 +18,10 @@ export const RegisterSchema = z
       ),
     confirmPassword: z.string(),
 
-    semester: z
-      .number()
+    semester: z.coerce
+      .string()
       .min(1, 'Semestre Inválido.')
-      .max(8, 'Semestre Inválido.'),
+      .max(10, 'Semestre Inválido.'),
     entrySemester: z.string().refine(
       (value) => {
         const currentYear = new Date().getFullYear()
@@ -49,12 +51,25 @@ export const RegisterSchema = z
         /^[a-zA-Z\sáéíóúãáçÃÁÉÍÓÚ]+$/,
         'O nome deve conter apenas letras A-Z a-z, espaços e acentos.',
       ),
-
+    image: z
+      .any()
+      .refine((files) => files, { message: 'Campo Obrigatório.' })
+      .refine(
+        (files) => {
+          return files?.[0]?.size <= MAX_FILE_SIZE
+        },
+        `Tamanho máximo de arquivo excedido. O arquivo deve ter no máximo 5MB
+      .`,
+      )
+      .refine(
+        (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
+        'Apenas formatos .jpg, .jpeg, .png são permitidos.',
+      ),
     course: z.enum(['Ciência da Computação', 'Engenharia de Computação']),
     registrationNumber: z.string().refine((value) => /^\d{8}$/.test(value), {
       message: 'Formato de matrícula inválido',
     }),
-    birthdate: z.string().min(1, { message: 'Insira sua data de nascimento.' }),
+    birthdate: z.date(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
@@ -62,3 +77,10 @@ export const RegisterSchema = z
   })
 
 export type RegisterSchema = z.infer<typeof RegisterSchema>
+
+export const LoginFormSchema = z.object({
+  email: z.string().email('Adicione um email válido'),
+  password: z.string().max(20, 'A senha deve ter no máximo 20 caracteres'),
+})
+
+export type LoginFormSchema = z.infer<typeof LoginFormSchema>
