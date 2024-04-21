@@ -44,14 +44,20 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import { DeleteStudent } from './delete-student'
+import { enumToStringCourse } from '@/lib/utils'
+
 import { StudentRegistrationDialog } from './student-registration-dialog'
 
 export type Student = {
+  [x: string]: string
   id: string
   email: string
-  nome: string
-  turma: string
+  name: string
+  studentGroup: string
   foto: string
+  course: string
+  period: number
 }
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
@@ -81,20 +87,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       enableHiding: false,
     },
     {
-      accessorKey: 'foto',
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      header: ({ column }) => {
-        return <div></div>
-      },
-      cell: ({ row }) => (
-        <Avatar>
-          <AvatarImage src={row.getValue('foto')} alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-      ),
-    },
-    {
-      accessorKey: 'nome',
+      accessorKey: 'name',
       header: ({ column }) => {
         return (
           <Button
@@ -106,28 +99,40 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
           </Button>
         )
       },
-      cell: ({ row }) => <div>{row.getValue('nome')}</div>,
+      cell: ({ row }) => {
+        return (
+        <div className='flex flex-row gap-3'>
+          <Avatar>
+            {/* TODO: Add the correct image */}
+            <AvatarImage src={'http://localhost:4566/student-manager-files/'+row.original.photoUrl} alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
+          <div>
+            <div className="font-medium text-base text-bold">{row.getValue('name')}</div>
+            <div className="lowercase text-sm text-neutral-500">{row.original.email}</div>
+          </div>
+        </div>
+      )},
     },
-
     {
-      accessorKey: 'email',
+      accessorKey: 'course',
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           >
-            Email
+            Curso
             <CaretSortIcon className="ml-2 h-4 w-4" />
           </Button>
         )
       },
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue('email')}</div>
+        <div className="capitalize">{enumToStringCourse(row.getValue('course'))}</div>
       ),
     },
     {
-      accessorKey: 'turma',
+      accessorKey: 'studentGroup',
       header: ({ column }) => {
         return (
           <Button
@@ -140,8 +145,23 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         )
       },
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('turma')}</div>
+        <div className="capitalize ">{row.getValue('studentGroup')}</div>
       ),
+    },
+    {
+      accessorKey: 'period',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            Período
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <div>{row.getValue('period')}</div>,
     },
     {
       id: 'actions',
@@ -166,6 +186,9 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 Visualizar Perfil
               </DropdownMenuItem>
               <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
+              <DropdownMenuItem onClick={(e) => e.preventDefault()}>
+                <DeleteStudent name = {payment.name} email = {payment.email}/>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         )
@@ -201,13 +224,13 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
   })
 
   return (
-    <div className="w-full px-10 py-5 justify-center">
+    <div className="max-w-7xl w-full px-10 py-5 justify-center">
       <div className="flex items-center py-4">
         <Input
           placeholder="Buscar por nome..."
-          value={(table.getColumn('nome')?.getFilterValue() as string) ?? ''}
+          value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) =>
-            table.getColumn('nome')?.setFilterValue(event.target.value)
+            table.getColumn('name')?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -233,7 +256,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {column.id}
+                      {column.id == 'studentGroup' ? 'Turma' : column.id}
                     </DropdownMenuCheckboxItem>
                   )
                 })}
