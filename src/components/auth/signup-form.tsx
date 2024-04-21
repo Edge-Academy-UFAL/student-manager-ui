@@ -73,17 +73,6 @@ const SignUpForm = ({ id }: { id: string }) => {
   const submitHandler = async (data: RegisterSchema) => {
     const dataToSend = formatSignUpData(data)
 
-    toast({
-      title: 'Você enviou os seguintes valores:',
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">
-            {JSON.stringify(dataToSend, null, 2)}
-          </code>
-        </pre>
-      ),
-    })
-
     // enviar os dados para a API
 
     const formData = new FormData()
