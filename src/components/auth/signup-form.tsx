@@ -53,13 +53,15 @@ import { useForm } from 'react-hook-form'
 
 import { RegisterSchema } from '@/lib/schemas'
 import { formatSignUpData } from '@/lib/functions/formatSignUpData'
+import { useRouter } from 'next/navigation'
 
-const SignUpForm = () => {
+const SignUpForm = ({ id }: { id: string }) => {
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(RegisterSchema),
   })
 
   const { toast } = useToast()
+  const { push } = useRouter()
 
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -86,30 +88,47 @@ const SignUpForm = () => {
     formData.append('name', dataToSend.name)
     formData.append('birthdate', dataToSend.birthdate)
     formData.append('course', dataToSend.course)
-    formData.append('photo', data.image) // Adiciona o arquivo de imagem ao FormData
+    formData.append('file', data.image)
     formData.append('registration', dataToSend.registration)
     formData.append('phone', dataToSend.phone)
     formData.append('secondaryPhone', dataToSend.secondaryPhone)
-    formData.append('period', dataToSend.period.toString())
+    formData.append('period', dataToSend.period)
     formData.append('entryPeriod', dataToSend.entryPeriod)
     formData.append('password', dataToSend.password)
 
     // try {
-    //   const response = await fetch('URL_DO_SERVIDOR', {
+    //   const response = await fetch('http://127.0.0.1:8080/api/v1/students', {
     //     method: 'POST',
     //     body: formData,
     //   })
 
-    //   if (!response.ok) throw new Error('Falha no envio')
+    //   const status = response.status
 
-    //   const result = await response.json()
+    //   if (response.ok) {
+    //     if (status === 200) {
+    //       toast({
+    //         title: 'Cadastro realizado com sucesso',
+    //         description: 'Seja bem vindo!',
+    //       })
 
-    //   toast({
-    //     title: 'Sucesso!',
-    //     description: 'Cadastro realizado com sucesso.',
-    //   })
+    //       push('/registered')
+    //     }
+    //   }
 
-    //   console.log(result)
+    //   if (status >= 400 && status < 500) {
+    //     toast({
+    //       variant: 'destructive',
+    //       title: 'Erro ao fazer o cadastro',
+    //       description: 'Verifique os campos e tente novamente.',
+    //     })
+    //   }
+
+    //   if (status >= 500) {
+    //     toast({
+    //       title: 'Não foi possível fazer login',
+    //       description: 'Tente novamente mais tarde',
+    //     })
+    //   }
     // } catch (error) {
     //   console.error('Erro ao enviar o formulário:', error)
     //   toast({
@@ -272,6 +291,8 @@ const SignUpForm = () => {
                       <SelectItem value="6">6</SelectItem>
                       <SelectItem value="7">7</SelectItem>
                       <SelectItem value="8">8</SelectItem>
+                      <SelectItem value="9">9</SelectItem>
+                      <SelectItem value="10">10</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />

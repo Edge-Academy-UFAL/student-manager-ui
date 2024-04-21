@@ -10,7 +10,7 @@ import {
 
 import SignUpForm from './signup-form'
 
-export default function SignUp() {
+export default function SignUp({ id }: { id: string }) {
   return (
     <div className="flex flex-col justify-center items-center md:py-10">
       <Card className="md:rounded-xl rounded-none relative">
@@ -23,7 +23,7 @@ export default function SignUp() {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <SignUpForm />
+          <SignUpForm id={id} />
         </CardContent>
       </Card>
     </div>
