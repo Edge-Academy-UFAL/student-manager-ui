@@ -21,7 +21,7 @@ export const RegisterSchema = z
     semester: z.coerce
       .string()
       .min(1, 'Semestre Inválido.')
-      .max(8, 'Semestre Inválido.'),
+      .max(10, 'Semestre Inválido.'),
     entrySemester: z.string().refine(
       (value) => {
         const currentYear = new Date().getFullYear()

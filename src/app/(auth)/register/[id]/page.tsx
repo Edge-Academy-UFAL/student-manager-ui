@@ -1,11 +1,11 @@
 import SignUp from '@/components/auth/signup'
 import { DotBackground } from '@/components/background'
 
-const SignUpPage = () => {
+const SignUpPage = ({ params }: { params: { id: string } }) => {
   return (
     <div>
       <DotBackground />
-      <SignUp />
+      <SignUp id={params.id} />
     </div>
   )
 }
