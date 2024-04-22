@@ -1,5 +1,5 @@
 'use client'
-import { Cat, Users } from 'lucide-react'
+import { Users } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Separator } from '../ui/separator'
 import { NavLink } from './nav-link'
