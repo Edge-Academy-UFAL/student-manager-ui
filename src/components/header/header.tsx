@@ -12,21 +12,6 @@ export const routes = [
     path: '/alunos',
     icon: <Users className="h-4 w-4" />,
   },
-  {
-    name: 'Route 2',
-    path: '/rota2',
-    icon: <Cat className="h-4 w-4" />,
-  },
-  {
-    name: 'Route 3',
-    path: '/rota3',
-    icon: <Cat className="h-4 w-4" />,
-  },
-  {
-    name: 'Route 4',
-    path: '/rota4',
-    icon: <Cat className="h-4 w-4" />,
-  },
 ]
 
 const Header = () => {
