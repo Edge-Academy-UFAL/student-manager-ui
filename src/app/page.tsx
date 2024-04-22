@@ -33,9 +33,9 @@ export default function Home() {
               <div className="flex flex-col gap-2 min-[400px]:flex-row">
                 <Link
                   className="inline-flex h-10 items-center justify-center rounded-md bg-gradient-to-r from-[#00cdac] to-[#8ac926] px-8 text-sm font-medium text-white shadow  hover:opacity-90 disabled:pointer-events-none disabled:opacity-50 dark:hover:opacity-110  dark:opacity-90 dark:focus-visible:ring-gray-300 transition duration-300 ease-in-out delay-150 bg-blue-500 hover:-translate-y-[0.15rem]"
-                  href="/login"
+                  href="/alunos"
                 >
-                  Faça Login
+                  Veja agora os alunos
                 </Link>
                 <Link
                   className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200
