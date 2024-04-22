@@ -33,7 +33,7 @@ import {
   NumberFilteringOption,
 } from '@/components/custom-select'
 
-import { FaFilter } from 'react-icons/fa6'
+import { Filter } from 'lucide-react'
 
 import { Student } from '@/components/table'
 import { Badge } from '@/components/ui/badge'
@@ -529,7 +529,7 @@ function TableFiltersDropdown(props: {
           onClick={() => setShowDropdown(true)}
         >
           <>
-            <FaFilter size={'18px'} />
+            <Filter size={'18px'} strokeWidth={2} />
             <span className="ml-2">Filtros</span>
           </>
           {activeFilterCount > 0 ? (
