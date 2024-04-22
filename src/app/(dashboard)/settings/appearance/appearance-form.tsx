@@ -42,13 +42,11 @@ export function AppearanceForm({ data }: { data: AppearanceFormValues }) {
   const { setTheme } = useTheme()
 
   useEffect(() => {
-    console.log('TEMA', data.theme)
     setTheme(data.theme)
-  }, [data])
+  }, [data, setTheme])
 
   function onSubmit(data: AppearanceFormValues) {
     setTheme(data.theme)
-    console.log(data)
     toast({
       title: 'Você enviou os seguintes valores:',
       description: (

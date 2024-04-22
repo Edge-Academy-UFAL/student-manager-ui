@@ -1,5 +1,5 @@
 'use client'
-import { Cat, Users } from 'lucide-react'
+import { Users } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Separator } from '../ui/separator'
 import { NavLink } from './nav-link'
@@ -11,21 +11,6 @@ export const routes = [
     name: 'Alunos',
     path: '/alunos',
     icon: <Users className="h-4 w-4" />,
-  },
-  {
-    name: 'Route 2',
-    path: '/rota2',
-    icon: <Cat className="h-4 w-4" />,
-  },
-  {
-    name: 'Route 3',
-    path: '/rota3',
-    icon: <Cat className="h-4 w-4" />,
-  },
-  {
-    name: 'Route 4',
-    path: '/rota4',
-    icon: <Cat className="h-4 w-4" />,
   },
 ]
 

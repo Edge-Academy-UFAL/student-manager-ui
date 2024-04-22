@@ -1,4 +1,5 @@
 'use client'
+import { useAuth } from '@/contexts/auth'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,14 +14,15 @@ import { useRouter } from 'next/navigation'
 
 export function UserSheet() {
   const router = useRouter()
+  const { isAuthenticated, logout } = useAuth()
 
   const id = 'user_ID'
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Avatar className="hover:cursor-pointer">
-          <AvatarImage alt="@shadcn" />
-          <AvatarFallback>R</AvatarFallback>
+          <AvatarImage alt="Dirceu" src="/themaster.jpeg" />
+          <AvatarFallback>D</AvatarFallback>
         </Avatar>
       </SheetTrigger>
       <SheetContent>
@@ -46,6 +48,17 @@ export function UserSheet() {
             {' '}
             Acessar Perfil
           </Button>
+
+          {isAuthenticated && (
+            <Button
+              className="bg-transparent border text-foreground hover:bg-foreground hover:text-background transition-colors"
+              onClick={() => {
+                logout()
+              }}
+            >
+              Sair
+            </Button>
+          )}
         </div>
       </SheetContent>
     </Sheet>

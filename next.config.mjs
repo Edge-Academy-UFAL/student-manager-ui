@@ -8,6 +8,9 @@ const nextConfig = {
       },
     ],
   },
+  env: {
+    backendRoute: 'http://localhost:8080',
+  },
 }
 
 export default nextConfig
