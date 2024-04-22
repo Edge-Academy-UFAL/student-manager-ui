@@ -255,7 +255,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
           className="max-w-sm"
         />
         <div className="ml-auto flex gap-2.5">
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-2">
                 Filtro de Coluna <ChevronDownIcon className="ml-2 h-4 w-4" />
@@ -280,7 +280,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                   )
                 })}
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
           <TableFiltersDropdown
             setGlobalFilter={setGlobalFilter}
             studentGroups={Array.from(
