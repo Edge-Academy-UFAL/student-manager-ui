@@ -21,8 +21,8 @@ export function UserSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Avatar className="hover:cursor-pointer">
-          <AvatarImage alt="@shadcn" />
-          <AvatarFallback>R</AvatarFallback>
+          <AvatarImage alt="Dirceu" src="/themaster.jpeg" />
+          <AvatarFallback>D</AvatarFallback>
         </Avatar>
       </SheetTrigger>
       <SheetContent>
