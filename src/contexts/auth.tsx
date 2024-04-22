@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     }
     loadUserFromCookies()
+    /* eslint-disable */
   }, [setTokenState])
 
   const login = async (email: string, password: string) => {
