@@ -33,8 +33,11 @@ import {
   NumberFilteringOption,
 } from '@/components/custom-select'
 
+import { FaFilter } from 'react-icons/fa6'
+
 import { Student } from '@/components/table'
 import { Badge } from '@/components/ui/badge'
+import { IconContext } from 'react-icons/lib'
 
 interface FilterData {
   csCheckbox: boolean
@@ -523,17 +526,19 @@ function TableFiltersDropdown(props: {
     <DropdownMenu open={showDropdown} onOpenChange={setShowDropdown}>
       <DropdownMenuTrigger asChild>
         <Button
-          className="w-[128px]"
           variant={activeFilterCount > 0 ? 'default' : 'outline'}
           onClick={() => setShowDropdown(true)}
         >
+          <>
+            <FaFilter size={'18px'} />
+            <span className="ml-2">Filtros</span>
+          </>
           {activeFilterCount > 0 ? (
-            <>
-              <Badge variant="secondary">{activeFilterCount}</Badge>
-              <span className="ml-2">Filtros</span>
-            </>
+            <Badge variant="secondary" className="ml-2">
+              {activeFilterCount}
+            </Badge>
           ) : (
-            <span>Filtros</span>
+            ''
           )}
         </Button>
       </DropdownMenuTrigger>
