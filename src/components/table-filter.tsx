@@ -37,7 +37,6 @@ import { FaFilter } from 'react-icons/fa6'
 
 import { Student } from '@/components/table'
 import { Badge } from '@/components/ui/badge'
-import { IconContext } from 'react-icons/lib'
 
 interface FilterData {
   csCheckbox: boolean
