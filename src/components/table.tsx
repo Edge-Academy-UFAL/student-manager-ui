@@ -48,6 +48,7 @@ import { DeleteStudent } from './delete-student'
 import { enumToStringCourse } from '@/lib/utils'
 
 import { StudentRegistrationDialog } from './student-registration-dialog'
+import { TableFiltersDropdown, tableGlobalFilterFn } from './table-filter'
 
 export type Student = {
   [x: string]: string
@@ -58,6 +59,7 @@ export type Student = {
   foto: string
   course: string
   period: string
+  entryPeriod: string
 }
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
@@ -213,6 +215,8 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   )
+  const [globalFilter, setGlobalFilter] = React.useState({})
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
@@ -228,11 +232,14 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: tableGlobalFilterFn,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       rowSelection,
+      globalFilter,
     },
   })
 
@@ -247,12 +254,11 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
           }
           className="max-w-sm"
         />
-        <div className="ml-auto">
-          <StudentRegistrationDialog />
-          <DropdownMenu>
+        <div className="ml-auto flex gap-2.5">
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-2">
-                Filtro <ChevronDownIcon className="ml-2 h-4 w-4" />
+                Filtro de Coluna <ChevronDownIcon className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -274,7 +280,18 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                   )
                 })}
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
+          <TableFiltersDropdown
+            setGlobalFilter={setGlobalFilter}
+            studentGroups={Array.from(
+              new Set(
+                data.map((obj) => {
+                  return Number(obj.studentGroup)
+                }),
+              ),
+            )}
+          />
+          <StudentRegistrationDialog />
         </div>
       </div>
       <div className="rounded-md border ">
