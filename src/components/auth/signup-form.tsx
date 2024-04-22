@@ -105,7 +105,7 @@ const SignUpForm = ({ id }: { id: string }) => {
             description: 'Seja bem vindo!',
           })
 
-          push('/registered')
+          push('/register/completed')
         }
       }
 
