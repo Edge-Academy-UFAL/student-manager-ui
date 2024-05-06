@@ -304,9 +304,9 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   )
                 })}
@@ -320,7 +320,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   onClick={() => goToStudentPage(row.id)}
-                  className={"cursor-pointer"}
+                  className={'cursor-pointer'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
