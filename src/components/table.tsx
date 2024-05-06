@@ -111,7 +111,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-medium text-base text-bold">
+              <div className="font-medium text-base text-bold hover:underline cursor-pointer hover:font-extrabold">
                 {row.getValue('name')}
               </div>
               <div className="lowercase text-sm text-neutral-500">
@@ -238,6 +238,10 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
     },
   })
 
+  function goToStudentPage(studentId: string) {
+    router.push('/alunos/' + studentId + '/profile')
+  }
+
   return (
     <div className="max-w-7xl w-full px-10 py-5 justify-center">
       <div className="flex items-center py-4">
@@ -300,9 +304,9 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   )
                 })}
@@ -315,6 +319,8 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  onClick={() => goToStudentPage(row.id)}
+                  className={"cursor-pointer"}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
