@@ -2,15 +2,14 @@ import StudentProfile from '@/components/student-profile/student-profile'
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 interface StudentProfilePageProps {
-  params: { id: string }
+  params: { email: string }
 }
 
 const StudentProfilePage = ({ params }: StudentProfilePageProps) => {
-  const id = params.id
+  const email = params.email
   return (
     <div className="p-5">
-      <h1>Student Profile</h1>
-      {id}
+      <h1>Dados pessoais do aluno {email}</h1>
       <StudentProfile />
     </div>
   )
