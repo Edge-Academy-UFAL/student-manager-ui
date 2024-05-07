@@ -6,7 +6,7 @@ import { Separator } from './ui/separator'
 import { Student } from '@/lib/domain'
 import { usePathname } from 'next/navigation'
 import { Fragment } from 'react'
-
+import { getUsername } from '@/lib/utils'
 interface SubpageData {
   name: string
   route: string
@@ -19,6 +19,8 @@ function getNameInitials(name: string) {
 }
 
 const StudentPageHeader = ({ student }: { student: Student }) => {
+  const username = getUsername(student.email)
+
   // Add new subpages here
   const subpages: Array<SubpageData> = [
     { name: 'Dados pessoais', route: 'dados', active: false },
@@ -68,7 +70,7 @@ const StudentPageHeader = ({ student }: { student: Student }) => {
                 <li className="hover:decoration-2 hover:underline">
                   <Link
                     className={subpage.active ? 'decoration-2 underline' : ''}
-                    href={`/alunos/${student.email}/${subpage.route}`}
+                    href={`/alunos/${username}/${subpage.route}`}
                   >
                     {subpage.name}
                   </Link>

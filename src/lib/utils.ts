@@ -27,3 +27,9 @@ export function enumToStringCourse(course: string) {
       return course
   }
 }
+
+// This function gets the text before the @edge.ufal.br
+// It is used for routing porpuses
+export function getUsername(email: string) {
+  return email.split('@')[0]
+}

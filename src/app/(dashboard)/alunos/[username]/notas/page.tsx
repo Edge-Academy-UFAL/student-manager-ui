@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 interface StudentGradesPageProps {
-  params: { email: string }
+  params: { username: string }
 }
 
 const StudentGradesPage = ({ params }: StudentGradesPageProps) => {
-  const email = params.email
+  const email = `${params.username}@edge.ufal.br`
 
   return (
     <div className="flex items-center justify-center h-full">

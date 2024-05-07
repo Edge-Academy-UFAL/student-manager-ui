@@ -33,9 +33,9 @@ const StudentLayout = async ({
   params,
 }: Readonly<{
   children: React.ReactNode
-  params: { email: string }
+  params: { username: string }
 }>) => {
-  const studentData = await getData(params.email)
+  const studentData = await getData(`${params.username}@edge.ufal.br`)
 
   return (
     <div>

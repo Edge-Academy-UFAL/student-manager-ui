@@ -40,7 +40,7 @@ import {
 } from '@/components/ui/table'
 
 import { DeleteStudent } from './delete-student'
-import { enumToStringCourse } from '@/lib/utils'
+import { enumToStringCourse, getUsername } from '@/lib/utils'
 
 import { StudentRegistrationDialog } from './student-registration-dialog'
 import { TableFiltersDropdown, tableGlobalFilterFn } from './table-filter'
@@ -113,7 +113,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
             </Avatar>
             <div>
               <Link
-                href={'/alunos/' + row.original.email + '/dados'}
+                href={'/alunos/' + getUsername(row.original.email) + '/dados'}
                 className="font-medium text-base text-bold hover:underline cursor-pointer hover:font-extrabold"
               >
                 {row.getValue('name')}
@@ -236,7 +236,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
   })
 
   function goToStudentPage(studentEmail: string) {
-    router.push('/alunos/' + studentEmail + '/dados')
+    router.push('/alunos/' + getUsername(studentEmail) + '/dados')
   }
 
   return (
