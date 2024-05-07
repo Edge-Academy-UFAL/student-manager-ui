@@ -190,7 +190,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onClick={() =>
-                  router.push('/alunos/' + payment.email + '/profile')
+                  router.push('/alunos/' + payment.email + '/dados')
                 }
               >
                 Visualizar Perfil
@@ -239,7 +239,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
   })
 
   function goToStudentPage(studentEmail: string) {
-    router.push('/alunos/' + studentEmail + '/profile')
+    router.push('/alunos/' + studentEmail + '/dados')
   }
 
   return (

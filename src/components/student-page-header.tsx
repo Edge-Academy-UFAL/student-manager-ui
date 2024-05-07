@@ -20,7 +20,7 @@ function getNameInitials(name: string) {
 const StudentPageHeader = ({ student }: { student: Student }) => {
   // Add new subpages here
   const subpages: Array<SubpageData> = [
-    { name: 'Dados pessoais', route: 'profile', active: false },
+    { name: 'Dados pessoais', route: 'dados', active: false },
     { name: 'Notas', route: 'notas', active: false },
   ]
 

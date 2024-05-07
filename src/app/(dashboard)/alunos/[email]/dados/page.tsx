@@ -7,9 +7,9 @@ interface StudentProfilePageProps {
 
 const StudentProfilePage = ({ params }: StudentProfilePageProps) => {
   const email = params.email
+
   return (
-    <div className="p-5">
-      <h1>Dados pessoais do aluno {email}</h1>
+    <div className="flex justify-center">
       <StudentProfile />
     </div>
   )
