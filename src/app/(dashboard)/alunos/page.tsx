@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import DataTableDemo from '@/components/table'
-import { authOptions } from '@/lib/auth'
+import { UserSession, authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
-import { getToken } from 'next-auth/jwt'
-import { useSession } from 'next-auth/react'
 
 const prodURL = `https://json-server-edge-academy.vercel.app/students`
 const devURL = `http://localhost:3333/students`
@@ -18,7 +16,7 @@ const StudentSearchPage = async () => {
     try {
       const res = await fetch('http://127.0.0.1:8080/api/v1/students', {
         headers: {
-          Authorization: `Bearer ${session!.user!.authToken}`,
+          Authorization: `Bearer ${(session as UserSession).user.authToken}`,
         },
         next: {
           revalidate: 15, // dessa forma, a cada 15 segundos a página será atualizada
