@@ -1,7 +1,16 @@
+'use client'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { Separator } from './ui/separator'
 import { Student } from '@/lib/domain'
+import { usePathname } from 'next/navigation'
+
+interface SubpageData {
+  name: string
+  route: string
+  active: boolean
+}
 
 function getNameInitials(name: string) {
   const names = name.split(' ')
@@ -9,6 +18,20 @@ function getNameInitials(name: string) {
 }
 
 const StudentPageHeader = ({ student }: { student: Student }) => {
+  // Add new subpages here
+  const subpages: Array<SubpageData> = [
+    { name: 'Dados pessoais', route: 'profile', active: false },
+    { name: 'Notas', route: 'notas', active: false },
+  ]
+
+  // Gets the current loaded subpage route pathname and sets it as active
+  const pathname = usePathname().split('/').at(-1)
+  subpages.forEach((part, index) => {
+    if (part.route === pathname) {
+      subpages[index].active = true
+    }
+  })
+
   function getFormatedEntryDate(entryDate: string): string {
     const entryDateObj: Date = new Date(entryDate)
     const month = entryDateObj.toLocaleString('pt-BR', { month: 'long' })
@@ -39,15 +62,26 @@ const StudentPageHeader = ({ student }: { student: Student }) => {
           </div>
 
           <ul className="flex h-5 items-center space-x-4  mt-3">
-            <li className="hover:decoration-2 hover:underline">
-              <Link href={'/alunos/' + student.email + '/profile'}>
-                Dados pessoais
-              </Link>
-            </li>
-            <Separator orientation="vertical" />
-            <li className="hover:decoration-2 hover:underline">
-              <Link href={'/alunos/' + student.email + '/notas'}>Notas</Link>
-            </li>
+            {subpages.map((subpage, index) => (
+              <>
+                <li
+                  key={subpage.route}
+                  className="hover:decoration-2 hover:underline"
+                >
+                  <Link
+                    className={subpage.active ? 'decoration-2 underline' : ''}
+                    href={`/alunos/${student.email}/${subpage.route}`}
+                  >
+                    {subpage.name}
+                  </Link>
+                </li>
+                {index < subpages.length - 1 ? (
+                  <Separator orientation="vertical" />
+                ) : (
+                  ''
+                )}
+              </>
+            ))}
           </ul>
         </div>
       </div>
