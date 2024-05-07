@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Separator } from './ui/separator'
 import { Student } from '@/lib/domain'
 import { usePathname } from 'next/navigation'
+import { Fragment } from 'react'
 
 interface SubpageData {
   name: string
@@ -63,11 +64,8 @@ const StudentPageHeader = ({ student }: { student: Student }) => {
 
           <ul className="flex h-5 items-center space-x-4  mt-3">
             {subpages.map((subpage, index) => (
-              <>
-                <li
-                  key={subpage.route}
-                  className="hover:decoration-2 hover:underline"
-                >
+              <Fragment key={subpage.route}>
+                <li className="hover:decoration-2 hover:underline">
                   <Link
                     className={subpage.active ? 'decoration-2 underline' : ''}
                     href={`/alunos/${student.email}/${subpage.route}`}
@@ -76,11 +74,11 @@ const StudentPageHeader = ({ student }: { student: Student }) => {
                   </Link>
                 </li>
                 {index < subpages.length - 1 ? (
-                  <Separator orientation="vertical" />
+                  <Separator orientation="vertical" key={`sep-${index + 1}`} />
                 ) : (
                   ''
                 )}
-              </>
+              </Fragment>
             ))}
           </ul>
         </div>
