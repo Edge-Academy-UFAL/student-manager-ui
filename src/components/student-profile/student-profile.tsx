@@ -1,5 +1,5 @@
 const StudentProfile = () => {
-  return <div>Teste pagina</div>
+  return <div>Dados pessoais do aluno</div>
 }
 
 export default StudentProfile

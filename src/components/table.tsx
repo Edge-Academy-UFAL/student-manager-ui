@@ -40,10 +40,11 @@ import {
 } from '@/components/ui/table'
 
 import { DeleteStudent } from './delete-student'
-import { enumToStringCourse } from '@/lib/utils'
+import { enumToStringCourse, getUsername } from '@/lib/utils'
 
 import { StudentRegistrationDialog } from './student-registration-dialog'
 import { TableFiltersDropdown, tableGlobalFilterFn } from './table-filter'
+import Link from 'next/link'
 
 export type Student = {
   [x: string]: string
@@ -111,9 +112,12 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-medium text-base text-bold">
+              <Link
+                href={'/alunos/' + getUsername(row.original.email) + '/dados'}
+                className="font-medium text-base text-bold hover:underline cursor-pointer hover:font-extrabold"
+              >
                 {row.getValue('name')}
-              </div>
+              </Link>
               <div className="lowercase text-sm text-neutral-500">
                 {row.original.email}
               </div>
@@ -188,13 +192,6 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() =>
-                  router.push('/alunos/' + payment.id + '/profile')
-                }
-              >
-                Visualizar Perfil
-              </DropdownMenuItem>
               <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
               <DropdownMenuItem onClick={(e) => e.preventDefault()}>
                 <DeleteStudent name={payment.name} email={payment.email} />
@@ -237,6 +234,10 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       globalFilter,
     },
   })
+
+  function goToStudentPage(studentEmail: string) {
+    router.push('/alunos/' + getUsername(studentEmail) + '/dados')
+  }
 
   return (
     <div className="max-w-7xl w-full px-10 py-5 justify-center">
@@ -315,6 +316,8 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  onClick={() => goToStudentPage(row.original.email)}
+                  className={'cursor-pointer'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
