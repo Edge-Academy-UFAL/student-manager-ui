@@ -1,5 +1,5 @@
 'use client'
-import { useAuth } from '@/contexts/auth'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,12 +11,14 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { useRouter } from 'next/navigation'
+import { useSession, signOut } from 'next-auth/react'
 
 export function UserSheet() {
   const router = useRouter()
-  const { isAuthenticated, logout } = useAuth()
 
-  const id = 'user_ID'
+  const { status, data } = useSession()
+
+  const id = data?.user?.email
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -49,11 +51,11 @@ export function UserSheet() {
             Acessar Perfil
           </Button>
 
-          {isAuthenticated && (
+          {status === 'authenticated' && (
             <Button
               className="bg-transparent border text-foreground hover:bg-foreground hover:text-background transition-colors"
               onClick={() => {
-                logout()
+                signOut({ redirect: true, callbackUrl: '/login' })
               }}
             >
               Sair

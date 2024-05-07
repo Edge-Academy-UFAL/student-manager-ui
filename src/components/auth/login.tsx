@@ -13,15 +13,15 @@ import { useToast } from '@/components/ui/use-toast'
 import { LoginForm } from '@/app/(auth)/login/login-form'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/auth'
+import { useSession } from 'next-auth/react'
 
 export default function LoginAccount() {
   const { toast } = useToast()
-  const { isAuthenticated } = useAuth()
+  const { status } = useSession()
   const router = useRouter()
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (status !== 'loading' && status === 'authenticated') {
       router.push('/')
     }
   })
