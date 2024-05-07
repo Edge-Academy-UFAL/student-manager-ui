@@ -44,6 +44,7 @@ import { enumToStringCourse } from '@/lib/utils'
 
 import { StudentRegistrationDialog } from './student-registration-dialog'
 import { TableFiltersDropdown, tableGlobalFilterFn } from './table-filter'
+import Link from 'next/link'
 
 export type Student = {
   [x: string]: string
@@ -111,9 +112,12 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-medium text-base text-bold hover:underline cursor-pointer hover:font-extrabold">
+              <Link
+                href={'/alunos/' + row.original.email + '/dados'}
+                className="font-medium text-base text-bold hover:underline cursor-pointer hover:font-extrabold"
+              >
                 {row.getValue('name')}
-              </div>
+              </Link>
               <div className="lowercase text-sm text-neutral-500">
                 {row.original.email}
               </div>
