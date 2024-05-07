@@ -41,10 +41,15 @@ const StudentPageHeader = ({ student }: { student: Student }) => {
     return `${month.charAt(0).toUpperCase() + month.slice(1).toLowerCase()} de ${entryDateObj.getFullYear()}`
   }
 
+  function handleUpload() {
+    // TODO: Implementar upload de foto
+    console.log('Alterar button foi cliado')
+  }
+
   return (
     <div className="">
       <div className="flex items-center gap-10 px-10 py-4 dark:bg-[#0c0c0c] bg-[#f7f7f7] border-b">
-        <Avatar className="h-[155px] w-[155px]">
+        <Avatar className="relative group h-[155px] w-[155px]">
           <AvatarImage
             src={
               'http://localhost:4566/student-manager-files/' + student.photoUrl
@@ -52,7 +57,16 @@ const StudentPageHeader = ({ student }: { student: Student }) => {
             alt="student-profile-picture"
           />
           <AvatarFallback>{getNameInitials(student.name)}</AvatarFallback>
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 bg-gray-800">
+            <button
+              className="text-white text-lg font-bold"
+              onClick={() => handleUpload()}
+            >
+              Alterar
+            </button>
+          </div>
         </Avatar>
+
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <div>
