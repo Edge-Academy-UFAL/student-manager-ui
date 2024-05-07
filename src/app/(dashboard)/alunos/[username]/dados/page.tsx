@@ -10,7 +10,7 @@ const StudentProfilePage = ({ params }: StudentProfilePageProps) => {
 
   return (
     <div className="flex justify-center">
-      <StudentProfile />
+      <StudentProfile username={params.username} />
     </div>
   )
 }
