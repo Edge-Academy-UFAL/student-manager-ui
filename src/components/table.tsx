@@ -188,13 +188,6 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() =>
-                  router.push('/alunos/' + payment.email + '/dados')
-                }
-              >
-                Visualizar Perfil
-              </DropdownMenuItem>
               <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
               <DropdownMenuItem onClick={(e) => e.preventDefault()}>
                 <DeleteStudent name={payment.name} email={payment.email} />
