@@ -1,8 +1,10 @@
 import StudentPageHeader from '@/components/student-page-header'
-import { cookies } from 'next/headers'
+import { UserSession, authOptions } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
 
 const getData = async (email: string) => {
-  const token = cookies().get('token')?.value
+  const session = await getServerSession(authOptions)
+  const token = (session as UserSession).user.authToken
 
   try {
     const res = await fetch(
