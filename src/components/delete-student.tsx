@@ -11,12 +11,13 @@ import {
 } from '@/components/ui/alert-dialog'
 import { useToast } from './ui/use-toast'
 import { useSession } from 'next-auth/react'
+import { UserSession } from '@/lib/auth'
 
 export function DeleteStudent(props: { name: string; email: string }) {
   const { data } = useSession()
   const { toast } = useToast()
 
-  const token = (data?.user as any).authToken
+  const token = (data as UserSession).user.authToken
 
   async function handleDelete() {
     const res = await fetch(

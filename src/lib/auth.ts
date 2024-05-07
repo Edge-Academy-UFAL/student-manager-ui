@@ -1,5 +1,16 @@
-import type { NextAuthOptions } from 'next-auth'
+import type { DefaultSession, NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+
+export interface UserSession extends DefaultSession {
+  user: DefaultSession['user'] & {
+    id: string
+    authToken: string
+    name: string
+    email: string
+    photoUrl: string
+    dtype: string
+  }
+}
 
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
