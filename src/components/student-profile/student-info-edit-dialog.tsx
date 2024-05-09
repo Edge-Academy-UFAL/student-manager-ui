@@ -20,6 +20,7 @@ import {
   Eye,
   EyeOff,
   MessageCircleQuestion,
+  FileDigit,
 } from 'lucide-react'
 
 import { useState } from 'react'
@@ -67,6 +68,8 @@ import { useForm } from 'react-hook-form'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 import { StudentResponse } from './student-profile'
+import { Textarea } from '../ui/textarea'
+import { ScrollArea } from '../ui/scroll-area'
 
 interface EditableInfoData {
   about: string | ''
@@ -221,10 +224,28 @@ const EditInfoDialogContent = ({
   return (
     <Form {...form}>
       <form
-        className="w-full lg:max-w-[46rem]"
+        className="w-full lg:max-w-[46rem] max-h-[60vh] p-1"
         onSubmit={form.handleSubmit(submitHandler)}
       >
-        <div className="lg:grid lg:grid-cols-2 gap-5">
+        <div className="mb-2 lg:mb-4">
+          <FormField
+            control={form.control}
+            name="about"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Sobre mim</FormLabel>
+                <FormControl>
+                  <Textarea
+                    {...field}
+                    className="resize-none h-[80px] lg:h-[110px]"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <div className="lg:grid lg:grid-cols-2 lg:gap-4 gap-8">
           <div>
             <FormField
               control={form.control}
@@ -545,17 +566,17 @@ export function StudentInformationEditDialog({
         </Button>
       </DialogTrigger>
       <DialogContent className="lg:max-w-[46rem]">
-        <DialogHeader>
+        <DialogHeader className="px-1">
           <DialogTitle>Editar informações básicas</DialogTitle>
           <DialogDescription>
             Atualize seu texto de apresentação, dados acadêmicos e outras
             informações pessoais para manter seu perfil correto e atualizado.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <ScrollArea className="h-full">
           <EditInfoDialogContent studentData={studentData} />
-        </div>
-        <DialogFooter className="sm:flex-col-reverse sm:space-x-0 sm:gap-y-2 lg:flex-row lg:justify-end lg:space-x-2 lg:gap-y-0">
+        </ScrollArea>
+        <DialogFooter className="px-1 sm:flex-col-reverse sm:space-x-0 sm:gap-y-2 lg:flex-row lg:justify-end lg:space-x-2 lg:gap-y-0">
           <Button
             type="button"
             variant="secondary"
