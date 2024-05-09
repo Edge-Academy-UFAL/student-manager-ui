@@ -18,13 +18,16 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { UserSession } from '@/lib/auth'
+import { getNameInitials } from '@/lib/utils'
 
 const AvatarEditable = ({
   photoUrlProps,
   name,
+  email,
 }: {
   photoUrlProps: string
   name: string
+  email: string
 }) => {
   const { data } = useSession()
 
@@ -73,79 +76,82 @@ const AvatarEditable = ({
         src={`http://localhost:4566/student-manager-files/${photoUrl}`}
         alt="student-profile-picture"
       />
-      <AvatarFallback>{name}</AvatarFallback>
-      <Dialog open={modalIsOpen} onOpenChange={changeModal}>
-        <DialogTrigger
-          asChild
-          className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 bg-gray-800 text-white"
-        >
-          <Button className="h-full">Alterar</Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-[700px]">
-          <DialogHeader>
-            <DialogTitle>Alterar foto de perfil</DialogTitle>
-            {error && (
-              <DialogDescription className="text-red-700">
-                {error}
-              </DialogDescription>
-            )}
-          </DialogHeader>
-          <div className=" px-0 flex items-stretch justify-normal gap-x-6">
-            {
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={
-                  selectedImage
-                    ? URL.createObjectURL(selectedImage)
-                    : 'http://localhost:4566/student-manager-files/' + photoUrl
-                }
-                alt="Selected"
-                className="rounded-xl w-[100px] h-[100px] shadow-sm object-cover"
-              />
-            }
-            <div className="space-y-2">
-              <div className="text-gray-500 text-xs">
-                Insira sua foto de perfil em formato PNG ou JPEG, com tamanho
-                máximo de 5MB.
-              </div>
-              <div className="flex items-center justify-normal gap-x-2">
-                <Button size="lg" type="button">
-                  <input
-                    type="file"
-                    className="hidden"
-                    id="fileInput"
-                    onChange={(e) => {
-                      setSelectedImage(e.target.files?.[0] || null)
-                      setCanSaveImage(!!e.target.files?.[0])
-                    }}
-                  />
-                  <label
-                    htmlFor="fileInput"
-                    className="text-neutral-90  rounded-md cursor-pointer inline-flex items-center"
-                  >
-                    <Upload className="mr-2" />
-                    <span className="whitespace-nowrap">Fazer Upload</span>
-                  </label>
-                </Button>
+      <AvatarFallback>{getNameInitials(name)}</AvatarFallback>
+      {data?.user?.email === email && (
+        <Dialog open={modalIsOpen} onOpenChange={changeModal}>
+          <DialogTrigger
+            asChild
+            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 bg-gray-800 text-white"
+          >
+            <Button className="h-full">Alterar</Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-[700px]">
+            <DialogHeader>
+              <DialogTitle>Alterar foto de perfil</DialogTitle>
+              {error && (
+                <DialogDescription className="text-red-700">
+                  {error}
+                </DialogDescription>
+              )}
+            </DialogHeader>
+            <div className=" px-0 flex items-stretch justify-normal gap-x-6">
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={
+                    selectedImage
+                      ? URL.createObjectURL(selectedImage)
+                      : 'http://localhost:4566/student-manager-files/' +
+                        photoUrl
+                  }
+                  alt="Selected"
+                  className="rounded-xl w-[100px] h-[100px] shadow-sm object-cover"
+                />
+              }
+              <div className="space-y-2">
+                <div className="text-gray-500 text-xs">
+                  Insira sua foto de perfil em formato PNG ou JPEG, com tamanho
+                  máximo de 5MB.
+                </div>
+                <div className="flex items-center justify-normal gap-x-2">
+                  <Button size="lg" type="button">
+                    <input
+                      type="file"
+                      className="hidden"
+                      id="fileInput"
+                      onChange={(e) => {
+                        setSelectedImage(e.target.files?.[0] || null)
+                        setCanSaveImage(!!e.target.files?.[0])
+                      }}
+                    />
+                    <label
+                      htmlFor="fileInput"
+                      className="text-neutral-90  rounded-md cursor-pointer inline-flex items-center"
+                    >
+                      <Upload className="mr-2" />
+                      <span className="whitespace-nowrap">Fazer Upload</span>
+                    </label>
+                  </Button>
+                </div>
               </div>
             </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Fechar
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Fechar
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                onClick={submitHandler}
+                disabled={canSaveImage === false}
+              >
+                Salvar
               </Button>
-            </DialogClose>
-            <Button
-              type="submit"
-              onClick={submitHandler}
-              disabled={canSaveImage === false}
-            >
-              Salvar
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </Avatar>
   )
 }

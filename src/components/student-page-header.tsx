@@ -39,7 +39,11 @@ const StudentPageHeader = ({ student }: { student: Student }) => {
   return (
     <div className="">
       <div className="flex items-center gap-10 px-10 py-4 dark:bg-[#0c0c0c] bg-[#f7f7f7] border-b">
-        <AvatarEditable name={student.name} photoUrlProps={student.photoUrl} />
+        <AvatarEditable
+          name={student.name}
+          photoUrlProps={student.photoUrl}
+          email={student.email}
+        />
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <div>
