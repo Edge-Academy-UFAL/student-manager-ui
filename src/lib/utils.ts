@@ -33,3 +33,7 @@ export function enumToStringCourse(course: string) {
 export function getUsername(email: string) {
   return email.split('@')[0]
 }
+
+export function formatPhone(phone: string) {
+  return `(${phone.slice(0, 2)}) ${phone.slice(2, 7)}-${phone.slice(7, 11)}`
+}

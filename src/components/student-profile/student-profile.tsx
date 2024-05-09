@@ -4,8 +4,9 @@ import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import InfoBox from './info-box'
 import { enumToStringCourse } from '@/lib/utils'
+import { StudentInformationEditDialog } from './student-info-edit-dialog'
 
-interface StudentResponse {
+export interface StudentResponse {
   name: string
   photoUrl: string
   birthDate: string
@@ -57,7 +58,10 @@ const StudentProfile = ({ username }: { username: string }) => {
   return (
     <div className="w-screen max-w-[90%] mx-4 mt-9">
       <div className="flex flex-row justify-between">
-        <h2 className="text-2xl font-bold">Informações básicas</h2>
+        <div className="flex justify-between w-full">
+          <h2 className="text-2xl font-bold">Informações básicas</h2>
+          <StudentInformationEditDialog studentData={studentData} />
+        </div>
         {studentData.email === data?.user?.email ? (
           // TODO: change button to icon
           <button className="bg-black text-white px-2 py-1 rounded-sm mt-2">
