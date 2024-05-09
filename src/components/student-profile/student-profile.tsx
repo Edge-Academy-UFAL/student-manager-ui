@@ -3,7 +3,7 @@ import { UserSession } from '@/lib/auth'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import InfoBox from './info-box'
-import { enumToStringCourse } from '@/lib/utils'
+import { enumToStringCourse, getUsername } from '@/lib/utils'
 import { StudentInformationEditDialog } from './student-info-edit-dialog'
 
 export interface StudentResponse {
@@ -60,13 +60,9 @@ const StudentProfile = ({ username }: { username: string }) => {
       <div className="flex flex-row justify-between">
         <div className="flex justify-between w-full">
           <h2 className="text-2xl font-bold">Informações básicas</h2>
-          <StudentInformationEditDialog studentData={studentData} />
         </div>
         {studentData.email === data?.user?.email ? (
-          // TODO: change button to icon
-          <button className="bg-black text-white px-2 py-1 rounded-sm mt-2">
-            Editar
-          </button>
+          <StudentInformationEditDialog studentData={studentData} />
         ) : null}
       </div>
       <div className="flex flex-row gap-5 p-6 rounded-sm shadow-lg border mt-2">
