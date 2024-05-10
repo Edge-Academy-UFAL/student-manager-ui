@@ -85,7 +85,7 @@ const EditInfoSchema = z.object({
     .min(3, 'Preencha com seu nome completo.')
     .max(30, 'Limite de 30 caracteres atingido')
     .regex(
-      /^[a-zA-Z\sáéíóúãáçÃÁÉÍÓÚ]+$/,
+      /^[a-zA-Z\sáéêíóúãáçÃÁÉÊÍÓÚ]+$/,
       'O nome deve conter apenas letras A-Z a-z, espaços e acentos.',
     ),
   birthDate: z.date(),
@@ -93,11 +93,19 @@ const EditInfoSchema = z.object({
   phone: z
     .string()
     .min(10, 'Número de telefone inválido.')
-    .max(15, 'Número de telefone inválido.'),
+    .max(15, 'Número de telefone inválido.')
+    .regex(
+      /^(\([0-9]{2}\))\s?([9]?)([0-9]{4})-([0-9]{4})$/,
+      'Números de telefone válidos são da forma (XX) 9XXXX-XXXX ou (XX) XXXX-XXXX',
+    ),
   secondaryPhone: z
     .string()
     .min(10, 'Número de telefone inválido.')
     .max(15, 'Número de telefone inválido.')
+    .regex(
+      /^(\([0-9]{2}\))\s?([9]?)([0-9]{4})-([0-9]{4})$/,
+      'Números de telefone válidos são da forma (XX) 9XXXX-XXXX ou (XX) XXXX-XXXX',
+    )
     .optional()
     .or(z.literal('')),
   semester: z.coerce
@@ -265,10 +273,9 @@ const EditInfoDialogContent = ({
                   <FormLabel>Telefone</FormLabel>
                   <FormControl>
                     <Input
-                      defaultValue={formatPhone(field.value)}
+                      defaultValue={field.value}
                       onChange={field.onChange}
-                      placeholder="(99) 9999-9999"
-                      pattern="(\([0-9]{2}\))\s([9]{1})([0-9]{4})-([0-9]{4})"
+                      placeholder="(99) 99999-9999"
                     />
                   </FormControl>
                   <FormMessage />
@@ -323,9 +330,9 @@ const EditInfoDialogContent = ({
                   <FormLabel>Telefone Secundário</FormLabel>
                   <FormControl>
                     <Input
-                      {...field}
-                      placeholder="(99) 9999-9999"
-                      pattern="(\([0-9]{2}\))\s([9]{1})([0-9]{4})-([0-9]{4})"
+                      defaultValue={field.value}
+                      onChange={field.onChange}
+                      placeholder="(99) 99999-9999"
                     />
                   </FormControl>
                   <FormMessage />
@@ -384,8 +391,8 @@ export function StudentInfoEditDialog({
       studentData.course === 'COMPUTER_SCIENCE'
         ? 'Ciência da Computação'
         : 'Engenharia de Computação',
-    phone: studentData.phone,
-    secondaryPhone: studentData.secondaryPhone || '',
+    phone: formatPhone(studentData.phone),
+    secondaryPhone: formatPhone(studentData.secondaryPhone || ''),
     semester: studentData.period.toString(),
     entrySemester: studentData.entryPeriod,
     registration: studentData.registration,
