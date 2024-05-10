@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import InfoBox from './info-box'
 import { enumToStringCourse } from '@/lib/utils'
 import { StudentInfoEditDialog } from './student-info-edit-dialog'
-
+import { LoadingSpinner } from '../loading-spinner'
 export interface StudentResponse {
   name: string
   photoUrl: string
@@ -52,7 +52,13 @@ const StudentProfile = ({ username }: { username: string }) => {
     fetchStudentData()
   }, [username, data])
 
-  if (isLoading) return <div>Carregando...</div>
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <LoadingSpinner size={70}></LoadingSpinner>
+      </div>
+    )
+  }
   if (!studentData) return <div>Erro ao carregar dados...</div>
 
   return (
