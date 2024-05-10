@@ -11,8 +11,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-import { LoadingSpinner } from '@/components/loading-spinner'
-import { useSession } from 'next-auth/react'
+// import { LoadingSpinner } from '@/components/loading-spinner'
+// import { useSession } from 'next-auth/react'
 import { Settings, CalendarIcon } from 'lucide-react'
 
 import { useState } from 'react'
@@ -49,7 +49,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 
-import { Calendar } from '@/components/ui/calendar'
+import { CalendarWithDropdowns } from '../ui/calendar-with-dropdowns'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { cn, formatPhone } from '@/lib/utils'
@@ -167,36 +167,6 @@ const EditInfoDialogContent = ({
           <div>
             <FormField
               control={form.control}
-              name="course"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Curso</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o seu curso" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Ciência da Computação">
-                        Ciência da Computação
-                      </SelectItem>
-                      <SelectItem value="Engenharia de Computação">
-                        Engenharia de Computação
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div>
-            <FormField
-              control={form.control}
               name="birthDate"
               render={({ field }) => (
                 <FormItem>
@@ -220,7 +190,7 @@ const EditInfoDialogContent = ({
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
+                        <CalendarWithDropdowns
                           locale={ptBR}
                           defaultMonth={field.value}
                           mode="single"
@@ -229,11 +199,43 @@ const EditInfoDialogContent = ({
                           disabled={(date) =>
                             date > new Date() || date < new Date('1900-01-01')
                           }
-                          // initialFocus
+                          captionLayout="dropdown-buttons"
+                          fromYear={1980}
+                          toYear={new Date().getFullYear()}
                         />
                       </PopoverContent>
                     </Popover>
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div>
+            <FormField
+              control={form.control}
+              name="course"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Curso</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o seu curso" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Ciência da Computação">
+                        Ciência da Computação
+                      </SelectItem>
+                      <SelectItem value="Engenharia de Computação">
+                        Engenharia de Computação
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -352,20 +354,20 @@ const EditInfoDialogContent = ({
   )
 }
 
-function LoadingDialogContent(props: { title: string; message: string }) {
-  return (
-    <>
-      <DialogHeader>
-        <DialogTitle>{props.title}</DialogTitle>
-        <DialogDescription>{props.message}</DialogDescription>
-      </DialogHeader>
-      <div className="flex flex-col items-center justify-center w-full h-[160px]">
-        <LoadingSpinner size={50}></LoadingSpinner>
-        <p>Carregando...</p>
-      </div>
-    </>
-  )
-}
+// function LoadingDialogContent(props: { title: string; message: string }) {
+//   return (
+//     <>
+//       <DialogHeader>
+//         <DialogTitle>{props.title}</DialogTitle>
+//         <DialogDescription>{props.message}</DialogDescription>
+//       </DialogHeader>
+//       <div className="flex flex-col items-center justify-center w-full h-[160px]">
+//         <LoadingSpinner size={50}></LoadingSpinner>
+//         <p>Carregando...</p>
+//       </div>
+//     </>
+//   )
+// }
 
 export function StudentInfoEditDialog({
   studentData,
