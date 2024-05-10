@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-// import { LoadingSpinner } from '@/components/loading-spinner'
+import { LoadingSpinner } from '@/components/loading-spinner'
 import { useSession } from 'next-auth/react'
 import { Settings, CalendarIcon } from 'lucide-react'
 
@@ -388,21 +388,6 @@ const EditInfoDialogContent = ({
   )
 }
 
-// function LoadingDialogContent(props: { title: string; message: string }) {
-//   return (
-//     <>
-//       <DialogHeader>
-//         <DialogTitle>{props.title}</DialogTitle>
-//         <DialogDescription>{props.message}</DialogDescription>
-//       </DialogHeader>
-//       <div className="flex flex-col items-center justify-center w-full h-[160px]">
-//         <LoadingSpinner size={50}></LoadingSpinner>
-//         <p>Carregando...</p>
-//       </div>
-//     </>
-//   )
-// }
-
 export function StudentInfoEditDialog({
   studentData,
   setStudentData,
@@ -411,6 +396,7 @@ export function StudentInfoEditDialog({
   setStudentData: Dispatch<SetStateAction<StudentResponse | null>>
 }) {
   const [showDialog, setShowDialog] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const { data } = useSession()
   const { toast } = useToast()
 
@@ -450,6 +436,10 @@ export function StudentInfoEditDialog({
 
   const submitHandler = async (formData: EditInfoSchema) => {
     const requestData: StudentEditRequest = formatInfoEditData(formData)
+
+    setLoading(true)
+
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
     try {
       const url = `${process.env.backendRoute}/api/v1/students/${studentData.email}`
@@ -496,6 +486,11 @@ export function StudentInfoEditDialog({
         description: 'Erro ao enviar os dados.',
       })
     }
+
+    // This is required to prevent weird ui behavior when closing the modal
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    setLoading(false)
   }
 
   return (
@@ -514,9 +509,18 @@ export function StudentInfoEditDialog({
               informações pessoais para manter seu perfil correto e atualizado.
             </DialogDescription>
           </DialogHeader>
-          <ScrollArea className="py-3">
-            <EditInfoDialogContent form={form} />
-          </ScrollArea>
+
+          {loading ? (
+            <div className="flex flex-col items-center justify-center w-full h-[160px]">
+              <LoadingSpinner size={50}></LoadingSpinner>
+              <p>Enviando modificações...</p>
+            </div>
+          ) : (
+            <ScrollArea className="py-3">
+              <EditInfoDialogContent form={form} />
+            </ScrollArea>
+          )}
+
           <DialogFooter
             className="px-1 sm:flex-col-reverse sm:space-x-0 
                      sm:gap-y-2 lg:flex-row lg:justify-end lg:space-x-2 
@@ -533,7 +537,7 @@ export function StudentInfoEditDialog({
             </Button>
             <Button
               type="submit"
-              disabled={Object.keys(errors).length !== 0}
+              disabled={Object.keys(errors).length !== 0 || loading}
               variant={`${Object.keys(errors).length !== 0 ? 'destructive' : 'default'}`}
             >
               Editar
