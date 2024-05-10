@@ -102,16 +102,16 @@ const EditInfoSchema = z.object({
     .min(10, 'Número de telefone inválido.')
     .max(15, 'Número de telefone inválido.')
     .regex(
-      /^(\([0-9]{2}\))\s?([9]?)([0-9]{4})-([0-9]{4})$/,
-      'Números de telefone válidos são da forma (XX) 9XXXX-XXXX ou (XX) XXXX-XXXX',
+      /^(\([0-9]{2}\))\s?([9]{1})([0-9]{4})-([0-9]{4})$/,
+      'Números de telefone válidos são da forma (XX) 9XXXX-XXXX',
     ),
   secondaryPhone: z
     .string()
     .min(10, 'Número de telefone inválido.')
     .max(15, 'Número de telefone inválido.')
     .regex(
-      /^(\([0-9]{2}\))\s?([9]?)([0-9]{4})-([0-9]{4})$/,
-      'Números de telefone válidos são da forma (XX) 9XXXX-XXXX ou (XX) XXXX-XXXX',
+      /^(\([0-9]{2}\))\s?([9]{1})([0-9]{4})-([0-9]{4})$/,
+      'Números de telefone válidos são da forma (XX) 9XXXX-XXXX',
     )
     .optional()
     .or(z.literal('')),
