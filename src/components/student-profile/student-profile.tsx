@@ -3,8 +3,8 @@ import { UserSession } from '@/lib/auth'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import InfoBox from './info-box'
-import { enumToStringCourse, getUsername } from '@/lib/utils'
-import { StudentInformationEditDialog } from './student-info-edit-dialog'
+import { enumToStringCourse } from '@/lib/utils'
+import { StudentInfoEditDialog } from './student-info-edit-dialog'
 
 export interface StudentResponse {
   name: string
@@ -62,7 +62,7 @@ const StudentProfile = ({ username }: { username: string }) => {
           <h2 className="text-2xl font-bold">Informações básicas</h2>
         </div>
         {studentData.email === data?.user?.email ? (
-          <StudentInformationEditDialog studentData={studentData} />
+          <StudentInfoEditDialog studentData={studentData} />
         ) : null}
       </div>
       <div className="flex flex-row gap-5 p-6 rounded-sm shadow-lg border mt-2">

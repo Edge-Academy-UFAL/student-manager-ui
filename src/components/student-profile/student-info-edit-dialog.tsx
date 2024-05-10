@@ -11,28 +11,20 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { LoadingSpinner } from '@/components/loading-spinner'
 import { useSession } from 'next-auth/react'
-import {
-  Settings,
-  CalendarIcon,
-  Eye,
-  EyeOff,
-  MessageCircleQuestion,
-  FileDigit,
-} from 'lucide-react'
+import { Settings, CalendarIcon } from 'lucide-react'
 
 import { useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+// import {
+//   Tooltip,
+//   TooltipContent,
+//   TooltipProvider,
+//   TooltipTrigger,
+// } from '@/components/ui/tooltip'
 
 import {
   Select,
@@ -63,9 +55,8 @@ import { ptBR } from 'date-fns/locale'
 import { cn, formatPhone } from '@/lib/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { UseFormReturn, useForm } from 'react-hook-form'
 
-import { useRouter, useSearchParams } from 'next/navigation'
 import { z } from 'zod'
 import { StudentResponse } from './student-profile'
 import { Textarea } from '../ui/textarea'
@@ -132,101 +123,13 @@ const EditInfoSchema = z.object({
 type EditInfoSchema = z.infer<typeof EditInfoSchema>
 
 const EditInfoDialogContent = ({
-  studentData,
+  form,
 }: {
-  studentData: StudentResponse
+  form: UseFormReturn<EditInfoSchema>
 }) => {
-  const defaultFormData: EditableInfoData = {
-    about: studentData.about,
-    name: studentData.name,
-    birthDate: new Date(studentData.birthDate),
-    course:
-      studentData.course === 'COMPUTER_SCIENCE'
-        ? 'Ciência da Computação'
-        : 'Engenharia de Computação',
-    phone: studentData.phone,
-    secondaryPhone: studentData.secondaryPhone || '',
-    semester: studentData.period.toString(),
-    entrySemester: studentData.entryPeriod,
-    registration: studentData.registration,
-  }
-
-  const form = useForm<EditInfoSchema>({
-    resolver: zodResolver(EditInfoSchema),
-    defaultValues: defaultFormData,
-  })
-  // const email = useSearchParams().get('email')
-
-  // const { toast } = useToast()
-  // const { push } = useRouter()
-
-  const submitHandler = async (data: EditInfoSchema) => {
-    console.log(data)
-    // const dataToSend = formatSignUpData(data)
-
-    // // enviar os dados para a API
-
-    // const formData = new FormData()
-    // formData.append('name', dataToSend.name)
-    // formData.append('birthDate', dataToSend.birthdate)
-    // formData.append('course', dataToSend.course)
-    // formData.append('file', data.image[0])
-    // formData.append('registration', dataToSend.registration)
-    // formData.append('phone', dataToSend.phone)
-    // formData.append('secondaryPhone', dataToSend.secondaryPhone)
-    // formData.append('period', dataToSend.period)
-    // formData.append('entryPeriod', dataToSend.entryPeriod)
-    // formData.append('password', dataToSend.password)
-    // formData.append('email', email || '')
-    // formData.append('activationCode', id)
-
-    // try {
-    //   const response = await fetch('http://127.0.0.1:8080/api/v1/students', {
-    //     method: 'POST',
-    //     body: formData,
-    //   })
-
-    //   const status = response.status
-
-    //   if (response.ok) {
-    //     if (status === 201) {
-    //       toast({
-    //         title: 'Cadastro realizado com sucesso',
-    //         description: 'Seja bem vindo!',
-    //       })
-
-    //       push('/register/completed')
-    //     }
-    //   }
-
-    //   if (status >= 400 && status < 500) {
-    //     toast({
-    //       variant: 'destructive',
-    //       title: 'Erro ao fazer o cadastro',
-    //       description: 'Verifique os campos e tente novamente.',
-    //     })
-    //   }
-
-    //   if (status >= 500) {
-    //     toast({
-    //       title: 'Não foi possível fazer o cadastro',
-    //       description: 'Tente novamente mais tarde',
-    //     })
-    //   }
-    // } catch (error) {
-    //   console.error('Erro ao enviar o formulário:', error)
-    //   toast({
-    //     title: 'Erro',
-    //     description: 'Erro ao enviar os dados.',
-    //   })
-    // }
-  }
   return (
     <Form {...form}>
-      <form
-        className="w-full lg:max-w-[46rem] max-h-[60vh] p-1"
-        onSubmit={form.handleSubmit(submitHandler)}
-      >
+      <div className="w-full lg:max-w-[46rem] max-h-[60vh] p-1">
         <div className="mb-2 lg:mb-4">
           <FormField
             control={form.control}
@@ -444,9 +347,7 @@ const EditInfoDialogContent = ({
             />
           </div>
         </div>
-
-        {/* <Button className="w-full ">Cadastrar</Button> */}
-      </form>
+      </div>
     </Form>
   )
 }
@@ -466,35 +367,38 @@ function LoadingDialogContent(props: { title: string; message: string }) {
   )
 }
 
-export function StudentInformationEditDialog({
+export function StudentInfoEditDialog({
   studentData,
 }: {
   studentData: StudentResponse
 }) {
-  // const { data } = useSession()
-  // const [formData, setFormData] = useState<fromData>({
-  //   studentGroup: '',
-  //   admissionMonth: '',
-  //   admissionYear: '',
-  //   emails: '',
-  // })
   const [showDialog, setShowDialog] = useState<boolean>(false)
-  // const [validatedEmails, setValidatedEmails] = useState<
-  //   Array<{ email: string; isValid: boolean }>
-  // >([])
-  const [error, setError] = useState<boolean>(false)
-  // const [dialogState, _setDialogState] = useState<{
-  //   page: DialogPage
-  //   data: Record<string, unknown>
-  // }>({
-  //   page: DialogPage.Input,
-  //   data: {},
-  // })
+
+  const defaultFormData: EditableInfoData = {
+    about: studentData.about,
+    name: studentData.name,
+    birthDate: new Date(studentData.birthDate),
+    course:
+      studentData.course === 'COMPUTER_SCIENCE'
+        ? 'Ciência da Computação'
+        : 'Engenharia de Computação',
+    phone: studentData.phone,
+    secondaryPhone: studentData.secondaryPhone || '',
+    semester: studentData.period.toString(),
+    entrySemester: studentData.entryPeriod,
+    registration: studentData.registration,
+  }
+
+  const form = useForm<EditInfoSchema>({
+    resolver: zodResolver(EditInfoSchema),
+    defaultValues: defaultFormData,
+  })
+
+  const errors = form.formState.errors
 
   function handleDialogOpen(): void {
     // This is necessary to remove error indicators when re-opening the dialog.
     setShowDialog(true)
-    // setError(false)
   }
 
   function onShowDialogChange(): void {
@@ -503,11 +407,6 @@ export function StudentInformationEditDialog({
     // would trigger and the Dialog would never open.
     showDialog && setShowDialog(false)
   }
-
-  // function handleFormDataChange(field: string, value: string): void {
-  //   setError(false)
-  //   setFormData((prevState) => ({ ...prevState, [field]: value }))
-  // }
 
   // async function handleConfirm() {
   //   // Set loading state
@@ -558,6 +457,68 @@ export function StudentInformationEditDialog({
   //   }
   // }
 
+  const submitHandler = async (data: EditInfoSchema) => {
+    console.log(data)
+    // const dataToSend = formatSignUpData(data)
+
+    // // enviar os dados para a API
+
+    // const formData = new FormData()
+    // formData.append('name', dataToSend.name)
+    // formData.append('birthDate', dataToSend.birthdate)
+    // formData.append('course', dataToSend.course)
+    // formData.append('file', data.image[0])
+    // formData.append('registration', dataToSend.registration)
+    // formData.append('phone', dataToSend.phone)
+    // formData.append('secondaryPhone', dataToSend.secondaryPhone)
+    // formData.append('period', dataToSend.period)
+    // formData.append('entryPeriod', dataToSend.entryPeriod)
+    // formData.append('password', dataToSend.password)
+    // formData.append('email', email || '')
+    // formData.append('activationCode', id)
+
+    // try {
+    //   const response = await fetch('http://127.0.0.1:8080/api/v1/students', {
+    //     method: 'POST',
+    //     body: formData,
+    //   })
+
+    //   const status = response.status
+
+    //   if (response.ok) {
+    //     if (status === 201) {
+    //       toast({
+    //         title: 'Cadastro realizado com sucesso',
+    //         description: 'Seja bem vindo!',
+    //       })
+
+    //       push('/register/completed')
+    //     }
+    //   }
+
+    //   if (status >= 400 && status < 500) {
+    //     toast({
+    //       variant: 'destructive',
+    //       title: 'Erro ao fazer o cadastro',
+    //       description: 'Verifique os campos e tente novamente.',
+    //     })
+    //   }
+
+    //   if (status >= 500) {
+    //     toast({
+    //       title: 'Não foi possível fazer o cadastro',
+    //       description: 'Tente novamente mais tarde',
+    //     })
+    //   }
+    // } catch (error) {
+    //   console.error('Erro ao enviar o formulário:', error)
+    //   toast({
+    //     title: 'Erro',
+    //     description: 'Erro ao enviar os dados.',
+    //   })
+    // }
+  }
+
   return (
     <Dialog open={showDialog} onOpenChange={onShowDialogChange}>
       <DialogTrigger asChild>
@@ -566,33 +527,40 @@ export function StudentInformationEditDialog({
         </Button>
       </DialogTrigger>
       <DialogContent className="lg:max-w-[46rem]">
-        <DialogHeader className="px-1">
-          <DialogTitle>Editar informações básicas</DialogTitle>
-          <DialogDescription>
-            Atualize seu texto de apresentação, dados acadêmicos e outras
-            informações pessoais para manter seu perfil correto e atualizado.
-          </DialogDescription>
-        </DialogHeader>
-        <ScrollArea className="h-full">
-          <EditInfoDialogContent studentData={studentData} />
-        </ScrollArea>
-        <DialogFooter className="px-1 sm:flex-col-reverse sm:space-x-0 sm:gap-y-2 lg:flex-row lg:justify-end lg:space-x-2 lg:gap-y-0">
-          <Button
-            type="button"
-            variant="secondary"
-            // onClick={props.handleFinalize}
+        <form onSubmit={form.handleSubmit(submitHandler)}>
+          <DialogHeader className="px-1">
+            <DialogTitle>Editar informações básicas</DialogTitle>
+            <DialogDescription>
+              Atualize seu texto de apresentação, dados acadêmicos e outras
+              informações pessoais para manter seu perfil correto e atualizado.
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="py-3">
+            <EditInfoDialogContent form={form} />
+          </ScrollArea>
+          <DialogFooter
+            className="px-1 sm:flex-col-reverse sm:space-x-0 
+                     sm:gap-y-2 lg:flex-row lg:justify-end lg:space-x-2 
+                     lg:gap-y-0"
           >
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            // onClick={props.handleSubmit}
-            disabled={error}
-            variant={`${error ? 'destructive' : 'default'}`}
-          >
-            Editar
-          </Button>
-        </DialogFooter>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setShowDialog(false)
+              }}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              disabled={Object.keys(errors).length !== 0}
+              variant={`${Object.keys(errors).length !== 0 ? 'destructive' : 'default'}`}
+            >
+              Editar
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )
