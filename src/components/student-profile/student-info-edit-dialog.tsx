@@ -12,19 +12,12 @@ import {
 } from '@/components/ui/dialog'
 
 // import { LoadingSpinner } from '@/components/loading-spinner'
-// import { useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import { Settings, CalendarIcon } from 'lucide-react'
 
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 
 import { Input } from '@/components/ui/input'
-
-// import {
-//   Tooltip,
-//   TooltipContent,
-//   TooltipProvider,
-//   TooltipTrigger,
-// } from '@/components/ui/tooltip'
 
 import {
   Select,
@@ -52,7 +45,7 @@ import {
 import { CalendarWithDropdowns } from '../ui/calendar-with-dropdowns'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { cn, formatPhone } from '@/lib/utils'
+import { cn, formatPhone, formatDate } from '@/lib/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UseFormReturn, useForm } from 'react-hook-form'
@@ -61,6 +54,8 @@ import { z } from 'zod'
 import { StudentResponse } from './student-profile'
 import { Textarea } from '../ui/textarea'
 import { ScrollArea } from '../ui/scroll-area'
+import { UserSession } from '@/lib/auth'
+import { useToast } from '../ui/use-toast'
 
 interface EditableInfoData {
   about: string | ''
@@ -72,6 +67,18 @@ interface EditableInfoData {
   semester: string
   entrySemester: string
   registration: string
+}
+
+interface StudentEditRequest {
+  name: string
+  birthDate: string
+  course: string
+  registration: string
+  phone: string
+  secondaryPhone: string
+  period: number
+  entryPeriod: string
+  about: string
 }
 
 const EditInfoSchema = z.object({
@@ -129,6 +136,30 @@ const EditInfoSchema = z.object({
 })
 
 type EditInfoSchema = z.infer<typeof EditInfoSchema>
+
+function formatInfoEditData(data: EditInfoSchema): StudentEditRequest {
+  const phone = data.phone.replace(/\D/g, '')
+  const secondaryPhone = data.secondaryPhone?.replace(/\D/g, '') ?? ''
+
+  const course =
+    data.course === 'Ciência da Computação'
+      ? 'COMPUTER_SCIENCE'
+      : 'COMPUTER_ENGINEERING'
+
+  const dataToSend: StudentEditRequest = {
+    name: data.name,
+    birthDate: formatDate(data.birthDate),
+    course,
+    registration: data.registration,
+    phone,
+    secondaryPhone,
+    period: Number(data.semester),
+    entryPeriod: data.entrySemester,
+    about: data.about ?? '',
+  }
+
+  return dataToSend
+}
 
 const EditInfoDialogContent = ({
   form,
@@ -310,10 +341,6 @@ const EditInfoDialogContent = ({
                       <SelectItem value="8">8</SelectItem>
                       <SelectItem value="9">9</SelectItem>
                       <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="11">11</SelectItem>
-                      <SelectItem value="12">12</SelectItem>
-                      <SelectItem value="13">13</SelectItem>
-                      <SelectItem value="14">14</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -378,10 +405,14 @@ const EditInfoDialogContent = ({
 
 export function StudentInfoEditDialog({
   studentData,
+  setStudentData,
 }: {
   studentData: StudentResponse
+  setStudentData: Dispatch<SetStateAction<StudentResponse | null>>
 }) {
   const [showDialog, setShowDialog] = useState<boolean>(false)
+  const { data } = useSession()
+  const { toast } = useToast()
 
   const defaultFormData: EditableInfoData = {
     about: studentData.about,
@@ -417,115 +448,54 @@ export function StudentInfoEditDialog({
     showDialog && setShowDialog(false)
   }
 
-  // async function handleConfirm() {
-  //   // Set loading state
-  //   setDialogState(DialogPage.Loading, {
-  //     title: 'Enviando convites.',
-  //     message:
-  //       'Os convites estão sendo enviados para os alunos. Por favor, aguarde.',
-  //   })
+  const submitHandler = async (formData: EditInfoSchema) => {
+    const requestData: StudentEditRequest = formatInfoEditData(formData)
 
-  //   // prepare data
-  //   const requestData = {
-  //     emails: validatedEmails.map((email) => email.email),
-  //     entryDate: `${formData.admissionYear}-${formData.admissionMonth.padStart(2, '0')}-01`,
-  //     studentGroup: Number(formData.studentGroup),
-  //   }
+    try {
+      const url = `${process.env.backendRoute}/api/v1/students/${studentData.email}`
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${(data as UserSession).user.authToken}`,
+        },
+        body: JSON.stringify(requestData),
+      })
+      const status = res.status
 
-  //   // Get logged user credentials
-  //   const token = (data as UserSession).user.authToken
+      if (res.ok) {
+        if (status === 200) {
+          setStudentData({ ...studentData, ...requestData })
+          setShowDialog(false)
 
-  //   const res = await fetch(`${process.env.backendRoute}/api/v1/register`, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //     body: JSON.stringify(requestData),
-  //   })
+          toast({
+            title: 'Informações atualizadas com sucesso',
+            description: 'Seus dados foram atuaizados!',
+          })
+        }
+      }
 
-  //   // Validate response and show appropriate response dialog
-  //   if (res.ok) {
-  //     const data: BackendResponse = (await res.json()) as BackendResponse
+      if (status >= 400 && status < 500) {
+        toast({
+          variant: 'destructive',
+          title: 'Erro ao atualizar seus dados.',
+          description: 'Verifique os valores enviados e tente novamente.',
+        })
+      }
 
-  //     if (data.failedEmails.length === 0) {
-  //       setDialogState(DialogPage.BackendResponse, {
-  //         typeOfResponse: BackendResponseType.Success,
-  //       })
-  //     } else {
-  //       setDialogState(DialogPage.BackendResponse, {
-  //         typeOfResponse: BackendResponseType.InvitationSendingError,
-  //         invalidEmails: data.failedEmails,
-  //       })
-  //     }
-  //   } else {
-  //     setDialogState(DialogPage.BackendResponse, {
-  //       typeOfResponse: BackendResponseType.AnotherError,
-  //       responseCode: res.status,
-  //     })
-  //   }
-  // }
-
-  const submitHandler = async (data: EditInfoSchema) => {
-    console.log(data)
-    // const dataToSend = formatSignUpData(data)
-
-    // // enviar os dados para a API
-
-    // const formData = new FormData()
-    // formData.append('name', dataToSend.name)
-    // formData.append('birthDate', dataToSend.birthdate)
-    // formData.append('course', dataToSend.course)
-    // formData.append('file', data.image[0])
-    // formData.append('registration', dataToSend.registration)
-    // formData.append('phone', dataToSend.phone)
-    // formData.append('secondaryPhone', dataToSend.secondaryPhone)
-    // formData.append('period', dataToSend.period)
-    // formData.append('entryPeriod', dataToSend.entryPeriod)
-    // formData.append('password', dataToSend.password)
-    // formData.append('email', email || '')
-    // formData.append('activationCode', id)
-
-    // try {
-    //   const response = await fetch('http://127.0.0.1:8080/api/v1/students', {
-    //     method: 'POST',
-    //     body: formData,
-    //   })
-
-    //   const status = response.status
-
-    //   if (response.ok) {
-    //     if (status === 201) {
-    //       toast({
-    //         title: 'Cadastro realizado com sucesso',
-    //         description: 'Seja bem vindo!',
-    //       })
-
-    //       push('/register/completed')
-    //     }
-    //   }
-
-    //   if (status >= 400 && status < 500) {
-    //     toast({
-    //       variant: 'destructive',
-    //       title: 'Erro ao fazer o cadastro',
-    //       description: 'Verifique os campos e tente novamente.',
-    //     })
-    //   }
-
-    //   if (status >= 500) {
-    //     toast({
-    //       title: 'Não foi possível fazer o cadastro',
-    //       description: 'Tente novamente mais tarde',
-    //     })
-    //   }
-    // } catch (error) {
-    //   console.error('Erro ao enviar o formulário:', error)
-    //   toast({
-    //     title: 'Erro',
-    //     description: 'Erro ao enviar os dados.',
-    //   })
-    // }
+      if (status >= 500) {
+        toast({
+          title: 'Não foi possível atualizar os seus dados.',
+          description: 'Tente novamente mais tarde.',
+        })
+      }
+    } catch (error) {
+      console.error('Erro ao enviar o formulário:', error)
+      toast({
+        title: 'Erro',
+        description: 'Erro ao enviar os dados.',
+      })
+    }
   }
 
   return (

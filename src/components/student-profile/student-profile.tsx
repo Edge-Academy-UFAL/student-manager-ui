@@ -62,7 +62,10 @@ const StudentProfile = ({ username }: { username: string }) => {
           <h2 className="text-2xl font-bold">Informações básicas</h2>
         </div>
         {studentData.email === data?.user?.email ? (
-          <StudentInfoEditDialog studentData={studentData} />
+          <StudentInfoEditDialog
+            studentData={studentData}
+            setStudentData={setStudentData}
+          />
         ) : null}
       </div>
       <div className="flex flex-row gap-5 p-6 rounded-sm shadow-lg border mt-2">
