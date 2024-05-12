@@ -37,7 +37,7 @@ const StudentPageHeader = ({ id }: { id: string }) => {
             </li>
             <Separator orientation="vertical" />
             <li className="hover:decoration-2 hover:underline">
-              <Link href={'/alunos/' + id + '/college'}>Acadêmico</Link>
+              <Link href={'/alunos/' + id + '/notas'}>Notas</Link>
             </li>
             <Separator orientation="vertical" />
             <li className="hover:decoration-2 hover:underline">
