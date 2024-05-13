@@ -33,3 +33,19 @@ export function enumToStringCourse(course: string) {
 export function getUsername(email: string) {
   return email.split('@')[0]
 }
+
+// TODO: Make it work with both 8 digit numbers and 9 digit numbers
+export function formatPhone(phone: string): string {
+  if (phone === '') {
+    return ''
+  }
+  if (phone.length === 11) {
+    return `(${phone.slice(0, 2)}) ${phone.slice(2, 7)}-${phone.slice(7, 11)}`
+  }
+
+  if (phone.length === 10) {
+    return `(${phone.slice(0, 2)}) ${phone.slice(2, 6)}-${phone.slice(6, 10)}`
+  }
+
+  return phone
+}
