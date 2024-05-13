@@ -1,21 +1,16 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Link from 'next/link'
 import { Separator } from './ui/separator'
 import { Student } from '@/lib/domain'
 import { usePathname } from 'next/navigation'
 import { Fragment } from 'react'
 import { getUsername } from '@/lib/utils'
+import AvatarEditable from './header/avatar-editable'
 interface SubpageData {
   name: string
   route: string
   active: boolean
-}
-
-function getNameInitials(name: string) {
-  const names = name.split(' ')
-  return names[0][0].toUpperCase() + names[names.length - 1][0].toUpperCase()
 }
 
 const StudentPageHeader = ({ student }: { student: Student }) => {
@@ -44,15 +39,11 @@ const StudentPageHeader = ({ student }: { student: Student }) => {
   return (
     <div className="">
       <div className="flex items-center gap-10 px-10 py-4 dark:bg-[#0c0c0c] bg-[#f7f7f7] border-b">
-        <Avatar className="h-[155px] w-[155px]">
-          <AvatarImage
-            src={
-              'http://localhost:4566/student-manager-files/' + student.photoUrl
-            }
-            alt="student-profile-picture"
-          />
-          <AvatarFallback>{getNameInitials(student.name)}</AvatarFallback>
-        </Avatar>
+        <AvatarEditable
+          name={student.name}
+          photoUrlProps={student.photoUrl}
+          email={student.email}
+        />
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <div>
