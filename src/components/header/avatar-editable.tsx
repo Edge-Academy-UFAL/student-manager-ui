@@ -18,7 +18,8 @@ import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { UserSession } from '@/lib/auth'
-import { getNameInitials } from '@/lib/utils'
+import { getNameInitials, getUsername } from '@/lib/utils'
+import { revalidateUserPage } from '@/app/actions'
 
 const AvatarEditable = ({
   photoUrlProps,
@@ -65,6 +66,7 @@ const AvatarEditable = ({
       const studentResponse = await response.json()
       console.log(studentResponse)
       setPhotoUrl(studentResponse.photoUrl)
+      await revalidateUserPage(getUsername(studentResponse.email))
     }
 
     setCanSaveImage(true)

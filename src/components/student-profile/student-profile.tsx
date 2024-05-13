@@ -42,7 +42,6 @@ const StudentProfile = ({ username }: { username: string }) => {
       )
 
       if (response.ok) {
-        console.log('response', response)
         const studentInfos = await response.json()
         studentInfos.about = studentInfos.about || 'Não fornecido!'
         setStudentData(studentInfos)
