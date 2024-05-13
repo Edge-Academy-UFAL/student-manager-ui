@@ -64,7 +64,6 @@ const AvatarEditable = ({
       setModalIsOpen(false)
       setSelectedImage(null)
       const studentResponse = await response.json()
-      console.log(studentResponse)
       setPhotoUrl(studentResponse.photoUrl)
       await revalidateUserPage(getUsername(studentResponse.email))
     }
