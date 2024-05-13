@@ -84,7 +84,7 @@ interface StudentEditRequest {
 const EditInfoSchema = z.object({
   about: z
     .string()
-    .max(1000, 'Limite seu texto a 1000 caracteres')
+    .max(2000, 'Limite seu texto a 2000 caracteres')
     .optional()
     .or(z.literal('')),
   name: z
