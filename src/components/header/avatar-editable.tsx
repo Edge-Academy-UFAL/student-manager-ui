@@ -81,7 +81,9 @@ const AvatarEditable = ({
         <Dialog open={modalIsOpen} onOpenChange={changeModal}>
           <DialogTrigger
             asChild
-            className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-80 bg-gray-800 text-white"
+            className="absolute inset-0 flex items-center justify-center 
+                       opacity-0 group-hover:opacity-80 dark:bg-gray-800 
+                       text-white w-full"
           >
             <Button className="h-full">Alterar</Button>
           </DialogTrigger>
