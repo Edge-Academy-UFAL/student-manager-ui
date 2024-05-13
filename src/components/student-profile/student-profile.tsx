@@ -4,8 +4,9 @@ import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import InfoBox from './info-box'
 import { enumToStringCourse } from '@/lib/utils'
-
-interface StudentResponse {
+import { StudentInfoEditDialog } from './student-info-edit-dialog'
+import { LoadingSpinner } from '../loading-spinner'
+export interface StudentResponse {
   name: string
   photoUrl: string
   birthDate: string
@@ -51,18 +52,26 @@ const StudentProfile = ({ username }: { username: string }) => {
     fetchStudentData()
   }, [username, data])
 
-  if (isLoading) return <div>Carregando...</div>
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <LoadingSpinner size={70}></LoadingSpinner>
+      </div>
+    )
+  }
   if (!studentData) return <div>Erro ao carregar dados...</div>
 
   return (
     <div className="w-screen max-w-[90%] mx-4 mt-9">
       <div className="flex flex-row justify-between">
-        <h2 className="text-2xl font-bold">Informações básicas</h2>
+        <div className="flex justify-between w-full">
+          <h2 className="text-2xl font-bold">Informações básicas</h2>
+        </div>
         {studentData.email === data?.user?.email ? (
-          // TODO: change button to icon
-          <button className="bg-black text-white px-2 py-1 rounded-sm mt-2">
-            Editar
-          </button>
+          <StudentInfoEditDialog
+            studentData={studentData}
+            setStudentData={setStudentData}
+          />
         ) : null}
       </div>
       <div className="flex flex-row gap-5 p-6 rounded-sm shadow-lg border mt-2">
