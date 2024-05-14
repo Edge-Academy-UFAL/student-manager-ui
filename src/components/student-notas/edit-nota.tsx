@@ -45,11 +45,11 @@ import { useToast } from '../ui/use-toast'
 import { LoadingSpinner } from '../loading-spinner'
 
 interface NotaProps {
-  id: number
+  id: string
   nome: string
   code: string
-  semester?: string
-  media?: string
+  semester?: number
+  media?: number
   situacao?: string
 }
 
@@ -76,13 +76,13 @@ export const EditNota = ({
 
   const [loading, setLoading] = useState(false)
 
-  const STATUS = ['APROVADO', 'REPROVADO', 'CURSANDO']
+  const STATUS = ['APPROVED', 'REPROVED', 'ENROLLED']
 
   const validate = () => {
     let isValid = true
 
     // Validação do campo "Período"
-    if (periodo.trim() === '') {
+    if (periodo.toString().trim() === '') {
       setPeriodoError('O período é obrigatório.')
       isValid = false
     } else if (
@@ -97,13 +97,13 @@ export const EditNota = ({
     }
 
     // Validação do campo "Média Final"
-    if (nota.trim() === '') {
+    if (nota.toString().trim() === '') {
       setNotaError('A média final é obrigatória.')
       isValid = false
     } else if (isNaN(Number(nota)) || Number(nota) < 1 || Number(nota) > 10) {
       setNotaError('A média final deve ser um número entre 1 e 10.')
       isValid = false
-    } else if (!/^\d+(\.\d{1,2})?$/.test(nota)) {
+    } else if (!/^\d+(\.\d{1,2})?$/.test(nota.toString())) {
       setNotaError('A média final deve ter no máximo duas casas decimais.')
       isValid = false
     } else {
@@ -124,7 +124,7 @@ export const EditNota = ({
     return isValid
   }
 
-  const submitHandler = async (id: number) => {
+  const submitHandler = async (id: string) => {
     if (!validate()) {
       return
     }
@@ -212,9 +212,9 @@ export const EditNota = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="APROVADO">Aprovado ✅</SelectItem>
-                  <SelectItem value="REPROVADO">Reprovado ❌</SelectItem>
-                  <SelectItem value="CURSANDO">Cursando 📚</SelectItem>
+                  <SelectItem value="APPROVED">Aprovado ✅</SelectItem>
+                  <SelectItem value="REPROVED">Reprovado ❌</SelectItem>
+                  <SelectItem value="ENROLLED">Cursando 📚</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
