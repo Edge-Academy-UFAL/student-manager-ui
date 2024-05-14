@@ -450,6 +450,7 @@ const SignUpForm = ({ id }: { id: string }) => {
                       <Button size="lg" type="button">
                         <input
                           type="file"
+                          accept="image/png, image/jpg, image/jpeg"
                           className="hidden"
                           id="fileInput"
                           onBlur={field.onBlur}

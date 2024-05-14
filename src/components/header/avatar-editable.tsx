@@ -126,6 +126,7 @@ const AvatarEditable = ({
                         setSelectedImage(e.target.files?.[0] || null)
                         setCanSaveImage(!!e.target.files?.[0])
                       }}
+                      accept="image/png, image/jpg, image/jpeg"
                     />
                     <label
                       htmlFor="fileInput"
