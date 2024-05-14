@@ -14,7 +14,7 @@ const StudentSearchPage = async () => {
 
   const getData = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8080/api/v1/students', {
+      const res = await fetch(`${process.env.backendRoute}/api/v1/students`, {
         headers: {
           Authorization: `Bearer ${(session as UserSession).user.authToken}`,
         },

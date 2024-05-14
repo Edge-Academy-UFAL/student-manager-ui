@@ -32,7 +32,7 @@ const StudentProfile = ({ username }: { username: string }) => {
   useEffect(() => {
     const fetchStudentData = async () => {
       const response = await fetch(
-        `http://127.0.0.1:8080/api/v1/students/${username}@edge.ufal.br`,
+        `${process.env.backendRoute}/api/v1/students/${username}@edge.ufal.br`,
         {
           method: 'GET',
           headers: {

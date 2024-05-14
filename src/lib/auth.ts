@@ -37,19 +37,25 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        const res = await fetch(`http://127.0.0.1:8080/api/v1/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(credentials),
-        })
+        const res = await fetch(
+          `${process.env.backendRoute}/api/v1/auth/login`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials),
+          },
+        )
 
         if (res.status === 200) {
           const data = await res.json()
-          const user = await fetch('http://127.0.0.1:8080/api/v1/auth/me', {
-            headers: {
-              Authorization: `Bearer ${data.token}`,
+          const user = await fetch(
+            `${process.env.backendRoute}/api/v1/auth/me`,
+            {
+              headers: {
+                Authorization: `Bearer ${data.token}`,
+              },
             },
-          }).then((res) => res.json())
+          ).then((res) => res.json())
 
           user.authToken = data.token
           return user

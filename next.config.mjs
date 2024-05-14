@@ -9,7 +9,7 @@ const nextConfig = {
     ],
   },
   env: {
-    backendRoute: 'http://localhost:8080',
+    backendRoute: process.env.backendRoute ?? 'http://127.0.0.1:8080',
   },
 }
 

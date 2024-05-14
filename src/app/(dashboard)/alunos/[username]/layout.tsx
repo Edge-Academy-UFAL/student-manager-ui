@@ -7,6 +7,7 @@ const getData = async (email: string) => {
   const token = (session as UserSession).user.authToken
 
   try {
+    console.log(`${process.env.backendRoute}/api/v1/students/${email}`)
     const res = await fetch(
       `${process.env.backendRoute}/api/v1/students/${email}`,
       {
@@ -38,7 +39,9 @@ const StudentLayout = async ({
   params: { username: string }
 }>) => {
   const studentData = await getData(`${params.username}@edge.ufal.br`)
-
+  if (!studentData) {
+    throw new Error('Erro ao buscar os dados')
+  }
   return (
     <div>
       <StudentPageHeader student={studentData} />
