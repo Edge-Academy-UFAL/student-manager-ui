@@ -54,3 +54,7 @@ export function formatPhone(phone: string): string {
 
   return phone
 }
+
+export function getMaxSemesterBasedOnCourse(course: string): number {
+  return course === 'Engenharia de Computação' ? 15 : 12
+}
