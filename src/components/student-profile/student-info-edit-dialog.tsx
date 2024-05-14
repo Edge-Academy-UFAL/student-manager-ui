@@ -45,7 +45,12 @@ import {
 import { CalendarWithDropdowns } from '../ui/calendar-with-dropdowns'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { cn, formatPhone, formatDate } from '@/lib/utils'
+import {
+  cn,
+  formatPhone,
+  formatDate,
+  getMaxSemesterBasedOnCourse,
+} from '@/lib/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UseFormReturn, useForm } from 'react-hook-form'
@@ -118,7 +123,7 @@ const EditInfoSchema = z.object({
   semester: z.coerce
     .string()
     .min(1, 'Semestre Inválido.')
-    .max(10, 'Semestre Inválido.'),
+    .max(15, 'Semestre Inválido.'),
   entrySemester: z.string().refine(
     (value) => {
       const currentYear = new Date().getFullYear()
@@ -166,6 +171,10 @@ const EditInfoDialogContent = ({
 }: {
   form: UseFormReturn<EditInfoSchema>
 }) => {
+  const [maxSemester, setMaxSemester] = useState<number>(
+    getMaxSemesterBasedOnCourse(form.getValues('course')),
+  )
+
   return (
     <Form {...form}>
       <div className="w-full lg:max-w-[46rem] max-h-[60vh] p-1">
@@ -258,7 +267,11 @@ const EditInfoDialogContent = ({
                 <FormItem>
                   <FormLabel>Curso</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(newValue) => {
+                      /* Update semester select on course change */
+                      setMaxSemester(getMaxSemesterBasedOnCourse(newValue))
+                      field.onChange(newValue)
+                    }}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -331,16 +344,15 @@ const EditInfoDialogContent = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="1">1</SelectItem>
-                      <SelectItem value="2">2</SelectItem>
-                      <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4">4</SelectItem>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="6">6</SelectItem>
-                      <SelectItem value="7">7</SelectItem>
-                      <SelectItem value="8">8</SelectItem>
-                      <SelectItem value="9">9</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
+                      {Array.from({ length: maxSemester }, (_, i) => i + 1).map(
+                        (i) => {
+                          return (
+                            <SelectItem key={`s_${i}`} value={i.toString()}>
+                              {i}
+                            </SelectItem>
+                          )
+                        },
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
