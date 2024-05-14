@@ -27,83 +27,31 @@ import { Label } from '../ui/label'
 import { Input } from '@/components/ui/input'
 import { useToast } from '../ui/use-toast'
 import { LoadingSpinner } from '../loading-spinner'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { Separator } from '../ui/separator'
 import { useAuth } from '@/contexts/auth'
 
-interface Disciplina {
-  id: number
+interface Subject {
+  code: string
   name: string
-  value: string
+  workload: number
 }
 
-const STATUS = ['APROVADO', 'REPROVADO', 'CURSANDO']
+interface AddNotaProps {
+  subjects: Subject[]
+  email: string
+}
 
-const disciplinasMock = [
-  {
-    id: 1,
-    name: 'Estrutura de Dados e Algoritmos',
-    value: 'EDA',
-  },
-  {
-    id: 2,
-    name: 'Programação Web',
-    value: 'PW',
-  },
-  {
-    id: 3,
-    name: 'Banco de Dados',
-    value: 'BD',
-  },
-  {
-    id: 4,
-    name: 'Engenharia de Software',
-    value: 'ES',
-  },
-  {
-    id: 5,
-    name: 'Programação Orientada a Objetos',
-    value: 'POO',
-  },
-  {
-    id: 6,
-    name: 'Programação Funcional',
-    value: 'PF',
-  },
-  {
-    id: 7,
-    name: 'Programação 2',
-    value: 'P2',
-  },
-  {
-    id: 8,
-    name: 'Programação 3',
-    value: 'P3',
-  },
-  {
-    id: 9,
-    name: 'Inteligência Artificial',
-    value: 'IA',
-  },
-  {
-    id: 10,
-    name: 'Aprendizado de Máquina',
-    value: 'AM',
-  },
-  {
-    id: 11,
-    name: 'Redes de Computadores',
-    value: 'RC',
-  },
-]
+const STATUS = ['APPROVED', 'REPROVED', 'ENROLLED']
 
-export function AddNota() {
-  const { token } = useAuth()
-
+export function AddNota({ subjects, email }: AddNotaProps) {
   const { toast } = useToast()
+
+  const { token } = useAuth()
 
   const [open, setOpen] = useState(false)
 
-  const [disciplinas, setDisciplinas] = useState<Disciplina[]>([])
+  const [disciplinas, setDisciplinas] = useState<Subject[]>(subjects || [])
 
   const [periodo, setPeriodo] = useState('')
   const [nota, setNota] = useState('')
@@ -116,11 +64,6 @@ export function AddNota() {
   const [disciplinaError, setDisciplinaError] = useState('')
 
   const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    // get disciplinas from API
-    setDisciplinas(disciplinasMock)
-  }, [])
 
   const validate = () => {
     let isValid = true
@@ -163,9 +106,8 @@ export function AddNota() {
     }
 
     // Validação do campo "Disciplina"
-    console.log(disciplinas)
     if (
-      !disciplinas.map((disciplina) => disciplina.value).includes(disciplina)
+      !disciplinas.map((disciplina) => disciplina.code).includes(disciplina)
     ) {
       setDisciplinaError('A disciplina é obrigatória.')
       isValid = false
@@ -184,38 +126,51 @@ export function AddNota() {
     setLoading(true)
 
     const data = {
-      disciplina,
-      nota,
-      periodo,
-      status,
+      subjectCode: disciplina,
+      studentEmail: email,
+      period: periodo,
+      finalGrade: nota,
+      subjectStatus: status,
     }
 
-    setTimeout(() => {
-      console.log('Nota adicionada com sucesso', data)
-      setLoading(false)
-      toast({
-        title: 'Você enviou os seguintes valores:',
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-          </pre>
-        ),
+    try {
+      const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify(data),
       })
 
+      if (!res.ok) {
+        throw new Error('Erro ao adicionar nota')
+      }
+
+      setLoading(false)
       setNota('')
       setPeriodo('')
-    }, 1500)
+      setOpen(false)
 
-    console.log(data)
+      toast({
+        title: 'Disciplina adicionada com sucesso!',
+      })
+
+      return res.json()
+    } catch (error) {
+      console.log('Erro ao adicionar nota', error)
+    }
+
+    toast({
+      title: 'Disciplina adicionada com sucesso!',
+    })
   }
 
   return (
     <div className="flex justify-end">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="ghost" className="p-0 hover:text-muted-foreground">
-            <Button className="mb-3 text-end self-end">Adicionar</Button>
-          </Button>
+          <Button className="mb-3 text-end self-end">Adicionar</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[525px]">
           <DialogHeader>
@@ -235,13 +190,14 @@ export function AddNota() {
                 <SelectContent>
                   <SelectGroup>
                     {disciplinas.map((disciplina) => (
-                      <div key={disciplina.id}>
+                      <div key={disciplina.code}>
                         <SelectItem
-                          value={disciplina.value}
+                          value={disciplina.code}
                           className="hover:cursor-pointer"
                         >
                           {disciplina.name}
                         </SelectItem>
+                        <Separator />
                       </div>
                     ))}
                   </SelectGroup>
@@ -286,9 +242,9 @@ export function AddNota() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
-                    <SelectItem value="APROVADO">Aprovado ✅</SelectItem>
-                    <SelectItem value="REPROVADO">Reprovado ❌</SelectItem>
-                    <SelectItem value="CURSANDO">Cursando 📚</SelectItem>
+                    <SelectItem value="APPROVED">Aprovado ✅</SelectItem>
+                    <SelectItem value="REPROVED">Reprovado ❌</SelectItem>
+                    <SelectItem value="ENROLLED">Cursando 📚</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>

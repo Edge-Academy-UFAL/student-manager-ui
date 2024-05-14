@@ -12,63 +12,32 @@ import {
 import { AddNota } from './add-nota'
 import { RemoveNota, EditNota } from './edit-nota'
 
-const rows = [
-  {
-    id: 1,
-    disciplina: 'Matemática',
-    code: 'MAT-001',
-    carga: '80h',
+interface Grade {
+  name: string
+  subjectCode: string
+  subjectStatus: string
+  studentId: string
+  period: number
+  finalGrade: number
+  workload: string
+}
 
-    periodo: '3',
-    nota: '8.0',
-    status: 'APROVADO',
-  },
-  {
-    id: 2,
-    disciplina: 'Português',
-    code: 'POR-001',
-    carga: '80h',
+interface Subject {
+  code: string
+  name: string
+  workload: number
+}
 
-    periodo: '3',
-    nota: '6.0',
-    status: 'REPROVADO',
-  },
-  {
-    id: 3,
-    disciplina: 'História',
-    code: 'HIS-001',
-    carga: '80h',
+interface StudentGradesPageProps {
+  notas: Grade[]
+  subjects: Subject[]
+  email: string
+}
 
-    periodo: '3',
-    nota: '7.0',
-    status: 'APROVADO',
-  },
-  {
-    id: 4,
-    disciplina: 'Geografia',
-    code: 'GEO-001',
-    carga: '80h',
-
-    periodo: '3',
-    nota: '9.0',
-    status: 'CURSANDO',
-  },
-  {
-    id: 5,
-    disciplina: 'Inglês',
-    code: 'ING-001',
-    carga: '80h',
-
-    periodo: '3',
-    nota: '10.0',
-    status: 'APROVADO',
-  },
-]
-
-const StudentNotas = () => {
+const StudentNotas = ({ notas, subjects, email }: StudentGradesPageProps) => {
   return (
     <div className="max-w-[90vw] w-full px-10 py-5 justify-center flex flex-col">
-      <AddNota />
+      <AddNota subjects={subjects} email={email} />
       <Table>
         <TableHeader>
           <TableRow>
@@ -80,37 +49,37 @@ const StudentNotas = () => {
           </TableRow>
         </TableHeader>
         <TableBody className="w-full h-[300px]">
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell className="font-medium">{row.disciplina}</TableCell>
-              <TableCell>{row.carga}</TableCell>
-              <TableCell>{row.periodo}</TableCell>
-              <TableCell>{row.nota}</TableCell>
+          {notas.map((row) => (
+            <TableRow key={row.subjectCode}>
+              <TableCell className="font-medium">{row.name}</TableCell>
+              <TableCell>{row.workload}</TableCell>
+              <TableCell>{row.period}</TableCell>
+              <TableCell>{row.finalGrade}</TableCell>
               <TableCell
                 className={`${
-                  row.status === 'APROVADO'
+                  row.subjectStatus === 'APPROVED'
                     ? 'text-green-600'
-                    : row.status === 'REPROVADO'
+                    : row.subjectStatus === 'REPROVED'
                       ? 'text-red-600'
                       : 'text-cyan-600'
                 }`}
               >
-                {row.status}
+                {row.subjectStatus}
               </TableCell>
               <TableCell>
                 <div className="flex gap-3">
                   <EditNota
-                    id={row.id}
-                    nome={row.disciplina}
-                    code={row.code}
-                    semester={row.periodo}
-                    media={row.nota}
-                    situacao={row.status}
+                    id={row.subjectCode}
+                    nome={row.name}
+                    code={row.subjectCode}
+                    semester={row.period}
+                    media={row.finalGrade}
+                    situacao={row.subjectStatus}
                   />
                   <RemoveNota
-                    id={row.id}
-                    nome={row.disciplina}
-                    code={row.code}
+                    id={row.subjectCode}
+                    nome={row.name}
+                    code={row.subjectCode}
                   />
                 </div>
               </TableCell>

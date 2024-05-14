@@ -2,19 +2,19 @@
 import StudentNotas from '@/components/student-notas/student-notas'
 import { cookies } from 'next/headers'
 
-interface StudentCollegePageProps {
+interface StudentGradesPageProps {
   params: { id: string }
 }
 
-const getData = async (studentId: string) => {
+const getDisciplinas = async () => {
   const token = cookies().get('token')?.value
 
   try {
-    const res = await fetch('http://127.0.0.1:8080/api/v1/students', {
+    const res = await fetch(`http://127.0.0.1:8080/api/v1/subjects`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      next: { tags: ['notas-table'], revalidate: 3600 },
+      next: { revalidate: 3600 },
     })
 
     if (!res.ok) {
@@ -27,18 +27,45 @@ const getData = async (studentId: string) => {
   }
 }
 
-const StudentCollegePage = ({ params }: StudentCollegePageProps) => {
-  const id = params.id
+const getNotas = async (email: string) => {
+  const token = cookies().get('token')?.value
 
-  // const data = getData(id)
+  try {
+    const res = await fetch(`http://127.0.0.1:8080/api/v1/grades/${email}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      cache: 'no-store',
+      // next: { tags: ['notas-table'], revalidate: 3600 },
+    })
 
-  // if (!data) {
-  //   throw new Error('Erro ao buscar os dados')
-  // }
+    if (!res.ok) {
+      return null
+    }
+
+    return res.json()
+  } catch (error) {
+    throw new Error('Erro de conexão com o servidor')
+  }
+}
+
+const StudentCollegePage = async ({ params }: StudentGradesPageProps) => {
+  const email = `${params.id}@edge.ufal.br`
+
+  const notas = await getNotas(email)
+  const disciplinas = await getDisciplinas()
+
+  if (!notas || !disciplinas) {
+    throw new Error('Erro ao buscar os dados')
+  }
 
   return (
     <div className="flex justify-center">
-      <StudentNotas />
+      <StudentNotas
+        notas={notas}
+        subjects={disciplinas}
+        email={`${params.id}@edge.ufal.br`}
+      />
     </div>
   )
 }
