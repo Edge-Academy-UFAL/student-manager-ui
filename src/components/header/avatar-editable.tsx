@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button'
 
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { UserSession } from '@/lib/auth'
+
 import { getNameInitials, getUsername } from '@/lib/utils'
 import { revalidateUserPage } from '@/app/actions'
 
@@ -53,7 +53,7 @@ const AvatarEditable = ({
         method: 'PUT',
         body: formData,
         headers: {
-          Authorization: `Bearer ${(data as UserSession).user?.authToken}`,
+          Authorization: `Bearer ${data?.user?.authToken}`,
         },
       },
     )

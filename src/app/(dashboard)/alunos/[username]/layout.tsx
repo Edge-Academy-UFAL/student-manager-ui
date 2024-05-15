@@ -1,10 +1,10 @@
 import StudentPageHeader from '@/components/student-page-header'
-import { UserSession, authOptions } from '@/lib/auth'
+import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth'
 
 const getData = async (email: string) => {
   const session = await getServerSession(authOptions)
-  const token = (session as UserSession).user.authToken
+  const token = session?.user.authToken
 
   try {
     console.log(`${process.env.backendRoute}/api/v1/students/${email}`)
