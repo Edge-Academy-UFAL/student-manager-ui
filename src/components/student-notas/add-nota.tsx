@@ -158,12 +158,12 @@ export function AddNota({ subjects, email }: AddNotaProps) {
 
       return res.json()
     } catch (error) {
-      console.log('Erro ao adicionar nota', error)
+      toast({
+        title: 'Erro ao adicionar nota',
+        variant: 'destructive',
+      })
+      setLoading(false)
     }
-
-    toast({
-      title: 'Disciplina adicionada com sucesso!',
-    })
   }
 
   return (
