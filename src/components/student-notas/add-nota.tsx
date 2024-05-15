@@ -87,7 +87,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     if (nota.trim() === '') {
       setNotaError('A média final é obrigatória.')
       isValid = false
-    } else if (isNaN(Number(nota)) || Number(nota) < 1 || Number(nota) > 10) {
+    } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
       setNotaError('A média final deve ser um número entre 1 e 10.')
       isValid = false
     } else if (!/^\d+(\.\d{1,2})?$/.test(nota)) {
