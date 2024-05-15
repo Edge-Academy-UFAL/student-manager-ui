@@ -48,7 +48,8 @@ interface NotaProps {
   id: string
   nome: string
   code: string
-  semester?: number
+  semester: number
+  email: string
   media?: number
   situacao?: string
 }
@@ -58,6 +59,7 @@ export const EditNota = ({
   code,
   nome,
   semester,
+  email,
   media,
   situacao,
 }: NotaProps) => {
@@ -136,6 +138,7 @@ export const EditNota = ({
       nota,
       periodo,
       status,
+      email,
     }
 
     setTimeout(() => {
@@ -246,27 +249,51 @@ export const EditNota = ({
   )
 }
 
-export const RemoveNota = ({ id, code, nome }: NotaProps) => {
+export const RemoveNota = ({ id, code, nome, semester, email }: NotaProps) => {
   const { token } = useAuth()
   const { toast } = useToast()
 
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     setLoading(true)
 
-    console.log(id)
+    const data = {
+      subjectCode: code,
+      period: semester,
+      studentEmail: email,
+    }
 
-    setTimeout(() => {
-      setLoading(false)
-      toast({
-        title: `Disciplina ${code} removida com sucesso`,
+    console.log(data)
+
+    try {
+      const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
+        body: JSON.stringify(data),
       })
-      setOpen(false)
-    }, 2000)
 
-    console.log(token)
+      if (!res.ok) {
+        throw new Error('Erro ao remover nota')
+      }
+
+      setLoading(false)
+      setOpen(false)
+
+      toast({
+        title: `Nota da disciplina ${nome}-${code} foi removida.`,
+      })
+    } catch (error) {
+      toast({
+        title: 'Erro ao remover disciplina',
+        variant: 'destructive',
+      })
+      setLoading(false)
+    }
   }
 
   return (

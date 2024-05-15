@@ -75,11 +75,14 @@ const StudentNotas = ({ notas, subjects, email }: StudentGradesPageProps) => {
                     semester={row.period}
                     media={row.finalGrade}
                     situacao={row.subjectStatus}
+                    email={email}
                   />
                   <RemoveNota
                     id={row.subjectCode}
                     nome={row.name}
                     code={row.subjectCode}
+                    semester={row.period}
+                    email={email}
                   />
                 </div>
               </TableCell>
