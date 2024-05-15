@@ -10,15 +10,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { useRouter } from 'next/navigation'
-import { useSession, signOut } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
 
 export function UserSheet() {
-  const router = useRouter()
-
-  const { status, data } = useSession()
-
-  const id = data?.user?.email
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -40,27 +34,24 @@ export function UserSheet() {
             className="bg-transparent border text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             Acessar Configurações
-          </Button> */}
+          </Button>
 
-          {/* coloar o user_ID do usuario que esta logado ali (se for aluno), caso seja instrutor esse botao nao deve aparecer */}
+           coloar o user_ID do usuario que esta logado ali (se for aluno), caso seja instrutor esse botao nao deve aparecer 
           <Button
             className="bg-transparent border text-foreground hover:bg-foreground hover:text-background transition-colors"
             onClick={() => router.push(`/alunos/${id}`)}
           >
             {' '}
             Acessar Perfil
+          </Button> */}
+          <Button
+            className="bg-transparent border text-foreground hover:bg-foreground hover:text-background transition-colors"
+            onClick={() => {
+              signOut({ redirect: true, callbackUrl: '/login' })
+            }}
+          >
+            Sair
           </Button>
-
-          {status === 'authenticated' && (
-            <Button
-              className="bg-transparent border text-foreground hover:bg-foreground hover:text-background transition-colors"
-              onClick={() => {
-                signOut({ redirect: true, callbackUrl: '/login' })
-              }}
-            >
-              Sair
-            </Button>
-          )}
         </div>
       </SheetContent>
     </Sheet>
