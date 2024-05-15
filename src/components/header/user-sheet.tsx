@@ -18,13 +18,19 @@ export function UserSheet() {
 
   const { status, data } = useSession()
 
-  const id = data?.user?.email
+  const id = data?.user?.email;
+  const photoUrl = data?.user.photoUrl 
+    ? `${process.env.awsUrl}/${process.env.awsBucket}/${data?.user.photoUrl}` 
+    : undefined;
+  console.log(photoUrl)
+  const username = data?.user.name;
+
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Avatar className="hover:cursor-pointer">
-          <AvatarImage alt="Dirceu" src="/themaster.jpeg" />
-          <AvatarFallback>D</AvatarFallback>
+          <AvatarImage alt="Profile Photo" src={ photoUrl } />
+          <AvatarFallback>{ username?.charAt(0) }</AvatarFallback>
         </Avatar>
       </SheetTrigger>
       <SheetContent>
@@ -35,21 +41,23 @@ export function UserSheet() {
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
-          <Button
+          {/* Código comentado pois estas rotas não estarão disponíveis na versão atual */}
+
+          {/* <Button
             onClick={() => router.push('/settings')}
             className="bg-transparent border text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             Acessar Configurações
-          </Button>
+          </Button> */}
 
           {/* coloar o user_ID do usuario que esta logado ali (se for aluno), caso seja instrutor esse botao nao deve aparecer */}
-          <Button
+          {/* <Button
             className="bg-transparent border text-foreground hover:bg-foreground hover:text-background transition-colors"
             onClick={() => router.push(`/alunos/${id}`)}
           >
             {' '}
             Acessar Perfil
-          </Button>
+          </Button> */}
 
           {status === 'authenticated' && (
             <Button

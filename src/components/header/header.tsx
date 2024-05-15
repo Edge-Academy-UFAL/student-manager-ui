@@ -4,9 +4,11 @@ import { useRouter } from 'next/navigation'
 import { Separator } from '../ui/separator'
 import { NavLink } from './nav-link'
 import { UserSheet } from './user-sheet'
+import { useSession } from 'next-auth/react'
+import { ThemeToggle } from './theme-toggle'
 
 // sample routes
-export const routes = [
+export const adminAndInstructorRoutes = [
   {
     name: 'Alunos',
     path: '/alunos',
@@ -14,8 +16,23 @@ export const routes = [
   },
 ]
 
+export const studentRoutes = [] //quando tiver rotas para estudantes, incluir aqui
+
 const Header = () => {
   const router = useRouter()
+
+  const { data } = useSession()
+
+  const routes = (() => {
+    switch (data?.user.dtype) {
+      case 'Student':
+        return studentRoutes;
+      case 'Admin' || 'Instructor':
+        return adminAndInstructorRoutes;
+      default:
+        return studentRoutes;
+    }
+  })()
 
   const navLinks = routes.map((route, index) => {
     return (
@@ -41,7 +58,7 @@ const Header = () => {
         <nav className="flex items-center gap-4 lg:gap-6">{navLinks}</nav>
       </div>
       <div className="flex items-center gap-4 lg:gap-6 ">
-        {/* <ModeToggle /> */}
+        <ThemeToggle />
         <Separator
           orientation="vertical"
           className="h-6 dark:bg-[#2d2d37]"
