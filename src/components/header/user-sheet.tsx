@@ -35,12 +35,12 @@ export function UserSheet() {
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
-          <Button
+          {/* <Button
             onClick={() => router.push('/settings')}
             className="bg-transparent border text-foreground hover:bg-foreground hover:text-background transition-colors"
           >
             Acessar Configurações
-          </Button>
+          </Button> */}
 
           {/* coloar o user_ID do usuario que esta logado ali (se for aluno), caso seja instrutor esse botao nao deve aparecer */}
           <Button
