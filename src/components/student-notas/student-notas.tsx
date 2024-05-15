@@ -11,6 +11,7 @@ import {
 
 import { AddNota } from './add-nota'
 import { RemoveNota, EditNota } from './edit-nota'
+import { DropdownFilters } from './table-filters'
 
 interface Grade {
   name: string
@@ -37,7 +38,11 @@ interface StudentGradesPageProps {
 const StudentNotas = ({ notas, subjects, email }: StudentGradesPageProps) => {
   return (
     <div className="max-w-[90vw] w-full px-10 py-5 justify-center flex flex-col">
-      <AddNota subjects={subjects} email={email} />
+      <div className="flex gap-2 justify-end">
+        <DropdownFilters />
+        <AddNota subjects={subjects} email={email} />
+      </div>
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -48,7 +53,7 @@ const StudentNotas = ({ notas, subjects, email }: StudentGradesPageProps) => {
             <TableHead className="font-bold text-bg">Status</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody className="w-full h-[300px]">
+        <TableBody className="w-ful]">
           {notas.map((row) => (
             <TableRow key={row.subjectCode}>
               <TableCell className="font-medium">{row.name}</TableCell>
