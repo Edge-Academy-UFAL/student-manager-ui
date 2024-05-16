@@ -29,8 +29,7 @@ import { useToast } from '../ui/use-toast'
 import { LoadingSpinner } from '../loading-spinner'
 import { useState } from 'react'
 import { Separator } from '../ui/separator'
-import { useAuth } from '@/contexts/auth'
-import { submitHandler } from '@/lib/functions/http/add-nota-req'
+import { addNota } from '@/lib/functions/http/add-nota-req'
 
 interface Subject {
   code: string
@@ -131,9 +130,9 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     }
 
     setLoading(true)
-    const success = await submitHandler(data)
+    const res = await addNota(data)
 
-    if (success) {
+    if (res) {
       setNota('')
       setPeriodo('')
       setOpen(false)

@@ -6,7 +6,7 @@ import { revalidateTag } from 'next/cache'
 
 const token = cookies().get('token')?.value
 
-export const submitHandler = async (data: any) => {
+export const addNota = async (data: any) => {
   'use server'
   try {
     const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
