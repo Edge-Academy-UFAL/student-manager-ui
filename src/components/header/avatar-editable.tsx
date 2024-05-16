@@ -76,6 +76,7 @@ const AvatarEditable = ({
       <AvatarImage
         src={`${process.env.backendRoute?.slice(0, -5)}:4566/student-manager-files/${photoUrl}`}
         alt="student-profile-picture"
+        className="object-cover"
       />
       <AvatarFallback>{getNameInitials(name)}</AvatarFallback>
       {data?.user?.email === email && (

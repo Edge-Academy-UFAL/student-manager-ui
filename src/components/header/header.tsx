@@ -4,9 +4,16 @@ import { useRouter } from 'next/navigation'
 import { Separator } from '../ui/separator'
 import { NavLink } from './nav-link'
 import { UserSheet } from './user-sheet'
+import { useSession } from 'next-auth/react'
+import { ThemeToggle } from './theme-toggle'
+import { useTheme } from 'next-themes'
+import logoLightMode from '@/assets/academy-logo-black.png'
+import logoDarkMode from '@/assets/academy-logo-white.png'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
 // sample routes
-export const routes = [
+export const adminAndInstructorRoutes = [
   {
     name: 'Alunos',
     path: '/alunos',
@@ -14,8 +21,32 @@ export const routes = [
   },
 ]
 
+export const studentRoutes = [] // quando tiver rotas para estudantes, incluir aqui
+
 const Header = () => {
   const router = useRouter()
+
+  const { data } = useSession()
+
+  const { resolvedTheme } = useTheme()
+  const [logo, setLogo] = useState(logoLightMode)
+
+  useEffect(() => {
+    const logo = resolvedTheme === 'light' ? logoLightMode : logoDarkMode
+    setLogo(logo)
+  }, [resolvedTheme])
+
+  const routes = (() => {
+    switch (data?.user.dtype) {
+      case 'Student':
+        return studentRoutes
+      case 'Admin':
+      case 'Instructor':
+        return adminAndInstructorRoutes
+      default:
+        return studentRoutes
+    }
+  })()
 
   const navLinks = routes.map((route, index) => {
     return (
@@ -33,15 +64,18 @@ const Header = () => {
           className="flex gap-4 hover:cursor-pointer"
           onClick={() => router.push('/')}
         >
-          <h1 className="flex items-center gap-1.5 text-base transition-colors font-medium bg-gradient-to-r rounded-lg">
-            Edge Academy
-          </h1>
+          <Image
+            className="flex gap-1.5 items-center"
+            src={logo}
+            alt="Edge Academy Logo"
+            width={80}
+          />
         </div>
         <Separator orientation="vertical" className="h-6" />
         <nav className="flex items-center gap-4 lg:gap-6">{navLinks}</nav>
       </div>
       <div className="flex items-center gap-4 lg:gap-6 ">
-        {/* <ModeToggle /> */}
+        <ThemeToggle />
         <Separator
           orientation="vertical"
           className="h-6 dark:bg-[#2d2d37]"
