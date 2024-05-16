@@ -1,16 +1,107 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import StudentNotas from '@/components/student-notas/student-notas'
+import { authOptions } from '@/lib/auth'
+import { getServerSession } from 'next-auth/next'
 interface StudentGradesPageProps {
   params: { username: string }
 }
 
-const StudentGradesPage = ({ params }: StudentGradesPageProps) => {
+const getDisciplinas = async () => {
+  const session = await getServerSession(authOptions)
+  const token = session?.user.authToken
+  try {
+    const res = await fetch(`http://127.0.0.1:8080/api/v1/subjects`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      next: { tags: ['disciplinas-table'], revalidate: 600 },
+    })
+
+    if (!res.ok) {
+      return null
+    }
+
+    return res.json()
+  } catch (error) {
+    throw new Error('Erro de conexão com o servidor')
+  }
+}
+
+const getNotas = async (email: string) => {
+  const session = await getServerSession(authOptions)
+  const token = session?.user.authToken
+
+  try {
+    const res = await fetch(`http://127.0.0.1:8080/api/v1/grades/${email}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      next: { tags: ['disciplinas-table'], revalidate: 600 },
+    })
+
+    if (!res.ok) {
+      return null
+    }
+
+    return res.json()
+  } catch (error) {
+    throw new Error('Erro de conexão com o servidor')
+  }
+}
+
+const getStudent = async (email: string) => {
+  const session = await getServerSession(authOptions)
+  const token = session?.user.authToken
+
+  try {
+    console.log(`${process.env.backendRoute}/api/v1/students/${email}`)
+    const res = await fetch(
+      `${process.env.backendRoute}/api/v1/students/${email}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        next: {
+          revalidate: 15,
+        },
+      },
+    )
+
+    if (!res.ok) {
+      return null
+    }
+
+    return res.json()
+  } catch (error) {
+    throw new Error('Erro de conexão com o servidor')
+  }
+}
+
+const StudentCollegePage = async ({ params }: StudentGradesPageProps) => {
   const email = `${params.username}@edge.ufal.br`
+  console.log(email)
+  const notas = await getNotas(email)
+  const student = await getStudent(email)
+  const disciplinas = await getDisciplinas()
+  console.log('notas', notas)
+  console.log('student', student)
+
+  if (!notas || !disciplinas) {
+    throw new Error('Erro ao buscar os dados')
+  }
 
   return (
-    <div className="flex items-center justify-center h-full">
-      <h1>Notas do aluno</h1>
+    <div className="flex justify-center">
+      <StudentNotas
+        notas={notas}
+        subjects={disciplinas}
+        email={`${params.username}@edge.ufal.br`}
+        studentId={student.id}
+      />
     </div>
   )
 }
 
-export default StudentGradesPage
+export default StudentCollegePage

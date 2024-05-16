@@ -1,13 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use server'
 
-import { cookies } from 'next/headers'
+import { authOptions } from '@/lib/auth'
+import { getServerSession } from 'next-auth/next'
 import { revalidateTag } from 'next/cache'
-
-const token = cookies().get('token')?.value
 
 export const editGrade = async (data: any) => {
   'use server'
+
+  const session = await getServerSession(authOptions)
+  const token = session?.user.authToken
+
+  console.log(data)
+
   try {
     const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
       headers: {
@@ -17,6 +22,8 @@ export const editGrade = async (data: any) => {
       method: 'PUT',
       body: JSON.stringify(data),
     })
+
+    console.log(res)
 
     if (!res.ok) {
       throw new Error('Erro ao editar nota')

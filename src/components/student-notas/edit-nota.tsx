@@ -2,8 +2,6 @@
 'use client'
 import React, { useState } from 'react'
 
-import { useAuth } from '@/contexts/auth'
-
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -56,6 +54,7 @@ interface NotaProps {
   email: string
   media?: number
   situacao?: string
+  studentId?: string
 }
 
 export const EditNota = ({
@@ -66,8 +65,8 @@ export const EditNota = ({
   email,
   media,
   situacao,
+  studentId,
 }: NotaProps) => {
-  const { token } = useAuth()
   const { toast } = useToast()
 
   const [open, setOpen] = useState(false)
@@ -125,7 +124,7 @@ export const EditNota = ({
       finalGrade: nota,
       subjectStatus: status,
       period: semester,
-      studentEmail: email,
+      studentId,
     }
 
     const res = await editGrade(data)
