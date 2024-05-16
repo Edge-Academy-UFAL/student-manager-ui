@@ -29,7 +29,7 @@ export function UserSheet() {
     <Sheet>
       <SheetTrigger asChild>
         <Avatar className="hover:cursor-pointer">
-          <AvatarImage alt="Profile Photo" src={ photoUrl } />
+          <AvatarImage className='rounded-xl shadow-sm object-cover' alt="Profile Photo" src={ photoUrl } />
           <AvatarFallback>{ username?.charAt(0) }</AvatarFallback>
         </Avatar>
       </SheetTrigger>
