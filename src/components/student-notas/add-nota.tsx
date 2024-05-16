@@ -30,6 +30,7 @@ import { LoadingSpinner } from '../loading-spinner'
 import { useState } from 'react'
 import { Separator } from '../ui/separator'
 import { useAuth } from '@/contexts/auth'
+import { submitHandler } from '@/lib/functions/http/add-nota-req'
 
 interface Subject {
   code: string
@@ -46,8 +47,6 @@ const STATUS = ['APPROVED', 'REPROVED', 'ENROLLED']
 
 export function AddNota({ subjects, email }: AddNotaProps) {
   const { toast } = useToast()
-
-  const { token } = useAuth()
 
   const [open, setOpen] = useState(false)
 
@@ -118,12 +117,10 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     return isValid
   }
 
-  const submitHandler = async () => {
+  const handleSubmit = async () => {
     if (!validate()) {
       return
     }
-
-    setLoading(true)
 
     const data = {
       subjectCode: disciplina,
@@ -133,37 +130,25 @@ export function AddNota({ subjects, email }: AddNotaProps) {
       subjectStatus: status,
     }
 
-    try {
-      const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify(data),
-      })
+    setLoading(true)
+    const success = await submitHandler(data)
 
-      if (!res.ok) {
-        throw new Error('Erro ao adicionar nota')
-      }
-
-      setLoading(false)
+    if (success) {
       setNota('')
       setPeriodo('')
       setOpen(false)
-
       toast({
-        title: 'Disciplina adicionada com sucesso!',
+        title: 'Disciplina adicionada com sucesso',
       })
-
-      return res.json()
-    } catch (error) {
+    } else {
       toast({
         title: 'Erro ao adicionar nota',
+        description: 'Tente novamente mais tarde.',
         variant: 'destructive',
       })
-      setLoading(false)
     }
+
+    setLoading(false)
   }
 
   return (
@@ -263,11 +248,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
               </Button>
             </DialogClose>
             {!loading && (
-              <Button
-                type="button"
-                className="w-[80px]"
-                onClick={submitHandler}
-              >
+              <Button type="button" className="w-[80px]" onClick={handleSubmit}>
                 Salvar
               </Button>
             )}
