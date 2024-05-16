@@ -10,27 +10,31 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 
 export function UserSheet() {
-  const router = useRouter()
+  // const router = useRouter()
 
   const { status, data } = useSession()
 
-  const id = data?.user?.email;
-  const photoUrl = data?.user.photoUrl 
-    ? `${process.env.awsUrl}/${process.env.awsBucket}/${data?.user.photoUrl}` 
-    : undefined;
+  // const id = data?.user?.email
+  const photoUrl = data?.user.photoUrl
+    ? `${process.env.awsUrl}/${process.env.awsBucket}/${data?.user.photoUrl}`
+    : undefined
   console.log(photoUrl)
-  const username = data?.user.name;
+  const username = data?.user.name
 
   return (
     <Sheet>
       <SheetTrigger asChild>
         <Avatar className="hover:cursor-pointer">
-          <AvatarImage className='rounded-xl shadow-sm object-cover' alt="Profile Photo" src={ photoUrl } />
-          <AvatarFallback>{ username?.charAt(0) }</AvatarFallback>
+          <AvatarImage
+            className="rounded-xl shadow-sm object-cover"
+            alt="Profile Photo"
+            src={photoUrl}
+          />
+          <AvatarFallback>{username?.charAt(0)}</AvatarFallback>
         </Avatar>
       </SheetTrigger>
       <SheetContent>

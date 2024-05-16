@@ -21,7 +21,7 @@ export const adminAndInstructorRoutes = [
   },
 ]
 
-export const studentRoutes = [] //quando tiver rotas para estudantes, incluir aqui
+export const studentRoutes = [] // quando tiver rotas para estudantes, incluir aqui
 
 const Header = () => {
   const router = useRouter()
@@ -29,24 +29,24 @@ const Header = () => {
   const { data } = useSession()
 
   const { resolvedTheme } = useTheme()
-  const [logo, setLogo] = useState(logoLightMode);
+  const [logo, setLogo] = useState(logoLightMode)
 
   useEffect(() => {
     const logo = resolvedTheme === 'light' ? logoLightMode : logoDarkMode
     setLogo(logo)
-  }, [resolvedTheme]);
+  }, [resolvedTheme])
 
   const routes = (() => {
     console.log(data?.user.dtype)
 
     switch (data?.user.dtype) {
       case 'Student':
-        return studentRoutes;
+        return studentRoutes
       case 'Admin':
       case 'Instructor':
-        return adminAndInstructorRoutes;
+        return adminAndInstructorRoutes
       default:
-        return studentRoutes;
+        return studentRoutes
     }
   })()
 
@@ -66,7 +66,12 @@ const Header = () => {
           className="flex gap-4 hover:cursor-pointer"
           onClick={() => router.push('/')}
         >
-          <Image className='flex gap-1.5 items-center' src={logo} alt="Edge Academy Logo" width={ 80 } />
+          <Image
+            className="flex gap-1.5 items-center"
+            src={logo}
+            alt="Edge Academy Logo"
+            width={80}
+          />
         </div>
         <Separator orientation="vertical" className="h-6" />
         <nav className="flex items-center gap-4 lg:gap-6">{navLinks}</nav>
