@@ -45,6 +45,8 @@ import { Trash, FilePenLine } from 'lucide-react'
 import { useToast } from '../ui/use-toast'
 import { LoadingSpinner } from '../loading-spinner'
 
+import { removeGrade } from '@/lib/functions/http/remove-nota-req'
+
 interface NotaProps {
   id: string
   nome: string
@@ -242,8 +244,7 @@ export const EditNota = ({
   )
 }
 
-export const RemoveNota = ({ id, code, nome, semester, email }: NotaProps) => {
-  const { token } = useAuth()
+export const RemoveNota = ({ code, nome, semester, email }: NotaProps) => {
   const { toast } = useToast()
 
   const [loading, setLoading] = useState(false)
@@ -258,35 +259,24 @@ export const RemoveNota = ({ id, code, nome, semester, email }: NotaProps) => {
       studentEmail: email,
     }
 
-    console.log(data)
+    setLoading(true)
 
-    try {
-      const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'DELETE',
-        body: JSON.stringify(data),
-      })
+    const res = await removeGrade(data)
 
-      if (!res.ok) {
-        throw new Error('Erro ao remover nota')
-      }
-
-      setLoading(false)
-      setOpen(false)
-
-      toast({
-        title: `Nota da disciplina ${nome}-${code} foi removida.`,
-      })
-    } catch (error) {
+    if (!res) {
       toast({
         title: 'Erro ao remover disciplina',
+        description: 'Tente novamente mais tarde.',
         variant: 'destructive',
       })
-      setLoading(false)
+    } else {
+      setOpen(false)
+      toast({
+        title: `Disciplina ${code} - ${nome} removida com sucesso.`,
+      })
     }
+
+    setLoading(false)
   }
 
   return (
