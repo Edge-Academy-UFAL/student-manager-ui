@@ -69,11 +69,9 @@ export const EditNota = ({
 
   const [open, setOpen] = useState(false)
 
-  const [periodo, setPeriodo] = useState(semester || '')
   const [nota, setNota] = useState(media || '')
   const [status, setStatus] = useState(situacao || '')
 
-  const [periodoError, setPeriodoError] = useState('')
   const [notaError, setNotaError] = useState('')
   const [statusError, setStatusError] = useState('')
 
@@ -83,21 +81,6 @@ export const EditNota = ({
 
   const validate = () => {
     let isValid = true
-
-    // Validação do campo "Período"
-    if (periodo.toString().trim() === '') {
-      setPeriodoError('O período é obrigatório.')
-      isValid = false
-    } else if (
-      isNaN(Number(periodo)) ||
-      Number(periodo) < 1 ||
-      Number(periodo) > 12
-    ) {
-      setPeriodoError('O período deve ser um número entre 1 e 12.')
-      isValid = false
-    } else {
-      setPeriodoError('')
-    }
 
     // Validação do campo "Média Final"
     if (nota.toString().trim() === '') {
@@ -120,7 +103,7 @@ export const EditNota = ({
     }
 
     // Validar se houve mudanças
-    if (semester === periodo && media === nota && situacao === status) {
+    if (media === nota && situacao === status) {
       isValid = false
     }
 
@@ -132,30 +115,50 @@ export const EditNota = ({
       return
     }
 
-    setLoading(true)
+    // setLoading(true)
 
     const data = {
-      id,
-      nota,
-      periodo,
-      status,
-      email,
+      subjectId: code,
+      finalGrade: nota,
+      subjectStatus: status,
+      period: semester,
+      studentEmail: email,
     }
 
-    setTimeout(() => {
-      console.log('Nota atualizada com sucesso', data)
-      setLoading(false)
-      toast({
-        title: 'Você enviou os seguintes valores:',
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-          </pre>
-        ),
-      })
-    }, 2000)
+    console.log(data)
 
-    console.log(data, token)
+    try {
+      const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        method: 'PUT',
+        body: JSON.stringify(data),
+      })
+
+      if (!res.ok) {
+        console.log(res)
+        throw new Error('Erro ao editar nota')
+      }
+
+      setLoading(false)
+      setNota('')
+      setOpen(false)
+
+      toast({
+        title: 'Disciplina editada com sucesso!',
+      })
+
+      return res.json()
+    } catch (error) {
+      console.log(error)
+      toast({
+        title: 'Erro ao adicionar nota',
+        variant: 'destructive',
+      })
+      setLoading(false)
+    }
   }
 
   return (
@@ -190,18 +193,7 @@ export const EditNota = ({
               <span className="text-red-500 text-sm">{notaError}</span>
             )}
           </div>
-          <div className="flex flex-col gap-3">
-            <Label>Período</Label>
-            <Input
-              id="periodo"
-              className="col-span-3"
-              value={periodo}
-              onChange={(e) => setPeriodo(e.target.value)}
-            />
-            {periodoError && (
-              <span className="text-red-500 text-sm">{periodoError}</span>
-            )}
-          </div>
+
           <div className="flex flex-col gap-3">
             <Label htmlFor="username">Situação</Label>
             <Select
