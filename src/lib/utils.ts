@@ -27,3 +27,34 @@ export function enumToStringCourse(course: string) {
       return course
   }
 }
+
+// This function gets the text before the @edge.ufal.br
+// It is used for routing porpuses
+export function getUsername(email: string) {
+  return email.split('@')[0]
+}
+
+export function getNameInitials(name: string) {
+  const names = name.split(' ')
+  return names[0][0].toUpperCase() + names[names.length - 1][0].toUpperCase()
+}
+
+// TODO: Make it work with both 8 digit numbers and 9 digit numbers
+export function formatPhone(phone: string): string {
+  if (phone === '') {
+    return ''
+  }
+  if (phone.length === 11) {
+    return `(${phone.slice(0, 2)}) ${phone.slice(2, 7)}-${phone.slice(7, 11)}`
+  }
+
+  if (phone.length === 10) {
+    return `(${phone.slice(0, 2)}) ${phone.slice(2, 6)}-${phone.slice(6, 10)}`
+  }
+
+  return phone
+}
+
+export function getMaxSemesterBasedOnCourse(course: string): number {
+  return course === 'Engenharia de Computação' ? 15 : 12
+}

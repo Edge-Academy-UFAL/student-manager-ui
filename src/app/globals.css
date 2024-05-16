@@ -87,3 +87,8 @@
     -moz-appearance: textfield !important;
   }
 }
+
+/* This is used by the CalendarWithDropdows component */
+.rdp-vhidden {
+  @apply hidden;
+}
