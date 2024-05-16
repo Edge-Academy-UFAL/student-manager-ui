@@ -6,6 +6,11 @@ import { NavLink } from './nav-link'
 import { UserSheet } from './user-sheet'
 import { useSession } from 'next-auth/react'
 import { ThemeToggle } from './theme-toggle'
+import { useTheme } from 'next-themes'
+import logoLightMode from '@/assets/academy-logo-black.png'
+import logoDarkMode from '@/assets/academy-logo-white.png'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
 // sample routes
 export const adminAndInstructorRoutes = [
@@ -23,7 +28,17 @@ const Header = () => {
 
   const { data } = useSession()
 
+  const { resolvedTheme } = useTheme()
+  const [logo, setLogo] = useState(logoLightMode);
+
+  useEffect(() => {
+    const logo = resolvedTheme === 'light' ? logoLightMode : logoDarkMode
+    setLogo(logo)
+  }, [resolvedTheme]);
+
   const routes = (() => {
+    console.log(data?.user.dtype)
+
     switch (data?.user.dtype) {
       case 'Student':
         return studentRoutes;
@@ -51,9 +66,7 @@ const Header = () => {
           className="flex gap-4 hover:cursor-pointer"
           onClick={() => router.push('/')}
         >
-          <h1 className="flex items-center gap-1.5 text-base transition-colors font-medium bg-gradient-to-r rounded-lg">
-            Edge Academy
-          </h1>
+          <Image className='flex gap-1.5 items-center' src={logo} alt="Edge Academy Logo" width={ 80 } />
         </div>
         <Separator orientation="vertical" className="h-6" />
         <nav className="flex items-center gap-4 lg:gap-6">{navLinks}</nav>
