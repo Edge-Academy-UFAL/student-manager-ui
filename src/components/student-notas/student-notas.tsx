@@ -43,7 +43,12 @@ const StudentNotas = ({
 }: StudentGradesPageProps) => {
   return (
     <div className="max-w-[90vw] w-full px-10 py-5 justify-center flex flex-col">
-      <AddNota subjects={subjects} email={email} />
+      <div className="flex flex-row justify-between">
+        <div className="flex justify-between w-full">
+          <h2 className="text-2xl font-bold">Notas do aluno</h2>
+        </div>
+        <AddNota subjects={subjects} email={email} />
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
@@ -54,9 +59,9 @@ const StudentNotas = ({
             <TableHead className="font-bold text-bg">Status</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody className="w-full h-[300px]">
-          {notas.length > 0 &&
-            notas.map((row) => (
+        {notas.length > 0 && (
+          <TableBody className="w-full">
+            {notas.map((row) => (
               <TableRow key={row.subjectCode}>
                 <TableCell className="font-medium">{row.name}</TableCell>
                 <TableCell>{row.workload}</TableCell>
@@ -71,7 +76,9 @@ const StudentNotas = ({
                         : 'text-cyan-600'
                   }`}
                 >
-                  {row.subjectStatus}
+                  {row.subjectStatus === 'APPROVED' && 'Aprovado'}
+                  {row.subjectStatus === 'REPROVED' && 'Reprovado'}
+                  {row.subjectStatus === 'ENROLLED' && 'Cursando'}
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-3">
@@ -96,14 +103,17 @@ const StudentNotas = ({
                 </TableCell>
               </TableRow>
             ))}
-          {notas.length === 0 && (
+          </TableBody>
+        )}
+        {notas.length === 0 && (
+          <TableBody className="w-full h-[300px]">
             <TableRow>
               <TableCell colSpan={5} className="text-center">
                 Nenhuma nota cadastrada
               </TableCell>
             </TableRow>
-          )}
-        </TableBody>
+          </TableBody>
+        )}
       </Table>
     </div>
   )

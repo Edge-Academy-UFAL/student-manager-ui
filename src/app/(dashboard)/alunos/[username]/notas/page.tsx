@@ -55,7 +55,6 @@ const getStudent = async (email: string) => {
   const token = session?.user.authToken
 
   try {
-    console.log(`${process.env.backendRoute}/api/v1/students/${email}`)
     const res = await fetch(
       `${process.env.backendRoute}/api/v1/students/${email}`,
       {
@@ -81,12 +80,10 @@ const getStudent = async (email: string) => {
 
 const StudentCollegePage = async ({ params }: StudentGradesPageProps) => {
   const email = `${params.username}@edge.ufal.br`
-  console.log(email)
+
   const notas = await getNotas(email)
   const student = await getStudent(email)
   const disciplinas = await getDisciplinas()
-  console.log('notas', notas)
-  console.log('student', student)
 
   if (!notas || !disciplinas) {
     throw new Error('Erro ao buscar os dados')
