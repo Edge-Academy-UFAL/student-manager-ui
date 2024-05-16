@@ -1,5 +1,5 @@
 'use client'
-import { UserSession } from '@/lib/auth'
+
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import InfoBox from './info-box'
@@ -36,7 +36,7 @@ const StudentProfile = ({ username }: { username: string }) => {
         {
           method: 'GET',
           headers: {
-            Authorization: `Bearer ${(data as UserSession).user.authToken}`,
+            Authorization: `Bearer ${data?.user.authToken}`,
           },
         },
       )

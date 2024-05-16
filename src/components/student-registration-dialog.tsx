@@ -26,7 +26,6 @@ import { useState } from 'react'
 import { MonthSelect, YearSelect } from '@/components/custom-select'
 import { LoadingSpinner } from './loading-spinner'
 import { useSession } from 'next-auth/react'
-import { UserSession } from '@/lib/auth'
 
 interface fromData {
   studentGroup: string
@@ -477,7 +476,7 @@ export function StudentRegistrationDialog() {
     }
 
     // Get logged user credentials
-    const token = (data as UserSession).user.authToken
+    const token = data?.user.authToken
 
     const res = await fetch(`${process.env.backendRoute}/api/v1/register`, {
       method: 'POST',

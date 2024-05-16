@@ -59,7 +59,7 @@ import { z } from 'zod'
 import { StudentResponse } from './student-profile'
 import { Textarea } from '../ui/textarea'
 import { ScrollArea } from '../ui/scroll-area'
-import { UserSession } from '@/lib/auth'
+
 import { useToast } from '../ui/use-toast'
 
 interface EditableInfoData {
@@ -459,7 +459,7 @@ export function StudentInfoEditDialog({
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${(data as UserSession).user.authToken}`,
+          Authorization: `Bearer ${data?.user.authToken}`,
         },
         body: JSON.stringify(requestData),
       })
