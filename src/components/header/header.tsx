@@ -37,8 +37,6 @@ const Header = () => {
   }, [resolvedTheme])
 
   const routes = (() => {
-    console.log(data?.user.dtype)
-
     switch (data?.user.dtype) {
       case 'Student':
         return studentRoutes

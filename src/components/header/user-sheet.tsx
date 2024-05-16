@@ -22,7 +22,7 @@ export function UserSheet() {
   const photoUrl = data?.user.photoUrl
     ? `${process.env.awsUrl}/${process.env.awsBucket}/${data?.user.photoUrl}`
     : undefined
-  console.log(photoUrl)
+
   const username = data?.user.name
 
   return (
