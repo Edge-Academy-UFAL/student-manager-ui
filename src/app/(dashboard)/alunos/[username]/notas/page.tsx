@@ -50,39 +50,10 @@ const getNotas = async (email: string) => {
   }
 }
 
-const getStudent = async (email: string) => {
-  const session = await getServerSession(authOptions)
-  const token = session?.user.authToken
-
-  try {
-    const res = await fetch(
-      `${process.env.backendRoute}/api/v1/students/${email}`,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        next: {
-          revalidate: 15,
-        },
-      },
-    )
-
-    if (!res.ok) {
-      return null
-    }
-
-    return res.json()
-  } catch (error) {
-    throw new Error('Erro de conexão com o servidor')
-  }
-}
-
 const StudentCollegePage = async ({ params }: StudentGradesPageProps) => {
   const email = `${params.username}@edge.ufal.br`
 
   const notas = await getNotas(email)
-  const student = await getStudent(email)
   const disciplinas = await getDisciplinas()
 
   if (!notas || !disciplinas) {
@@ -95,7 +66,6 @@ const StudentCollegePage = async ({ params }: StudentGradesPageProps) => {
         notas={notas}
         subjects={disciplinas}
         email={`${params.username}@edge.ufal.br`}
-        studentId={student.id}
       />
     </div>
   )

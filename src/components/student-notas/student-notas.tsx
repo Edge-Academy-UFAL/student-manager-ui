@@ -32,15 +32,9 @@ interface StudentGradesPageProps {
   notas: Grade[]
   subjects: Subject[]
   email: string
-  studentId: string
 }
 
-const StudentNotas = ({
-  notas,
-  subjects,
-  email,
-  studentId,
-}: StudentGradesPageProps) => {
+const StudentNotas = ({ notas, subjects, email }: StudentGradesPageProps) => {
   return (
     <div className="max-w-[90vw] w-full px-10 py-5 justify-center flex flex-col">
       <div className="flex flex-row justify-between">
@@ -90,7 +84,6 @@ const StudentNotas = ({
                       media={row.finalGrade}
                       situacao={row.subjectStatus}
                       email={email}
-                      studentId={studentId}
                     />
                     <RemoveNota
                       id={row.subjectCode}

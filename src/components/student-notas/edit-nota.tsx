@@ -54,7 +54,6 @@ interface NotaProps {
   email: string
   media?: number
   situacao?: string
-  studentId?: string
 }
 
 export const EditNota = ({
@@ -65,7 +64,6 @@ export const EditNota = ({
   email,
   media,
   situacao,
-  studentId,
 }: NotaProps) => {
   const { toast } = useToast()
 
@@ -124,7 +122,7 @@ export const EditNota = ({
       finalGrade: nota,
       subjectStatus: status,
       period: semester,
-      studentId,
+      studentEmail: email,
     }
 
     const res = await editGrade(data)
