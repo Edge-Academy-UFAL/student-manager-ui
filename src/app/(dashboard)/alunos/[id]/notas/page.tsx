@@ -14,7 +14,7 @@ const getDisciplinas = async () => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      next: { tags: ['disciplinas-table'], revalidate: 3600 },
+      next: { tags: ['disciplinas-table'], revalidate: 600 },
     })
 
     if (!res.ok) {
