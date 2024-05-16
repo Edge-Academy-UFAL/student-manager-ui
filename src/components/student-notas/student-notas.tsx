@@ -49,45 +49,53 @@ const StudentNotas = ({ notas, subjects, email }: StudentGradesPageProps) => {
           </TableRow>
         </TableHeader>
         <TableBody className="w-full h-[300px]">
-          {notas.map((row) => (
-            <TableRow key={row.subjectCode}>
-              <TableCell className="font-medium">{row.name}</TableCell>
-              <TableCell>{row.workload}</TableCell>
-              <TableCell>{row.period}</TableCell>
-              <TableCell>{row.finalGrade}</TableCell>
-              <TableCell
-                className={`${
-                  row.subjectStatus === 'APPROVED'
-                    ? 'text-green-600'
-                    : row.subjectStatus === 'REPROVED'
-                      ? 'text-red-600'
-                      : 'text-cyan-600'
-                }`}
-              >
-                {row.subjectStatus}
-              </TableCell>
-              <TableCell>
-                <div className="flex gap-3">
-                  <EditNota
-                    id={row.subjectCode}
-                    nome={row.name}
-                    code={row.subjectCode}
-                    semester={row.period}
-                    media={row.finalGrade}
-                    situacao={row.subjectStatus}
-                    email={email}
-                  />
-                  <RemoveNota
-                    id={row.subjectCode}
-                    nome={row.name}
-                    code={row.subjectCode}
-                    semester={row.period}
-                    email={email}
-                  />
-                </div>
+          {notas.length > 0 &&
+            notas.map((row) => (
+              <TableRow key={row.subjectCode}>
+                <TableCell className="font-medium">{row.name}</TableCell>
+                <TableCell>{row.workload}</TableCell>
+                <TableCell>{row.period}</TableCell>
+                <TableCell>{row.finalGrade}</TableCell>
+                <TableCell
+                  className={`${
+                    row.subjectStatus === 'APPROVED'
+                      ? 'text-green-600'
+                      : row.subjectStatus === 'REPROVED'
+                        ? 'text-red-600'
+                        : 'text-cyan-600'
+                  }`}
+                >
+                  {row.subjectStatus}
+                </TableCell>
+                <TableCell>
+                  <div className="flex gap-3">
+                    <EditNota
+                      id={row.subjectCode}
+                      nome={row.name}
+                      code={row.subjectCode}
+                      semester={row.period}
+                      media={row.finalGrade}
+                      situacao={row.subjectStatus}
+                      email={email}
+                    />
+                    <RemoveNota
+                      id={row.subjectCode}
+                      nome={row.name}
+                      code={row.subjectCode}
+                      semester={row.period}
+                      email={email}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          {notas.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={5} className="text-center">
+                Nenhuma nota cadastrada
               </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </div>
