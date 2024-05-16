@@ -35,8 +35,7 @@ const getNotas = async (email: string) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      cache: 'no-store',
-      // next: { tags: ['notas-table'], revalidate: 3600 },
+      next: { tags: ['disciplinas-table'], revalidate: 600 },
     })
 
     if (!res.ok) {
