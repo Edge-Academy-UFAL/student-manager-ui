@@ -19,7 +19,7 @@ export const removeGrade = async (data: any) => {
     })
 
     if (!res.ok) {
-      throw new Error('Erro ao adicionar nota')
+      throw new Error('Erro ao remover nota')
     }
 
     revalidateTag('disciplinas-table')

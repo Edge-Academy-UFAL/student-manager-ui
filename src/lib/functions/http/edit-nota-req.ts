@@ -6,7 +6,7 @@ import { revalidateTag } from 'next/cache'
 
 const token = cookies().get('token')?.value
 
-export const addGrade = async (data: any) => {
+export const editGrade = async (data: any) => {
   'use server'
   try {
     const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
@@ -14,12 +14,12 @@ export const addGrade = async (data: any) => {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      method: 'POST',
+      method: 'PUT',
       body: JSON.stringify(data),
     })
 
     if (!res.ok) {
-      throw new Error('Erro ao adicionar nota')
+      throw new Error('Erro ao editar nota')
     }
 
     revalidateTag('disciplinas-table')

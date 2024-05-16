@@ -29,7 +29,7 @@ import { useToast } from '../ui/use-toast'
 import { LoadingSpinner } from '../loading-spinner'
 import { useState } from 'react'
 import { Separator } from '../ui/separator'
-import { addNota } from '@/lib/functions/http/add-nota-req'
+import { addGrade } from '@/lib/functions/http/add-nota-req'
 
 interface Subject {
   code: string
@@ -130,7 +130,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     }
 
     setLoading(true)
-    const res = await addNota(data)
+    const res = await addGrade(data)
 
     if (res) {
       setNota('')

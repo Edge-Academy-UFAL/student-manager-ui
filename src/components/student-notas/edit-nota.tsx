@@ -46,6 +46,7 @@ import { useToast } from '../ui/use-toast'
 import { LoadingSpinner } from '../loading-spinner'
 
 import { removeGrade } from '@/lib/functions/http/remove-nota-req'
+import { editGrade } from '@/lib/functions/http/edit-nota-req'
 
 interface NotaProps {
   id: string
@@ -127,39 +128,19 @@ export const EditNota = ({
       studentEmail: email,
     }
 
-    console.log(data)
+    const res = await editGrade(data)
 
-    try {
-      const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'PUT',
-        body: JSON.stringify(data),
-      })
-
-      if (!res.ok) {
-        console.log(res)
-        throw new Error('Erro ao editar nota')
-      }
-
-      setLoading(false)
-      setNota('')
-      setOpen(false)
-
+    if (!res) {
       toast({
-        title: 'Disciplina editada com sucesso!',
-      })
-
-      return res.json()
-    } catch (error) {
-      console.log(error)
-      toast({
-        title: 'Erro ao adicionar nota',
+        title: 'Erro ao editar disciplina',
+        description: 'Tente novamente mais tarde.',
         variant: 'destructive',
       })
-      setLoading(false)
+    } else {
+      setOpen(false)
+      toast({
+        title: `Disciplina ${code} - ${nome} editada com sucesso.`,
+      })
     }
   }
 
