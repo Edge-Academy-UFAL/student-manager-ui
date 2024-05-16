@@ -39,9 +39,9 @@ export function UserSheet() {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Informações</SheetTitle>
+          <SheetTitle>Menu do usuário</SheetTitle>
           <SheetDescription>
-            Acesse suas configurações e perfil.
+            Acesse configurações e outras opções de usuário.
           </SheetDescription>
         </SheetHeader>
         <div className="grid gap-4 py-4">
