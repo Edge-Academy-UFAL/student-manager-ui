@@ -27,7 +27,8 @@ const Header = () => {
     switch (data?.user.dtype) {
       case 'Student':
         return studentRoutes;
-      case 'Admin' || 'Instructor':
+      case 'Admin':
+      case 'Instructor':
         return adminAndInstructorRoutes;
       default:
         return studentRoutes;
