@@ -48,6 +48,7 @@ import { editGrade } from '@/lib/functions/http/edit-nota-req'
 import { ToastAction } from '../ui/toast'
 import { AddNota } from './add-nota'
 import { addGrade } from '@/lib/functions/http/add-nota-req'
+import { handleLimitRange } from '@/lib/utils'
 
 interface NotaProps {
   id: string
@@ -72,7 +73,7 @@ export const EditNota = ({
 
   const [open, setOpen] = useState(false)
 
-  const [nota, setNota] = useState(media || '')
+  const [nota, setNota] = useState(media || 0)
   const [status, setStatus] = useState(situacao || '')
 
   const [notaError, setNotaError] = useState('')
@@ -86,9 +87,8 @@ export const EditNota = ({
     let isValid = true
 
     // Validação do campo "Média Final"
-    if (nota.toString().trim() === '') {
-      setNotaError('A média final é obrigatória.')
-      isValid = false
+    if (nota.toString().trim() === '' || Number(nota) === 0) {
+      setNota(0)
     } else if (isNaN(Number(nota)) || Number(nota) < 1 || Number(nota) > 10) {
       setNotaError('A média final deve ser um número entre 1 e 10.')
       isValid = false
@@ -172,8 +172,11 @@ export const EditNota = ({
             <Input
               id="nota"
               className="col-span-3"
-              value={nota}
-              onChange={(e) => setNota(e.target.value)}
+              value={nota.toString()}
+              type="number"
+              onChange={(e) =>
+                setNota(handleLimitRange(e.target.valueAsNumber, 0, 10))
+              }
             />
             {notaError && (
               <span className="text-red-500 text-sm">{notaError}</span>
