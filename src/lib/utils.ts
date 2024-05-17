@@ -58,3 +58,20 @@ export function formatPhone(phone: string): string {
 export function getMaxSemesterBasedOnCourse(course: string): number {
   return course === 'Engenharia de Computação' ? 15 : 12
 }
+
+export function handleLimitRange(
+  value: number,
+  min: number,
+  max: number,
+): number {
+  if (isNaN(value)) {
+    return min
+  }
+  if (value < min) {
+    return min
+  }
+  if (value > max) {
+    return max
+  }
+  return value
+}

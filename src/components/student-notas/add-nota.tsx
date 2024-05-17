@@ -30,6 +30,7 @@ import { LoadingSpinner } from '../loading-spinner'
 import { useState } from 'react'
 import { Separator } from '../ui/separator'
 import { addGrade } from '@/lib/functions/http/add-nota-req'
+import { handleLimitRange } from '@/lib/utils'
 
 interface Subject {
   code: string
@@ -52,7 +53,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
   const [disciplinas, setDisciplinas] = useState<Subject[]>(subjects || [])
 
   const [periodo, setPeriodo] = useState('')
-  const [nota, setNota] = useState('')
+  const [nota, setNota] = useState(0)
   const [status, setStatus] = useState('')
   const [disciplina, setDisciplina] = useState('')
 
@@ -82,13 +83,13 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     }
 
     // Validação do campo "Média Final"
-    if (nota.trim() === '') {
+    if (!nota) {
       setNotaError('A média final é obrigatória.')
       isValid = false
     } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
       setNotaError('A média final deve ser um número entre 1 e 10.')
       isValid = false
-    } else if (!/^\d+(\.\d{1,2})?$/.test(nota)) {
+    } else if (!/^\d+(\.\d{1,2})?$/.test(nota.toString())) {
       setNotaError('A média final deve ter no máximo duas casas decimais.')
       isValid = false
     } else {
@@ -134,7 +135,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
 
     if (res) {
       await new Promise((resolve) => setTimeout(resolve, 500))
-      setNota('')
+      setNota(0)
       setPeriodo('')
       setOpen(false)
       toast({
@@ -201,7 +202,10 @@ export function AddNota({ subjects, email }: AddNotaProps) {
                 id="nota"
                 className="col-span-3"
                 value={nota}
-                onChange={(e) => setNota(e.target.value)}
+                type="number"
+                onChange={(e) =>
+                  setNota(handleLimitRange(e.target.valueAsNumber, 0, 10))
+                }
               />
               {notaError && (
                 <span className="text-red-500 text-sm">{notaError}</span>
