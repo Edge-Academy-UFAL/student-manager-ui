@@ -89,8 +89,8 @@ export const EditNota = ({
     // Validação do campo "Média Final"
     if (nota.toString().trim() === '' || Number(nota) === 0) {
       setNota(0)
-    } else if (isNaN(Number(nota)) || Number(nota) < 1 || Number(nota) > 10) {
-      setNotaError('A média final deve ser um número entre 1 e 10.')
+    } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
+      setNotaError('A média final deve ser um número entre 0 e 10.')
       isValid = false
     } else if (!/^\d+(\.\d{1,2})?$/.test(nota.toString())) {
       setNotaError('A média final deve ter no máximo duas casas decimais.')
