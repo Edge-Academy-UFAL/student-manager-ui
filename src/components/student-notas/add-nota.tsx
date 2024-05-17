@@ -113,6 +113,25 @@ export function AddNota({ subjects, email }: AddNotaProps) {
       setDisciplinaError('')
     }
 
+    // Validação do campo "Média Final", permitir campo nulo quando a situação for "Cursando" (USAR NA PROXIMA SPRINT)
+
+    // if (status === 'ENROLLED') {
+    //   setNotaError('')
+    // } else {
+    //   if (nota.trim() === '') {
+    //     setNotaError('A média final é obrigatória.')
+    //     isValid = false
+    //   } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
+    //     setNotaError('A média final deve ser um número entre 0 e 10.')
+    //     isValid = false
+    //   } else if (!/^\d+(\.\d{1,2})?$/.test(nota)) {
+    //     setNotaError('A média final deve ter no máximo duas casas decimais.')
+    //     isValid = false
+    //   } else {
+    //     setNotaError('')
+    //   }
+    // }
+
     return isValid
   }
 
