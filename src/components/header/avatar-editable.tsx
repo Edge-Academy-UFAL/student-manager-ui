@@ -113,7 +113,7 @@ const AvatarEditable = ({
                 />
               }
               <div className="space-y-2">
-                <div className="text-gray-500 text-xs">
+                <div className="text-muted-foreground text-sm">
                   Insira sua foto de perfil em formato PNG ou JPEG, com tamanho
                   máximo de 5MB.
                 </div>

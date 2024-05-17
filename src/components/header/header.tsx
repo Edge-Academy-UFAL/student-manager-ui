@@ -68,7 +68,7 @@ const Header = () => {
             className="flex gap-1.5 items-center"
             src={logo}
             alt="Edge Academy Logo"
-            width={80}
+            width={65}
           />
         </div>
         <Separator orientation="vertical" className="h-6" />
