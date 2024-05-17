@@ -62,28 +62,29 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
   const router = useRouter()
 
   const columns: ColumnDef<Student>[] = [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
+    // Removing checkboxes until we need them
+    // {
+    //   id: 'select',
+    //   header: ({ table }) => (
+    //     <Checkbox
+    //       checked={
+    //         table.getIsAllPageRowsSelected() ||
+    //         (table.getIsSomePageRowsSelected() && 'indeterminate')
+    //       }
+    //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+    //       aria-label="Select all"
+    //     />
+    //   ),
+    //   cell: ({ row }) => (
+    //     <Checkbox
+    //       checked={row.getIsSelected()}
+    //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //       aria-label="Select row"
+    //     />
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
     {
       accessorKey: 'name',
       header: ({ column }) => {
@@ -99,7 +100,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       },
       cell: ({ row }) => {
         return (
-          <div className="flex flex-row gap-3">
+          <div className="flex flex-row gap-3 ps-4">
             <Avatar>
               {/* TODO: Add the correct image */}
               <AvatarImage
@@ -159,7 +160,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         )
       },
       cell: ({ row }) => (
-        <div className="capitalize ">{row.getValue('studentGroup')}</div>
+        <div className="capitalize">{row.getValue('studentGroup')}</div>
       ),
     },
     {
@@ -316,17 +317,28 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
-                  onClick={() => goToStudentPage(row.original.email)}
                   className={'cursor-pointer'}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) =>
+                    cell.id === '0_actions' ? (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ) : (
+                      <TableCell
+                        key={cell.id}
+                        onClick={() => goToStudentPage(row.original.email)}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ),
+                  )}
                 </TableRow>
               ))
             ) : (
