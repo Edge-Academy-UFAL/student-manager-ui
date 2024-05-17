@@ -185,7 +185,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
             <div className="flex flex-col gap-3">
               <Label>Disciplinas</Label>
               <Select onValueChange={(value) => setDisciplina(value)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-left">
                   <SelectValue
                     placeholder="Selecione a disciplina"
                     className="w-full"
@@ -194,12 +194,15 @@ export function AddNota({ subjects, email }: AddNotaProps) {
                 <SelectContent>
                   <SelectGroup>
                     {disciplinas.map((disciplina) => (
-                      <div key={disciplina.code}>
+                      <div
+                        key={disciplina.code}
+                        className="w-[--radix-select-trigger-width]"
+                      >
                         <SelectItem
                           value={disciplina.code}
                           className="hover:cursor-pointer"
                         >
-                          {disciplina.name}
+                          {disciplina.code + ' - ' + disciplina.name}
                         </SelectItem>
                         <Separator />
                       </div>
