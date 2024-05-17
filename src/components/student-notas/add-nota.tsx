@@ -133,6 +133,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     const res = await addGrade(data)
 
     if (res) {
+      await new Promise((resolve) => setTimeout(resolve, 500))
       setNota('')
       setPeriodo('')
       setOpen(false)

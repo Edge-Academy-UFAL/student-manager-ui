@@ -115,7 +115,7 @@ export const EditNota = ({
       return
     }
 
-    // setLoading(true)
+    setLoading(true)
 
     const data = {
       subjectId: code,
@@ -134,11 +134,14 @@ export const EditNota = ({
         variant: 'destructive',
       })
     } else {
+      await new Promise((resolve) => setTimeout(resolve, 500))
       setOpen(false)
       toast({
         title: `Disciplina ${code} - ${nome} editada com sucesso.`,
       })
     }
+
+    setLoading(false)
   }
 
   return (
@@ -248,6 +251,7 @@ export const RemoveNota = ({ code, nome, semester, email }: NotaProps) => {
         variant: 'destructive',
       })
     } else {
+      await new Promise((resolve) => setTimeout(resolve, 500))
       setOpen(false)
       toast({
         title: `Disciplina ${code} - ${nome} removida com sucesso.`,
