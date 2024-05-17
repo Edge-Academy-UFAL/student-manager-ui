@@ -22,7 +22,6 @@ import {
 } from '@tanstack/react-table'
 
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -62,28 +61,6 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
   const router = useRouter()
 
   const columns: ColumnDef<Student>[] = [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
     {
       accessorKey: 'name',
       header: ({ column }) => {
@@ -192,7 +169,15 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
+              <DropdownMenuItem>
+                <a
+                  href={`https://mail.google.com/a/edge.ufal.br/mail/?view=cm&to=${row.original.email}&su=Contato via plataforma Edge Academy&body=Olá, ${row.original.name}.%0A%0AEstou entrando em contato com você para falar sobre ...
+                  `}
+                  target="_blank"
+                >
+                  Enviar Mensagem
+                </a>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={(e) => e.preventDefault()}>
                 <DeleteStudent name={payment.name} email={payment.email} />
               </DropdownMenuItem>
