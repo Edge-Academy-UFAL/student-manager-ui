@@ -47,9 +47,7 @@ const StudentNotas = async ({
           <div className="flex justify-between w-full">
             <h2 className="text-2xl font-bold">Notas do aluno</h2>
           </div>
-          {email === data?.user?.email ? (
-            <AddNota subjects={subjects} email={email} />
-          ) : null}
+          <AddNota subjects={subjects} email={email} />
         </div>
       ) : (
         <h2 className="text-2xl font-bold my-5">Notas do aluno</h2>
