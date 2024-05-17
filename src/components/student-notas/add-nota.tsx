@@ -84,8 +84,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
 
     // Validação do campo "Média Final"
     if (!nota) {
-      setNotaError('A média final é obrigatória.')
-      isValid = false
+      setNota(0)
     } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
       setNotaError('A média final deve ser um número entre 1 e 10.')
       isValid = false
@@ -220,7 +219,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
               <Input
                 id="nota"
                 className="col-span-3"
-                value={nota}
+                value={nota.toString()}
                 type="number"
                 onChange={(e) =>
                   setNota(handleLimitRange(e.target.valueAsNumber, 0, 10))
