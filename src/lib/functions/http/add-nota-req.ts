@@ -12,7 +12,7 @@ export const addGrade = async (data: any) => {
   const token = session?.user.authToken
 
   try {
-    const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
+    const res = await fetch(`${process.env.backendRoute}/api/v1/grades`, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json',

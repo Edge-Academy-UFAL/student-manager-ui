@@ -453,7 +453,7 @@ export function StudentInfoEditDialog({
 
     // await new Promise((resolve) => setTimeout(resolve, 1000)) // interesante
 
-    const res = await editInfo(requestData, studentData.email)
+    const res = await editInfo(requestData)
 
     // try {
     //   const url = `${process.env.backendRoute}/api/v1/students/${studentData.email}`
