@@ -60,7 +60,7 @@ const StudentNotas = async ({
             <TableHead className="font-bold text-bg">Carga Horária</TableHead>
             <TableHead className="font-bold text-bg">Período</TableHead>
             <TableHead className="font-bold text-bg">Média Final</TableHead>
-            <TableHead className="font-bold text-bg">Status</TableHead>
+            <TableHead className="font-bold text-bg">Situação</TableHead>
           </TableRow>
         </TableHeader>
         {notas.length > 0 && (
