@@ -91,10 +91,13 @@ const SignUpForm = ({ id }: { id: string }) => {
     formData.append('activationCode', id)
 
     try {
-      const response = await fetch('http://127.0.0.1:8080/api/v1/students', {
-        method: 'POST',
-        body: formData,
-      })
+      const response = await fetch(
+        `${process.env.backendRoute}/api/v1/students`,
+        {
+          method: 'POST',
+          body: formData,
+        },
+      )
 
       const status = response.status
 
@@ -450,6 +453,7 @@ const SignUpForm = ({ id }: { id: string }) => {
                       <Button size="lg" type="button">
                         <input
                           type="file"
+                          accept="image/png, image/jpg, image/jpeg"
                           className="hidden"
                           id="fileInput"
                           onBlur={field.onBlur}

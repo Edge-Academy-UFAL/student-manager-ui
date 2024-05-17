@@ -1,7 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 import React, { useState } from 'react'
-
-import { useAuth } from '@/contexts/auth'
 
 import {
   AlertDialog,
@@ -44,13 +43,21 @@ import { Trash, FilePenLine } from 'lucide-react'
 import { useToast } from '../ui/use-toast'
 import { LoadingSpinner } from '../loading-spinner'
 
+import { removeGrade } from '@/lib/functions/http/remove-nota-req'
+import { editGrade } from '@/lib/functions/http/edit-nota-req'
+import { ToastAction } from '../ui/toast'
+import { AddNota } from './add-nota'
+import { addGrade } from '@/lib/functions/http/add-nota-req'
+import { handleLimitRange } from '@/lib/utils'
+
 interface NotaProps {
   id: string
   nome: string
   code: string
-  semester?: number
-  media?: number
-  situacao?: string
+  semester: number
+  email: string
+  media: number
+  situacao: string
 }
 
 export const EditNota = ({
@@ -58,19 +65,17 @@ export const EditNota = ({
   code,
   nome,
   semester,
+  email,
   media,
   situacao,
 }: NotaProps) => {
-  const { token } = useAuth()
   const { toast } = useToast()
 
   const [open, setOpen] = useState(false)
 
-  const [periodo, setPeriodo] = useState(semester || '')
-  const [nota, setNota] = useState(media || '')
+  const [nota, setNota] = useState(media || 0)
   const [status, setStatus] = useState(situacao || '')
 
-  const [periodoError, setPeriodoError] = useState('')
   const [notaError, setNotaError] = useState('')
   const [statusError, setStatusError] = useState('')
 
@@ -81,27 +86,11 @@ export const EditNota = ({
   const validate = () => {
     let isValid = true
 
-    // Validação do campo "Período"
-    if (periodo.toString().trim() === '') {
-      setPeriodoError('O período é obrigatório.')
-      isValid = false
-    } else if (
-      isNaN(Number(periodo)) ||
-      Number(periodo) < 1 ||
-      Number(periodo) > 12
-    ) {
-      setPeriodoError('O período deve ser um número entre 1 e 12.')
-      isValid = false
-    } else {
-      setPeriodoError('')
-    }
-
     // Validação do campo "Média Final"
-    if (nota.toString().trim() === '') {
-      setNotaError('A média final é obrigatória.')
-      isValid = false
-    } else if (isNaN(Number(nota)) || Number(nota) < 1 || Number(nota) > 10) {
-      setNotaError('A média final deve ser um número entre 1 e 10.')
+    if (nota.toString().trim() === '' || Number(nota) === 0) {
+      setNota(0)
+    } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
+      setNotaError('A média final deve ser um número entre 0 e 10.')
       isValid = false
     } else if (!/^\d+(\.\d{1,2})?$/.test(nota.toString())) {
       setNotaError('A média final deve ter no máximo duas casas decimais.')
@@ -117,7 +106,7 @@ export const EditNota = ({
     }
 
     // Validar se houve mudanças
-    if (semester === periodo && media === nota && situacao === status) {
+    if (media === nota && situacao === status) {
       isValid = false
     }
 
@@ -132,26 +121,30 @@ export const EditNota = ({
     setLoading(true)
 
     const data = {
-      id,
-      nota,
-      periodo,
-      status,
+      subjectId: code,
+      finalGrade: nota,
+      subjectStatus: status,
+      period: semester,
+      studentEmail: email,
     }
 
-    setTimeout(() => {
-      console.log('Nota atualizada com sucesso', data)
-      setLoading(false)
-      toast({
-        title: 'Você enviou os seguintes valores:',
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-          </pre>
-        ),
-      })
-    }, 2000)
+    const res = await editGrade(data)
 
-    console.log(data, token)
+    if (!res) {
+      toast({
+        title: 'Erro ao editar disciplina',
+        description: 'Tente novamente mais tarde.',
+        variant: 'destructive',
+      })
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      setOpen(false)
+      toast({
+        title: `Disciplina ${code} - ${nome} editada com sucesso.`,
+      })
+    }
+
+    setLoading(false)
   }
 
   return (
@@ -179,25 +172,17 @@ export const EditNota = ({
             <Input
               id="nota"
               className="col-span-3"
-              value={nota}
-              onChange={(e) => setNota(e.target.value)}
+              value={nota.toString()}
+              type="number"
+              onChange={(e) =>
+                setNota(handleLimitRange(e.target.valueAsNumber, 0, 10))
+              }
             />
             {notaError && (
               <span className="text-red-500 text-sm">{notaError}</span>
             )}
           </div>
-          <div className="flex flex-col gap-3">
-            <Label>Período</Label>
-            <Input
-              id="periodo"
-              className="col-span-3"
-              value={periodo}
-              onChange={(e) => setPeriodo(e.target.value)}
-            />
-            {periodoError && (
-              <span className="text-red-500 text-sm">{periodoError}</span>
-            )}
-          </div>
+
           <div className="flex flex-col gap-3">
             <Label htmlFor="username">Situação</Label>
             <Select
@@ -246,27 +231,66 @@ export const EditNota = ({
   )
 }
 
-export const RemoveNota = ({ id, code, nome }: NotaProps) => {
-  const { token } = useAuth()
+export const RemoveNota = ({
+  code,
+  nome,
+  semester,
+  email,
+  media,
+  situacao,
+}: NotaProps) => {
   const { toast } = useToast()
 
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
 
-  const submitHandler = () => {
+  const submitHandler = async () => {
     setLoading(true)
 
-    console.log(id)
+    const data = {
+      subjectCode: code,
+      period: semester,
+      studentEmail: email,
+    }
 
-    setTimeout(() => {
-      setLoading(false)
+    setLoading(true)
+
+    const res = await removeGrade(data)
+
+    if (!res) {
       toast({
-        title: `Disciplina ${code} removida com sucesso`,
+        title: 'Erro ao remover disciplina',
+        description: 'Tente novamente mais tarde.',
+        variant: 'destructive',
       })
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 500))
       setOpen(false)
-    }, 2000)
 
-    console.log(token)
+      const undoData = {
+        subjectCode: code,
+        studentEmail: email,
+        period: semester,
+        finalGrade: media,
+        subjectStatus: situacao,
+      }
+
+      toast({
+        title: `Disciplina ${code} - ${nome} removida com sucesso.`,
+        action: (
+          <ToastAction
+            altText="Try again"
+            onClick={() => {
+              addGrade(undoData)
+            }}
+          >
+            Desfazer
+          </ToastAction>
+        ),
+      })
+    }
+
+    setLoading(false)
   }
 
   return (

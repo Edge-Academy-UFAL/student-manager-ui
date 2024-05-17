@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import StudentNotas from '@/components/student-notas/student-notas'
-import { cookies } from 'next/headers'
-
+import { authOptions } from '@/lib/auth'
+import { getServerSession } from 'next-auth/next'
 interface StudentGradesPageProps {
-  params: { id: string }
+  params: { username: string }
 }
 
 const getDisciplinas = async () => {
-  const token = cookies().get('token')?.value
-
+  const session = await getServerSession(authOptions)
+  const token = session?.user.authToken
   try {
     const res = await fetch(`http://127.0.0.1:8080/api/v1/subjects`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      next: { revalidate: 3600 },
+      next: { tags: ['disciplinas-table'], revalidate: 600 },
     })
 
     if (!res.ok) {
@@ -28,15 +28,16 @@ const getDisciplinas = async () => {
 }
 
 const getNotas = async (email: string) => {
-  const token = cookies().get('token')?.value
+  const session = await getServerSession(authOptions)
+  const token = session?.user.authToken
 
   try {
     const res = await fetch(`http://127.0.0.1:8080/api/v1/grades/${email}`, {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      cache: 'no-store',
-      // next: { tags: ['notas-table'], revalidate: 3600 },
+      next: { tags: ['disciplinas-table'], revalidate: 600 },
     })
 
     if (!res.ok) {
@@ -50,7 +51,7 @@ const getNotas = async (email: string) => {
 }
 
 const StudentCollegePage = async ({ params }: StudentGradesPageProps) => {
-  const email = `${params.id}@edge.ufal.br`
+  const email = `${params.username}@edge.ufal.br`
 
   const notas = await getNotas(email)
   const disciplinas = await getDisciplinas()
@@ -64,7 +65,7 @@ const StudentCollegePage = async ({ params }: StudentGradesPageProps) => {
       <StudentNotas
         notas={notas}
         subjects={disciplinas}
-        email={`${params.id}@edge.ufal.br`}
+        email={`${params.username}@edge.ufal.br`}
       />
     </div>
   )

@@ -7,6 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 const ReistredPage = () => {
   return (
@@ -24,6 +26,11 @@ const ReistredPage = () => {
           <div>
             <p>Agora você pode acessar a plataforma com seu e-mail e senha.</p>
           </div>
+          <Link href="/login" className="w-full mt-2">
+            <Button className="w-full" variant="default">
+              Acessar a página de login
+            </Button>
+          </Link>
         </CardContent>
       </Card>
     </div>

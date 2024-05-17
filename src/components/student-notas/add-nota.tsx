@@ -29,7 +29,8 @@ import { useToast } from '../ui/use-toast'
 import { LoadingSpinner } from '../loading-spinner'
 import { useState } from 'react'
 import { Separator } from '../ui/separator'
-import { useAuth } from '@/contexts/auth'
+import { addGrade } from '@/lib/functions/http/add-nota-req'
+import { handleLimitRange } from '@/lib/utils'
 
 interface Subject {
   code: string
@@ -47,14 +48,12 @@ const STATUS = ['APPROVED', 'REPROVED', 'ENROLLED']
 export function AddNota({ subjects, email }: AddNotaProps) {
   const { toast } = useToast()
 
-  const { token } = useAuth()
-
   const [open, setOpen] = useState(false)
 
   const [disciplinas, setDisciplinas] = useState<Subject[]>(subjects || [])
 
   const [periodo, setPeriodo] = useState('')
-  const [nota, setNota] = useState('')
+  const [nota, setNota] = useState(0)
   const [status, setStatus] = useState('')
   const [disciplina, setDisciplina] = useState('')
 
@@ -84,13 +83,12 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     }
 
     // Validação do campo "Média Final"
-    if (nota.trim() === '') {
-      setNotaError('A média final é obrigatória.')
-      isValid = false
-    } else if (isNaN(Number(nota)) || Number(nota) < 1 || Number(nota) > 10) {
+    if (!nota) {
+      setNota(0)
+    } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
       setNotaError('A média final deve ser um número entre 1 e 10.')
       isValid = false
-    } else if (!/^\d+(\.\d{1,2})?$/.test(nota)) {
+    } else if (!/^\d+(\.\d{1,2})?$/.test(nota.toString())) {
       setNotaError('A média final deve ter no máximo duas casas decimais.')
       isValid = false
     } else {
@@ -115,15 +113,32 @@ export function AddNota({ subjects, email }: AddNotaProps) {
       setDisciplinaError('')
     }
 
+    // Validação do campo "Média Final", permitir campo nulo quando a situação for "Cursando" (USAR NA PROXIMA SPRINT)
+
+    // if (status === 'ENROLLED') {
+    //   setNotaError('')
+    // } else {
+    //   if (nota.trim() === '') {
+    //     setNotaError('A média final é obrigatória.')
+    //     isValid = false
+    //   } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
+    //     setNotaError('A média final deve ser um número entre 0 e 10.')
+    //     isValid = false
+    //   } else if (!/^\d+(\.\d{1,2})?$/.test(nota)) {
+    //     setNotaError('A média final deve ter no máximo duas casas decimais.')
+    //     isValid = false
+    //   } else {
+    //     setNotaError('')
+    //   }
+    // }
+
     return isValid
   }
 
-  const submitHandler = async () => {
+  const handleSubmit = async () => {
     if (!validate()) {
       return
     }
-
-    setLoading(true)
 
     const data = {
       subjectCode: disciplina,
@@ -133,37 +148,26 @@ export function AddNota({ subjects, email }: AddNotaProps) {
       subjectStatus: status,
     }
 
-    try {
-      const res = await fetch(`http://127.0.0.1:8080/api/v1/grades`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify(data),
-      })
+    setLoading(true)
+    const res = await addGrade(data)
 
-      if (!res.ok) {
-        throw new Error('Erro ao adicionar nota')
-      }
-
-      setLoading(false)
-      setNota('')
+    if (res) {
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      setNota(0)
       setPeriodo('')
       setOpen(false)
-
       toast({
-        title: 'Disciplina adicionada com sucesso!',
+        title: 'Disciplina adicionada com sucesso',
       })
-
-      return res.json()
-    } catch (error) {
-      console.log('Erro ao adicionar nota', error)
+    } else {
+      toast({
+        title: 'Erro ao adicionar nota',
+        description: 'Tente novamente mais tarde.',
+        variant: 'destructive',
+      })
     }
 
-    toast({
-      title: 'Disciplina adicionada com sucesso!',
-    })
+    setLoading(false)
   }
 
   return (
@@ -181,7 +185,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
             <div className="flex flex-col gap-3">
               <Label>Disciplinas</Label>
               <Select onValueChange={(value) => setDisciplina(value)}>
-                <SelectTrigger className="w-full">
+                <SelectTrigger className="w-full text-left">
                   <SelectValue
                     placeholder="Selecione a disciplina"
                     className="w-full"
@@ -190,12 +194,15 @@ export function AddNota({ subjects, email }: AddNotaProps) {
                 <SelectContent>
                   <SelectGroup>
                     {disciplinas.map((disciplina) => (
-                      <div key={disciplina.code}>
+                      <div
+                        key={disciplina.code}
+                        className="w-[--radix-select-trigger-width]"
+                      >
                         <SelectItem
                           value={disciplina.code}
                           className="hover:cursor-pointer"
                         >
-                          {disciplina.name}
+                          {disciplina.code + ' - ' + disciplina.name}
                         </SelectItem>
                         <Separator />
                       </div>
@@ -212,8 +219,11 @@ export function AddNota({ subjects, email }: AddNotaProps) {
               <Input
                 id="nota"
                 className="col-span-3"
-                value={nota}
-                onChange={(e) => setNota(e.target.value)}
+                value={nota.toString()}
+                type="number"
+                onChange={(e) =>
+                  setNota(handleLimitRange(e.target.valueAsNumber, 0, 10))
+                }
               />
               {notaError && (
                 <span className="text-red-500 text-sm">{notaError}</span>
@@ -263,11 +273,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
               </Button>
             </DialogClose>
             {!loading && (
-              <Button
-                type="button"
-                className="w-[80px]"
-                onClick={submitHandler}
-              >
+              <Button type="button" className="w-[80px]" onClick={handleSubmit}>
                 Salvar
               </Button>
             )}
