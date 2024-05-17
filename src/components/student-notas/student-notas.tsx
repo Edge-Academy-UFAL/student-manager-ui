@@ -47,9 +47,7 @@ const StudentNotas = async ({
           <div className="flex justify-between w-full">
             <h2 className="text-2xl font-bold">Notas do aluno</h2>
           </div>
-          {email === data?.user?.email ? (
-            <AddNota subjects={subjects} email={email} />
-          ) : null}
+          <AddNota subjects={subjects} email={email} />
         </div>
       ) : (
         <h2 className="text-2xl font-bold my-5">Notas do aluno</h2>
@@ -62,7 +60,7 @@ const StudentNotas = async ({
             <TableHead className="font-bold text-bg">Carga Horária</TableHead>
             <TableHead className="font-bold text-bg">Período</TableHead>
             <TableHead className="font-bold text-bg">Média Final</TableHead>
-            <TableHead className="font-bold text-bg">Status</TableHead>
+            <TableHead className="font-bold text-bg">Situação</TableHead>
           </TableRow>
         </TableHeader>
         {notas.length > 0 && (
@@ -104,6 +102,8 @@ const StudentNotas = async ({
                         nome={row.name}
                         code={row.subjectCode}
                         semester={row.period}
+                        media={row.finalGrade}
+                        situacao={row.subjectStatus}
                         email={email}
                       />
                     </div>
