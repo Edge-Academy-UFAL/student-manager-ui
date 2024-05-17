@@ -11,7 +11,6 @@ import {
 
 import { AddNota } from './add-nota'
 import { RemoveNota, EditNota } from './edit-nota'
-import { useSession } from 'next-auth/react'
 import { getServerSession } from 'next-auth/next'
 interface Grade {
   name: string
