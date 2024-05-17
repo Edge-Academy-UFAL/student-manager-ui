@@ -11,10 +11,11 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useAuth } from '@/contexts/auth'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/ui/use-toast'
+
+import { signIn, useSession } from 'next-auth/react'
 
 import { LoginFormSchema } from '@/lib/schemas'
 
@@ -22,22 +23,34 @@ export function LoginForm() {
   const form = useForm<LoginFormSchema>({
     resolver: zodResolver(LoginFormSchema),
   })
-
-  const { login, isAuthenticated } = useAuth()
+  const { status } = useSession()
   const router = useRouter()
   const { toast } = useToast()
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (status !== 'loading' && status === 'authenticated') {
       router.push('/')
     }
   })
 
   async function onSubmit(data: LoginFormSchema, e?: Event) {
     e?.preventDefault()
-    const res = await login(data.email, data.password)
+    const res = await signIn('credentials', {
+      email: data.email,
+      password: data.password,
+      redirect: false,
+    })
 
-    if (res === 200) {
+    if (!res) {
+      toast({
+        title: 'Não foi possível fazer login',
+        description: 'Tente novamente mais tarde',
+      })
+
+      return
+    }
+
+    if (res.status === 200) {
       toast({
         title: 'Login feito com sucesso',
         description: 'Seja bem vindo!',
@@ -46,7 +59,7 @@ export function LoginForm() {
       router.push('/')
     }
 
-    if (res >= 400 && res < 500) {
+    if (res.status >= 400 && res.status < 500) {
       form.setError('email', { message: '' })
       form.setError('password', { message: '' })
       toast({
@@ -56,7 +69,7 @@ export function LoginForm() {
       })
     }
 
-    if (res >= 500) {
+    if (res.status >= 500) {
       toast({
         title: 'Não foi possível fazer login',
         description: 'Tente novamente mais tarde',

@@ -25,7 +25,7 @@ import { PlusIcon, ExclamationTriangleIcon } from '@radix-ui/react-icons'
 import { useState } from 'react'
 import { MonthSelect, YearSelect } from '@/components/custom-select'
 import { LoadingSpinner } from './loading-spinner'
-import { getCookie } from 'cookies-next'
+import { useSession } from 'next-auth/react'
 
 interface fromData {
   studentGroup: string
@@ -384,6 +384,7 @@ function LoadingDialogContent(props: { title: string; message: string }) {
 }
 
 export function StudentRegistrationDialog() {
+  const { data } = useSession()
   const [formData, setFormData] = useState<fromData>({
     studentGroup: '',
     admissionMonth: '',
@@ -474,13 +475,16 @@ export function StudentRegistrationDialog() {
       studentGroup: Number(formData.studentGroup),
     }
 
+    // Get logged user credentials
+    const token = data?.user.authToken
+
     const res = await fetch(`${process.env.backendRoute}/api/v1/register`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${getCookie('token')}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(requestData),
-      method: 'POST',
     })
 
     // Validate response and show appropriate response dialog

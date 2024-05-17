@@ -22,7 +22,6 @@ import {
 } from '@tanstack/react-table'
 
 import { Button } from '@/components/ui/button'
-import { Checkbox } from '@/components/ui/checkbox'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,10 +39,11 @@ import {
 } from '@/components/ui/table'
 
 import { DeleteStudent } from './delete-student'
-import { enumToStringCourse } from '@/lib/utils'
+import { enumToStringCourse, getUsername } from '@/lib/utils'
 
 import { StudentRegistrationDialog } from './student-registration-dialog'
 import { TableFiltersDropdown, tableGlobalFilterFn } from './table-filter'
+import Link from 'next/link'
 
 export type Student = {
   [x: string]: string
@@ -62,28 +62,6 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
 
   const columns: ColumnDef<Student>[] = [
     {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && 'indeterminate')
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      ),
-      enableSorting: false,
-      enableHiding: false,
-    },
-    {
       accessorKey: 'name',
       header: ({ column }) => {
         return (
@@ -98,7 +76,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       },
       cell: ({ row }) => {
         return (
-          <div className="flex flex-row gap-3">
+          <div className="flex flex-row gap-3 ps-4">
             <Avatar>
               {/* TODO: Add the correct image */}
               <AvatarImage
@@ -111,9 +89,12 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-medium text-base text-bold">
+              <Link
+                href={'/alunos/' + getUsername(row.original.email) + '/dados'}
+                className="font-medium text-base text-bold hover:underline cursor-pointer hover:font-extrabold"
+              >
                 {row.getValue('name')}
-              </div>
+              </Link>
               <div className="lowercase text-sm text-neutral-500">
                 {row.original.email}
               </div>
@@ -155,7 +136,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         )
       },
       cell: ({ row }) => (
-        <div className="capitalize ">{row.getValue('studentGroup')}</div>
+        <div className="capitalize">{row.getValue('studentGroup')}</div>
       ),
     },
     {
@@ -188,14 +169,15 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() =>
-                  router.push('/alunos/' + payment.id + '/profile')
-                }
-              >
-                Visualizar Perfil
+              <DropdownMenuItem>
+                <a
+                  href={`https://mail.google.com/a/edge.ufal.br/mail/?view=cm&to=${row.original.email}&su=Contato via plataforma Edge Academy&body=Olá, ${row.original.name}.%0A%0AEstou entrando em contato com você para falar sobre ...
+                  `}
+                  target="_blank"
+                >
+                  Enviar Mensagem
+                </a>
               </DropdownMenuItem>
-              <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
               <DropdownMenuItem onClick={(e) => e.preventDefault()}>
                 <DeleteStudent name={payment.name} email={payment.email} />
               </DropdownMenuItem>
@@ -237,6 +219,10 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
       globalFilter,
     },
   })
+
+  function goToStudentPage(studentEmail: string) {
+    router.push('/alunos/' + getUsername(studentEmail) + '/dados')
+  }
 
   return (
     <div className="max-w-7xl w-full px-10 py-5 justify-center">
@@ -315,15 +301,28 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  className={'cursor-pointer'}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
+                  {row.getVisibleCells().map((cell) =>
+                    cell.id === '0_actions' ? (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ) : (
+                      <TableCell
+                        key={cell.id}
+                        onClick={() => goToStudentPage(row.original.email)}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ),
+                  )}
                 </TableRow>
               ))
             ) : (
