@@ -45,6 +45,9 @@ import { LoadingSpinner } from '../loading-spinner'
 
 import { removeGrade } from '@/lib/functions/http/remove-nota-req'
 import { editGrade } from '@/lib/functions/http/edit-nota-req'
+import { ToastAction } from '../ui/toast'
+import { AddNota } from './add-nota'
+import { addGrade } from '@/lib/functions/http/add-nota-req'
 
 interface NotaProps {
   id: string
@@ -52,8 +55,8 @@ interface NotaProps {
   code: string
   semester: number
   email: string
-  media?: number
-  situacao?: string
+  media: number
+  situacao: string
 }
 
 export const EditNota = ({
@@ -225,7 +228,14 @@ export const EditNota = ({
   )
 }
 
-export const RemoveNota = ({ code, nome, semester, email }: NotaProps) => {
+export const RemoveNota = ({
+  code,
+  nome,
+  semester,
+  email,
+  media,
+  situacao,
+}: NotaProps) => {
   const { toast } = useToast()
 
   const [loading, setLoading] = useState(false)
@@ -253,8 +263,27 @@ export const RemoveNota = ({ code, nome, semester, email }: NotaProps) => {
     } else {
       await new Promise((resolve) => setTimeout(resolve, 500))
       setOpen(false)
+
+      const undoData = {
+        subjectCode: code,
+        studentEmail: email,
+        period: semester,
+        finalGrade: media,
+        subjectStatus: situacao,
+      }
+
       toast({
         title: `Disciplina ${code} - ${nome} removida com sucesso.`,
+        action: (
+          <ToastAction
+            altText="Try again"
+            onClick={() => {
+              addGrade(undoData)
+            }}
+          >
+            Desfazer
+          </ToastAction>
+        ),
       })
     }
 

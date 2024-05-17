@@ -104,6 +104,8 @@ const StudentNotas = async ({
                         nome={row.name}
                         code={row.subjectCode}
                         semester={row.period}
+                        media={row.finalGrade}
+                        situacao={row.subjectStatus}
                         email={email}
                       />
                     </div>
