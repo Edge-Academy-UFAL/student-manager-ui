@@ -11,7 +11,8 @@ import {
 
 import { AddNota } from './add-nota'
 import { RemoveNota, EditNota } from './edit-nota'
-
+import { useSession } from 'next-auth/react'
+import { getServerSession } from 'next-auth/next'
 interface Grade {
   name: string
   subjectCode: string
@@ -34,15 +35,27 @@ interface StudentGradesPageProps {
   email: string
 }
 
-const StudentNotas = ({ notas, subjects, email }: StudentGradesPageProps) => {
+const StudentNotas = async ({
+  notas,
+  subjects,
+  email,
+}: StudentGradesPageProps) => {
+  const data = await getServerSession()
   return (
     <div className="max-w-[90vw] w-full px-10 py-5 justify-center flex flex-col">
-      <div className="flex flex-row justify-between">
-        <div className="flex justify-between w-full">
-          <h2 className="text-2xl font-bold">Notas do aluno</h2>
+      {email === data?.user?.email ? (
+        <div className="flex flex-row justify-between">
+          <div className="flex justify-between w-full">
+            <h2 className="text-2xl font-bold">Notas do aluno</h2>
+          </div>
+          {email === data?.user?.email ? (
+            <AddNota subjects={subjects} email={email} />
+          ) : null}
         </div>
-        <AddNota subjects={subjects} email={email} />
-      </div>
+      ) : (
+        <h2 className="text-2xl font-bold my-5">Notas do aluno</h2>
+      )}
+
       <Table>
         <TableHeader>
           <TableRow>
@@ -74,26 +87,29 @@ const StudentNotas = ({ notas, subjects, email }: StudentGradesPageProps) => {
                   {row.subjectStatus === 'REPROVED' && 'Reprovado'}
                   {row.subjectStatus === 'ENROLLED' && 'Cursando'}
                 </TableCell>
-                <TableCell>
-                  <div className="flex gap-3">
-                    <EditNota
-                      id={row.subjectCode}
-                      nome={row.name}
-                      code={row.subjectCode}
-                      semester={row.period}
-                      media={row.finalGrade}
-                      situacao={row.subjectStatus}
-                      email={email}
-                    />
-                    <RemoveNota
-                      id={row.subjectCode}
-                      nome={row.name}
-                      code={row.subjectCode}
-                      semester={row.period}
-                      email={email}
-                    />
-                  </div>
-                </TableCell>
+
+                {email === data?.user?.email ? (
+                  <TableCell>
+                    <div className="flex gap-3">
+                      <EditNota
+                        id={row.subjectCode}
+                        nome={row.name}
+                        code={row.subjectCode}
+                        semester={row.period}
+                        media={row.finalGrade}
+                        situacao={row.subjectStatus}
+                        email={email}
+                      />
+                      <RemoveNota
+                        id={row.subjectCode}
+                        nome={row.name}
+                        code={row.subjectCode}
+                        semester={row.period}
+                        email={email}
+                      />
+                    </div>
+                  </TableCell>
+                ) : null}
               </TableRow>
             ))}
           </TableBody>
