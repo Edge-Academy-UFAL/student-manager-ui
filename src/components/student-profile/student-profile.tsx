@@ -41,7 +41,7 @@ const StudentProfile = ({
     <div className="w-screen max-w-[92%] mx-4 mt-9">
       <div className="flex flex-row justify-between">
         <div className="flex justify-between w-full">
-          <h2 className="text-2xl font-bold">Informações básicas</h2>
+          <h2 className="text-2xl font-bold mb-3">Informações básicas</h2>
         </div>
         {studentData.email === data?.user?.email ? (
           <StudentInfoEditDialog
