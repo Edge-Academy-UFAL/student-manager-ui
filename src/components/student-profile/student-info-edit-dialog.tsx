@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/dialog'
 
 import { LoadingSpinner } from '@/components/loading-spinner'
-import { useSession } from 'next-auth/react'
 import { Settings, CalendarIcon } from 'lucide-react'
 
 import { Dispatch, SetStateAction, useState } from 'react'
@@ -61,6 +60,8 @@ import { Textarea } from '../ui/textarea'
 import { ScrollArea } from '../ui/scroll-area'
 
 import { useToast } from '../ui/use-toast'
+
+import { editInfo } from '@/lib/functions/http/edit-info-req'
 
 interface EditableInfoData {
   about: string | ''
@@ -409,7 +410,6 @@ export function StudentInfoEditDialog({
 }) {
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
-  const { data } = useSession()
   const { toast } = useToast()
 
   const defaultFormData: EditableInfoData = {
@@ -451,48 +451,45 @@ export function StudentInfoEditDialog({
 
     setLoading(true)
 
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    // await new Promise((resolve) => setTimeout(resolve, 1000)) // interesante
 
-    try {
-      const url = `${process.env.backendRoute}/api/v1/students/${studentData.email}`
-      const res = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${data?.user.authToken}`,
-        },
-        body: JSON.stringify(requestData),
+    const res = await editInfo(requestData)
+
+    // try {
+    //   const url = `${process.env.backendRoute}/api/v1/students/${studentData.email}`
+    //   const res = await fetch(url, {
+    //     method: 'PUT',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       Authorization: `Bearer ${data?.user.authToken}`,
+    //     },
+    //     body: JSON.stringify(requestData),
+    //   })
+
+    const status = res.status
+
+    console.log('STATUS', status)
+
+    if (status === 200 || status === 201) {
+      setStudentData({ ...studentData, ...requestData })
+      setShowDialog(false)
+
+      toast({
+        title: 'Informações atualizadas com sucesso',
+        description: 'Seus dados foram atuaizados!',
       })
-      const status = res.status
-
-      if (res.ok) {
-        if (status === 200) {
-          setStudentData({ ...studentData, ...requestData })
-          setShowDialog(false)
-
-          toast({
-            title: 'Informações atualizadas com sucesso',
-            description: 'Seus dados foram atuaizados!',
-          })
-        }
-      }
-
-      if (status >= 400 && status < 500) {
-        toast({
-          variant: 'destructive',
-          title: 'Erro ao atualizar seus dados.',
-          description: 'Verifique os valores enviados e tente novamente.',
-        })
-      }
-
-      if (status >= 500) {
-        toast({
-          title: 'Não foi possível atualizar os seus dados.',
-          description: 'Tente novamente mais tarde.',
-        })
-      }
-    } catch (error) {
-      console.error('Erro ao enviar o formulário:', error)
+    } else if (status >= 400 && status < 500) {
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao atualizar seus dados.',
+        description: 'Verifique os valores enviados e tente novamente.',
+      })
+    } else if (status >= 500) {
+      toast({
+        title: 'Não foi possível atualizar os seus dados.',
+        description: 'Tente novamente mais tarde.',
+      })
+    } else {
       toast({
         title: 'Erro',
         description: 'Erro ao enviar os dados.',

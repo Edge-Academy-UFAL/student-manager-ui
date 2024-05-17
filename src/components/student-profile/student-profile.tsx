@@ -1,11 +1,11 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import InfoBox from './info-box'
 import { enumToStringCourse } from '@/lib/utils'
 import { StudentInfoEditDialog } from './student-info-edit-dialog'
-import { LoadingSpinner } from '../loading-spinner'
+
 export interface StudentResponse {
   name: string
   photoUrl: string
@@ -23,48 +23,25 @@ export interface StudentResponse {
   about: string
 }
 
-const StudentProfile = ({ username }: { username: string }) => {
-  const [studentData, setStudentData] = useState<StudentResponse | null>(null)
-  const [isLoading, setLoading] = useState(true)
+const StudentProfile = ({
+  studentDataServerSide,
+}: {
+  username: string
+  studentDataServerSide: StudentResponse
+}) => {
+  const [studentData, setStudentData] = useState<StudentResponse | null>(
+    studentDataServerSide,
+  )
 
   const { data } = useSession()
 
-  useEffect(() => {
-    const fetchStudentData = async () => {
-      const response = await fetch(
-        `${process.env.backendRoute}/api/v1/students/${username}@edge.ufal.br`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${data?.user.authToken}`,
-          },
-        },
-      )
-
-      if (response.ok) {
-        const studentInfos = await response.json()
-        studentInfos.about = studentInfos.about || 'Não fornecido!'
-        setStudentData(studentInfos)
-        setLoading(false)
-      }
-    }
-    fetchStudentData()
-  }, [username, data])
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-[50vh]">
-        <LoadingSpinner size={70}></LoadingSpinner>
-      </div>
-    )
-  }
   if (!studentData) return <div>Erro ao carregar dados...</div>
 
   return (
-    <div className="w-screen max-w-[90%] mx-4 mt-9">
+    <div className="w-screen max-w-[92%] mx-4 mt-9">
       <div className="flex flex-row justify-between">
         <div className="flex justify-between w-full">
-          <h2 className="text-2xl font-bold">Informações básicas</h2>
+          <h2 className="text-2xl font-bold mb-3">Informações básicas</h2>
         </div>
         {studentData.email === data?.user?.email ? (
           <StudentInfoEditDialog
@@ -73,7 +50,7 @@ const StudentProfile = ({ username }: { username: string }) => {
           />
         ) : null}
       </div>
-      <div className="flex flex-row gap-5 p-6 rounded-sm shadow-lg border mt-2">
+      <div className="flex flex-row gap-5 p-6 rounded-lg border mt-2">
         <div className="w-[40%]">
           <InfoBox title="Sobre mim" text={studentData.about} />
         </div>
