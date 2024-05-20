@@ -10,7 +10,7 @@ const getDisciplinas = async () => {
   const session = await getServerSession(authOptions)
   const token = session?.user.authToken
   try {
-    const res = await fetch(`http://127.0.0.1:8080/api/v1/subjects`, {
+    const res = await fetch(`${process.env.backendRoute}/api/v1/subjects`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -32,7 +32,7 @@ const getNotas = async (email: string) => {
   const token = session?.user.authToken
 
   try {
-    const res = await fetch(`http://127.0.0.1:8080/api/v1/grades/${email}`, {
+    const res = await fetch(`${process.env.backendRoute}/api/v1/grades/${email}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
