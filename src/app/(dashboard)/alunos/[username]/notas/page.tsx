@@ -32,13 +32,16 @@ const getNotas = async (email: string) => {
   const token = session?.user.authToken
 
   try {
-    const res = await fetch(`${process.env.backendRoute}/api/v1/grades/${email}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const res = await fetch(
+      `${process.env.backendRoute}/api/v1/grades/${email}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        next: { tags: ['disciplinas-table'], revalidate: 600 },
       },
-      next: { tags: ['disciplinas-table'], revalidate: 600 },
-    })
+    )
 
     if (!res.ok) {
       return null
