@@ -1,12 +1,22 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
-import { useSession } from 'next-auth/react'
 import { useState } from 'react'
-import InfoBox from './info-box'
+
+import { useSession } from 'next-auth/react'
+
 import { enumToStringCourse } from '@/lib/utils'
 import { StudentInfoEditDialog } from './student-info-edit-dialog'
 
-export interface StudentResponse {
+import ActivityCard from './activity-card'
+import InfoBox from './info-box'
+
+import AddActivityModal from './modals/add-activity-modal'
+import EditActivityModal from './modals/edit-activity-modal'
+
+import { Activity } from '../../../types/types'
+
+export interface StudentInfo {
   name: string
   photoUrl: string
   birthDate: string
@@ -24,14 +34,17 @@ export interface StudentResponse {
 }
 
 const StudentProfile = ({
-  studentDataServerSide,
+  studentInfo,
+  activities,
 }: {
   username: string
-  studentDataServerSide: StudentResponse
+  studentInfo: StudentInfo
+  activities: Activity[]
 }) => {
-  const [studentData, setStudentData] = useState<StudentResponse | null>(
-    studentDataServerSide,
+  const [studentData, setStudentData] = useState<StudentInfo | null>(
+    studentInfo,
   )
+  const [atividades, setAtividades] = useState<Activity[]>(activities)
 
   const { data } = useSession()
 
@@ -77,6 +90,15 @@ const StudentProfile = ({
             <InfoBox title="Período de entrada" text={studentData.entryDate} />
           </div>
         </div>
+      </div>
+      <div className="flex justify-between items-center mt-6">
+        <h2 className="text-2xl font-bold">Atividades extras</h2>
+        <AddActivityModal />
+      </div>
+      <div className="mt-3 grid grid-cols-4 gap-4">
+        {activities.map((activity, index) => (
+          <ActivityCard key={index} {...activity} />
+        ))}
       </div>
     </div>
   )
