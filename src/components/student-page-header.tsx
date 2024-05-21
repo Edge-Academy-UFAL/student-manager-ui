@@ -20,6 +20,7 @@ const StudentPageHeader = ({ student }: { student: Student }) => {
   const subpages: Array<SubpageData> = [
     { name: 'Dados pessoais', route: 'dados', active: false },
     { name: 'Notas', route: 'notas', active: false },
+    { name: 'Histórico', route: 'historico', active: false },
   ]
 
   // Gets the current loaded subpage route pathname and sets it as active
