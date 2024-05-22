@@ -14,7 +14,7 @@ import {
 import { Button } from '../ui/button'
 import { useSession } from 'next-auth/react'
 import { Upload } from 'lucide-react'
-import { useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { revalidateRecordPage } from '@/app/actions'
 import { getUsername } from '@/lib/utils'
 import { useToast } from "@/components/ui/use-toast"
@@ -27,20 +27,32 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey } : {pdfViewerKey: 
 	const [error, setError] = useState<string | null>('')
 	const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
 	const [isSaving, setIsSaving] = useState<boolean>(false)
+	const [fileSizeIsBiggestThanMax, setFileSizeIsBiggestThanMax] = useState<boolean>(false)
+	const [inputIsLoaded, setInputIsLoaded] = useState<boolean>(false)
 
 	const { toast } = useToast()
+
+	const MAX_RECORD_DOC_SIZE = 2000000 // 2MB
 
 	const changeModal = () => {
 		setModalIsOpen(!modalIsOpen)
 	}
 
-	const submitHandler = async () => {
-			setCanSaveRecord(false)
-			const formData = new FormData()
-			formData.append('file', selectedRecord as Blob)
+	// Dá um delay no carregamento do botão de Fazer Upload para evitar bugs de sincronização 
+	// e.g. (clicar e não abrir a janela de enviar arquivo)
+	useEffect(() => {
+    setTimeout(() => {
+      setInputIsLoaded(true);
+    }, 1500); 
+  }, []);
 
-			const response = await fetch(
-				`${process.env.backendRoute}/api/v1/students/${data?.user.email}/record`,
+	const submitHandler = async () => {
+		setCanSaveRecord(false)
+		const formData = new FormData()
+		formData.append('file', selectedRecord as Blob)
+
+		const response = await fetch(
+			`${process.env.backendRoute}/api/v1/students/${data?.user.email}/record`,
 			{
 				method: 'PUT',
 				body: formData,
@@ -84,17 +96,18 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey } : {pdfViewerKey: 
 				<div className="space-y-2">
 					<div className="text-muted-foreground text-sm">
 						Insira seu histórico acadêmico em formato PDF, com tamanho
-						máximo de 5MB.
+						máximo de 2MB.
 					</div>
 					<div className="flex items-center justify-normal gap-x-2">
-						<Button size="lg" type="button">
+						<Button size="lg" disabled={ !inputIsLoaded } type="button">
 							<input
 								type="file"
 								className="hidden"
 								id="fileInput"
 								onChange={(e) => {
 									setSelectedRecord(e.target.files?.[0] || null)
-									setCanSaveRecord(!!e.target.files?.[0])
+									setCanSaveRecord(!!e.target.files?.[0] && e.target.files?.[0].size < 2 * MAX_RECORD_DOC_SIZE)
+									setFileSizeIsBiggestThanMax(!!e.target.files?.[0] && e.target.files?.[0].size > 2 * MAX_RECORD_DOC_SIZE)
 								}}
 								accept="application/pdf"
 							/>
@@ -116,6 +129,12 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey } : {pdfViewerKey: 
 						{
 							isSaving &&
 							<span className='text-muted-foreground text-sm'>Salvando no sistema, aguarde</span>
+						}
+					</div>
+					<div>
+						{
+							fileSizeIsBiggestThanMax &&
+							<span className='text-red-700 text-sm'>Arquivo maior que 2MB, favor enviar um menor</span>
 						}
 					</div>
 				</div>

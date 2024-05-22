@@ -5,7 +5,8 @@ import StudentRecordDialog from "./student-record-dialog"
 import StudentRecordFallback from "./student-record-fallback"
 
 const StudentRecord = ({ studentData, pdfSrc }: { studentData: any, pdfSrc: string }) => {
-  const [pdfViewerKey, setPdfViewerKey] = useState(Math.random())
+  // Isso eh utilizado para atualizar o embed toda vez que atualizar o historico
+  const [pdfViewerKey, setPdfViewerKey] = useState(Math.random()) 
 
   return (
     <div className='flex justify-center'>

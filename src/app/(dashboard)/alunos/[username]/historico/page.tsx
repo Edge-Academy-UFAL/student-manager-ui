@@ -21,7 +21,7 @@ const getData = async (email: string) => {
           Authorization: `Bearer ${token}`,
         },
         next: {
-          revalidate: 15,
+          revalidate: 0,
         },
       },
     )
