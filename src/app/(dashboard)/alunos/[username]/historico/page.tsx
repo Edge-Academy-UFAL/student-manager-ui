@@ -3,16 +3,14 @@
 
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import React from 'react'
 import StudentRecord from '@/components/student-record/student-record'
 
 
-const getData = async (email: string) => {
+const getStudentData = async (email: string) => {
   const session = await getServerSession(authOptions)
   const token = session?.user.authToken
 
   try {
-    console.log(`${process.env.backendRoute}/api/v1/students/${email}`)
     const res = await fetch(
       `${process.env.backendRoute}/api/v1/students/${email}`,
       {
@@ -36,14 +34,38 @@ const getData = async (email: string) => {
   }
 }
 
+const checkPdfIsValid = async (academicRecordUrl : string) => {
+  try {
+    const res = await fetch(
+      `${process.env.awsUrl}/${process.env.awsBucket}/${academicRecordUrl}`,
+      {
+        method: 'GET',
+        next: {
+          revalidate: 0,
+        },
+      },
+    )
+
+    if (!res.ok) {
+      return false
+    }
+
+    return true
+  } catch (error) {
+    throw new Error('Erro de conexão com o servidor')
+  }
+}
+
+
 const StudentCollegeRecordPage = async ({ params }: { params: { username: string } }) => {
-	const studentData = await getData(`${params.username}@edge.ufal.br`)
+	const studentData = await getStudentData(`${params.username}@edge.ufal.br`)
   if (!studentData) {
     throw new Error('Erro ao buscar os dados')
   }
 
-	const pdfSrc = `${process.env.awsUrl}/${process.env.awsBucket}/${studentData.academicRecordUrl}`;
-	
+  const pdfSrc = await checkPdfIsValid(studentData.academicRecordUrl) ? `${process.env.awsUrl}/${process.env.awsBucket}/${studentData.academicRecordUrl}` : '' 
+  
+  
   return <StudentRecord studentData={studentData} pdfSrc={pdfSrc} />
 }
 

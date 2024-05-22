@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 /* eslint-disable prettier/prettier */
@@ -14,7 +15,7 @@ import {
 import { Button } from '../ui/button'
 import { useSession } from 'next-auth/react'
 import { Upload } from 'lucide-react'
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { revalidateRecordPage } from '@/app/actions'
 import { getUsername } from '@/lib/utils'
 import { useToast } from "@/components/ui/use-toast"
@@ -28,6 +29,7 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey } : {pdfViewerKey: 
 	const [modalIsOpen, setModalIsOpen] = useState<boolean>(false)
 	const [isSaving, setIsSaving] = useState<boolean>(false)
 	const [fileSizeIsBiggestThanMax, setFileSizeIsBiggestThanMax] = useState<boolean>(false)
+	const [fileTypeIsPdf, setFileTypeIsPdf] = useState<boolean>(true)
 	const [inputIsLoaded, setInputIsLoaded] = useState<boolean>(false)
 
 	const { toast } = useToast()
@@ -41,10 +43,15 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey } : {pdfViewerKey: 
 	// Dá um delay no carregamento do botão de Fazer Upload para evitar bugs de sincronização 
 	// e.g. (clicar e não abrir a janela de enviar arquivo)
 	useEffect(() => {
-    setTimeout(() => {
-      setInputIsLoaded(true);
-    }, 1500); 
-  }, []);
+		setTimeout(() => {
+		setInputIsLoaded(true);
+		}, 1500); 
+	}, []);
+
+	useEffect(() => {
+		setCanSaveRecord(!!selectedRecord && !fileSizeIsBiggestThanMax && fileTypeIsPdf);
+	}, [selectedRecord, fileSizeIsBiggestThanMax, fileTypeIsPdf]);
+	  
 
 	const submitHandler = async () => {
 		setCanSaveRecord(false)
@@ -106,8 +113,8 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey } : {pdfViewerKey: 
 								id="fileInput"
 								onChange={(e) => {
 									setSelectedRecord(e.target.files?.[0] || null)
-									setCanSaveRecord(!!e.target.files?.[0] && e.target.files?.[0].size < 2 * MAX_RECORD_DOC_SIZE)
 									setFileSizeIsBiggestThanMax(!!e.target.files?.[0] && e.target.files?.[0].size > 2 * MAX_RECORD_DOC_SIZE)
+									setFileTypeIsPdf(!!e.target.files?.[0] && e.target.files?.[0].type === "application/pdf")
 								}}
 								accept="application/pdf"
 							/>
@@ -135,6 +142,12 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey } : {pdfViewerKey: 
 						{
 							fileSizeIsBiggestThanMax &&
 							<span className='text-red-700 text-sm'>Arquivo maior que 2MB, favor enviar um menor</span>
+						}
+					</div>
+					<div>
+						{
+							!fileTypeIsPdf &&
+							<span className='text-red-700 text-sm'>Arquivo é de extensão diferente que PDF, favor enviar um PDF válido</span>
 						}
 					</div>
 				</div>
