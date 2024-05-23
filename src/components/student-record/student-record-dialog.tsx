@@ -20,7 +20,7 @@ import { revalidateRecordPage } from '@/app/actions'
 import { getUsername } from '@/lib/utils'
 import { useToast } from "@/components/ui/use-toast"
 
-const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey } : {pdfViewerKey: number, setPdfViewerKey: (src: number) => void}) => {
+const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey, studentData } : {pdfViewerKey: number, setPdfViewerKey: (src: number) => void, studentData: any}) => {
 	const { data } = useSession()
 
 	const [selectedRecord, setSelectedRecord] = useState<File | null>()
@@ -31,6 +31,7 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey } : {pdfViewerKey: 
 	const [fileSizeIsBiggestThanMax, setFileSizeIsBiggestThanMax] = useState<boolean>(false)
 	const [fileTypeIsPdf, setFileTypeIsPdf] = useState<boolean>(true)
 	const [inputIsLoaded, setInputIsLoaded] = useState<boolean>(false)
+
 
 	const { toast } = useToast()
 
@@ -59,7 +60,7 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey } : {pdfViewerKey: 
 		formData.append('file', selectedRecord as Blob)
 
 		const response = await fetch(
-			`${process.env.backendRoute}/api/v1/students/${data?.user.email}/record`,
+			`${process.env.backendRoute}/api/v1/students/${studentData.email}/record`,
 			{
 				method: 'PUT',
 				body: formData,
