@@ -10,10 +10,16 @@ const StudentRecord = ({ studentData, pdfSrc }: { studentData: any, pdfSrc: stri
   const [pdfViewerKey, setPdfViewerKey] = useState(Math.random())
 
   const dateRegex = /\d{4}-\d{2}-\d{2}/
-  const updatedAt = studentData.academicRecordUrl.match(dateRegex)
-  const [year, month, day] = updatedAt[0].split('-')
-  // Formatar a data como DD/MM/YYYY
-  const updatedAtFormatted = `${day}/${month}/${year}`
+  let updatedAtFormatted = ''
+
+  if (studentData.academicRecordUrl) {
+    const updatedAt = studentData.academicRecordUrl && studentData.academicRecordUrl.match(dateRegex) 
+    const [year, month, day] = updatedAt[0].split('-')
+     // Formatar a data como DD/MM/YYYY
+    updatedAtFormatted = `${day}/${month}/${year}`
+  }
+  
+ 
 
   return (
     <div className="flex justify-center">
@@ -28,6 +34,7 @@ const StudentRecord = ({ studentData, pdfSrc }: { studentData: any, pdfSrc: stri
           <StudentRecordDialog
             pdfViewerKey={pdfViewerKey}
             setPdfViewerKey={setPdfViewerKey}
+            studentData={studentData}
           />
         </div>
         <div className="w-full h-full flex flex-col items-center">
