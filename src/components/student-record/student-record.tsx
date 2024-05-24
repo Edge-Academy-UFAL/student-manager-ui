@@ -13,10 +13,13 @@ const StudentRecord = ({ studentData, pdfSrc }: { studentData: any, pdfSrc: stri
   let updatedAtFormatted = ''
 
   if (studentData.academicRecordUrl) {
-    const updatedAt = studentData.academicRecordUrl && studentData.academicRecordUrl.match(dateRegex) 
-    const [year, month, day] = updatedAt[0].split('-')
-     // Formatar a data como DD/MM/YYYY
-    updatedAtFormatted = `${day}/${month}/${year}`
+    const updatedAtMatch = studentData.academicRecordUrl.match(dateRegex);
+  
+    if (updatedAtMatch) {
+      const [year, month, day] = updatedAtMatch[0].split('-');
+      // Format the date as DD/MM/YYYY
+      updatedAtFormatted = `${day}/${month}/${year}`;
+    }
   }
   
  
