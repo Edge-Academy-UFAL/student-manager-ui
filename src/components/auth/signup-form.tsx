@@ -255,11 +255,6 @@ const SignUpForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Telefone*</FormLabel>
                   <FormControl>
-                    {/* <Input
-                      {...field}
-                      placeholder="(99) 9999-9999"
-                      pattern="(\([0-9]{2}\))\s([9]{1})([0-9]{4})-([0-9]{4})"
-                    /> */}
                     <PhoneInput {...field} defaultCountry="BR" />
                   </FormControl>
                   <FormMessage />
