@@ -125,7 +125,7 @@ function InputDialogContent(props: {
         </DialogDescription>
       </DialogHeader>
       <div className="grid gap-4 py-4">
-        <div className="grid w-full items-center gap-1.5">
+        <div className="grid w-full items-center gap-2">
           <Label htmlFor="student-group" className={`${labelColor}`}>
             Turma
           </Label>
@@ -140,7 +140,7 @@ function InputDialogContent(props: {
             }
           />
         </div>
-        <div className="grid w-full items-center gap-1.5">
+        <div className="grid w-full items-center gap-2">
           <Label htmlFor="admission-date" className={`${labelColor}`}>
             Data de ingresso
           </Label>
@@ -162,7 +162,7 @@ function InputDialogContent(props: {
             />
           </div>
         </div>
-        <div className="grid w-full items-center gap-1.5">
+        <div className="grid w-full items-center gap-2">
           <Label htmlFor="student-emails" className={`${labelColor}`}>
             E-mails
           </Label>
