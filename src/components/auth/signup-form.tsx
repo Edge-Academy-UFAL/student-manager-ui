@@ -55,7 +55,7 @@ import { useForm } from 'react-hook-form'
 import { RegisterSchema } from '@/lib/schemas'
 import { formatSignUpData } from '@/lib/functions/formatSignUpData'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { PhoneInput } from '../ui/phone-number'
+import { PhoneInput } from '../ui/phone-input'
 
 const SignUpForm = ({ id }: { id: string }) => {
   const form = useForm<RegisterSchema>({

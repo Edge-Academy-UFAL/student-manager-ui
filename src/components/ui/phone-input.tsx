@@ -50,7 +50,7 @@ const PhoneInput: React.ForwardRefExoticComponent<PhoneInputProps> =
            * when a valid phone number is not entered. To prevent this,
            * the value is coerced to an empty string.
            *
-           * @param {string | undefined} value - The entered value
+           * @param {E164Number | undefined} value - The entered value
            */
           onChange={(value) => onChange?.(value || '')}
           {...props}
