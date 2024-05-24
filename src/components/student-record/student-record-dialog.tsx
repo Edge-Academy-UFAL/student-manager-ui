@@ -88,6 +88,7 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey, studentData } : {p
 
 		setCanSaveRecord(true)
 	}
+
   return (
     <Dialog open={modalIsOpen} onOpenChange={changeModal}>
       <DialogTrigger asChild>
@@ -107,7 +108,7 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey, studentData } : {p
 						Insira seu histórico acadêmico em formato PDF, com tamanho
 						máximo de 2MB.
 					</div>
-					<div className="flex items-center justify-normal gap-x-2">
+					<div className="flex items-center py-2 justify-normal gap-x-2">
 						<Button size="lg" disabled={ !inputIsLoaded } type="button">
 							<input
 								type="file"
@@ -115,7 +116,7 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey, studentData } : {p
 								id="fileInput"
 								onChange={(e) => {
 									setSelectedRecord(e.target.files?.[0] || null)
-									setFileSizeIsBiggestThanMax(!!e.target.files?.[0] && e.target.files?.[0].size > 2 * MAX_RECORD_DOC_SIZE)
+									setFileSizeIsBiggestThanMax(!!e.target.files?.[0] && e.target.files?.[0].size > MAX_RECORD_DOC_SIZE)
 									setFileTypeIsPdf(!!e.target.files?.[0] && e.target.files?.[0].type === "application/pdf")
 								}}
 								accept="application/pdf"
