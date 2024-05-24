@@ -55,6 +55,7 @@ import { useForm } from 'react-hook-form'
 import { RegisterSchema } from '@/lib/schemas'
 import { formatSignUpData } from '@/lib/functions/formatSignUpData'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { PhoneInput } from '../ui/phone-number'
 
 const SignUpForm = ({ id }: { id: string }) => {
   const form = useForm<RegisterSchema>({
@@ -254,11 +255,12 @@ const SignUpForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Telefone*</FormLabel>
                   <FormControl>
-                    <Input
+                    {/* <Input
                       {...field}
                       placeholder="(99) 9999-9999"
                       pattern="(\([0-9]{2}\))\s([9]{1})([0-9]{4})-([0-9]{4})"
-                    />
+                    /> */}
+                    <PhoneInput {...field} defaultCountry="BR" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -307,11 +309,7 @@ const SignUpForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Telefone Secundário</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="(99) 9999-9999"
-                      pattern="(\([0-9]{2}\))\s([9]{1})([0-9]{4})-([0-9]{4})"
-                    />
+                    <PhoneInput {...field} defaultCountry="BR" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

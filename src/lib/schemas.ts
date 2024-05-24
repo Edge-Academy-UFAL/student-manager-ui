@@ -1,7 +1,6 @@
 import { z } from 'zod'
 const MAX_FILE_SIZE = 1024 * 1024 * 5
 const ACCEPTED_IMAGE_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
-
 export const RegisterSchema = z
   .object({
     password: z
@@ -35,12 +34,26 @@ export const RegisterSchema = z
     ),
     phone: z
       .string()
-      .min(10, 'Número de telefone inválido.')
-      .max(15, 'Número de telefone inválido.'),
+      // .refine(isValidPhoneNumber, { message: 'Invalid phone number' }),
+      .refine(
+        (value) => {
+          return value.length === 14
+        },
+        {
+          message: 'Número de telefone inválido',
+        },
+      ),
+
     secondaryPhone: z
       .string()
-      .min(10, 'Número de telefone inválido.')
-      .max(15, 'Número de telefone inválido.')
+      .refine(
+        (value) => {
+          return value.length === 14
+        },
+        {
+          message: 'Número de telefone inválido',
+        },
+      )
       .optional()
       .or(z.literal('')),
     name: z
