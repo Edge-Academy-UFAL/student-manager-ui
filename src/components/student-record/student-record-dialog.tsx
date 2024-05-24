@@ -41,7 +41,7 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey, studentData } : {p
 		setModalIsOpen(!modalIsOpen)
 	}
 
-	// Dá um delay no carregamento do botão de Fazer Upload para evitar bugs de sincronização 
+	// Dá um delay no carregamento do botão de Fazer Upload para evitar bugs de sincronização do script
 	// e.g. (clicar e não abrir a janela de enviar arquivo)
 	useEffect(() => {
 		setTimeout(() => {
@@ -73,6 +73,7 @@ const StudentRecordDialog = ({ pdfViewerKey, setPdfViewerKey, studentData } : {p
 		if (!response.ok) {
 			setError('Não foi possível salvar o histórico')
 		} else {
+			setError(null)
 			setIsSaving(true)
 			setSelectedRecord(null)
 

@@ -62,7 +62,8 @@ const StudentCollegeRecordPage = async ({ params }: { params: { username: string
   if (!studentData) {
     throw new Error('Erro ao buscar os dados')
   }
-
+  
+  // a URL do PDF ficará nula caso o PDF esteja inacessível no S3
   const pdfSrc = await checkPdfIsValid(studentData.academicRecordUrl) ? `${process.env.awsUrl}/${process.env.awsBucket}/${studentData.academicRecordUrl}` : '' 
   
   
