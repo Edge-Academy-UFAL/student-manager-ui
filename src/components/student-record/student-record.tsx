@@ -27,7 +27,7 @@ const StudentRecord = ({ studentData, pdfSrc }: { studentData: any, pdfSrc: stri
   return (
     <div className="flex justify-center">
       <div className="max-w-[90vw] w-full flex flex-col px-10 py-5 h-full justify-center">
-        <div className="flex flex-row justify-between my-5 items-center">
+        <div className="flex flex-row justify-between mb-5 items-center">
           <div className="flex flex-col">
             <h2 className="text-2xl font-bold">Histórico do Aluno</h2>
             <h3 className="text-muted-foreground">
