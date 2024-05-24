@@ -56,6 +56,7 @@ import { RegisterSchema } from '@/lib/schemas'
 import { formatSignUpData } from '@/lib/functions/formatSignUpData'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { PhoneInput } from '../ui/phone-input'
+import { Value } from 'react-phone-number-input'
 
 const SignUpForm = ({ id }: { id: string }) => {
   const form = useForm<RegisterSchema>({
@@ -255,7 +256,11 @@ const SignUpForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Telefone*</FormLabel>
                   <FormControl>
-                    <PhoneInput {...field} defaultCountry="BR" />
+                    <PhoneInput
+                      value={field.value as Value}
+                      onChange={field.onChange}
+                      defaultCountry="BR"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -304,7 +309,11 @@ const SignUpForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Telefone Secundário</FormLabel>
                   <FormControl>
-                    <PhoneInput {...field} defaultCountry="BR" />
+                    <PhoneInput
+                      value={field.value as Value}
+                      onChange={field.onChange}
+                      defaultCountry="BR"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
