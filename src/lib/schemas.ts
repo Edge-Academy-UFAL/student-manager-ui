@@ -1,3 +1,4 @@
+import { isValidPhoneNumber } from 'react-phone-number-input'
 import { z } from 'zod'
 const MAX_FILE_SIZE = 1024 * 1024 * 5
 const ACCEPTED_IMAGE_MIME_TYPES = ['image/jpeg', 'image/jpg', 'image/png']
@@ -34,7 +35,7 @@ export const RegisterSchema = z
     ),
     phone: z
       .string()
-      // .refine(isValidPhoneNumber, { message: 'Invalid phone number' }),
+      .refine(isValidPhoneNumber, { message: 'Invalid phone number' })
       .refine(
         (value) => {
           return value.length === 14
@@ -46,6 +47,7 @@ export const RegisterSchema = z
 
     secondaryPhone: z
       .string()
+      .refine(isValidPhoneNumber, { message: 'Invalid phone number' })
       .refine(
         (value) => {
           return value.length === 14
