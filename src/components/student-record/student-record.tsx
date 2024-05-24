@@ -1,11 +1,17 @@
-/* eslint-disable prettier/prettier */
 'use client'
 
 import { useState } from 'react'
 import StudentRecordDialog from './student-record-dialog'
 import StudentRecordFallback from './student-record-fallback'
+import { Student } from '@/lib/domain'
 
-const StudentRecord = ({ studentData, pdfSrc }: { studentData: any, pdfSrc: string}) => {
+const StudentRecord = ({
+  studentData,
+  pdfSrc,
+}: {
+  studentData: Student
+  pdfSrc: string
+}) => {
   // Isso eh utilizado para atualizar o embed toda vez que atualizar o historico
   const [pdfViewerKey, setPdfViewerKey] = useState(Math.random())
 
@@ -13,16 +19,14 @@ const StudentRecord = ({ studentData, pdfSrc }: { studentData: any, pdfSrc: stri
   let updatedAtFormatted = ''
 
   if (studentData.academicRecordUrl) {
-    const updatedAtMatch = studentData.academicRecordUrl.match(dateRegex);
-  
+    const updatedAtMatch = studentData.academicRecordUrl.match(dateRegex)
+
     if (updatedAtMatch) {
-      const [year, month, day] = updatedAtMatch[0].split('-');
+      const [year, month, day] = updatedAtMatch[0].split('-')
       // Format the date as DD/MM/YYYY
-      updatedAtFormatted = `${day}/${month}/${year}`;
+      updatedAtFormatted = `${day}/${month}/${year}`
     }
   }
-  
- 
 
   return (
     <div className="flex justify-center">
