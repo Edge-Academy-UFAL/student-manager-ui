@@ -155,14 +155,14 @@ const StudentRecordDialog = ({
           <div>
             {isSaving && (
               <span className="text-muted-foreground text-sm">
-                Salvando no sistema, aguarde
+                Salvando no sistema, aguarde...
               </span>
             )}
           </div>
           <div>
             {fileSizeIsBiggestThanMax && (
               <span className="text-red-700 text-sm">
-                Arquivo maior que 2MB, favor enviar um menor
+                Arquivo maior que 2MB, favor enviar um menor.
               </span>
             )}
           </div>
@@ -170,7 +170,7 @@ const StudentRecordDialog = ({
             {!fileTypeIsPdf && (
               <span className="text-red-700 text-sm">
                 Arquivo é de extensão diferente que PDF, favor enviar um PDF
-                válido
+                válido.
               </span>
             )}
           </div>
