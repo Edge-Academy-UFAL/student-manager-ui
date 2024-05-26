@@ -76,8 +76,6 @@ const SignUpForm = ({ id }: { id: string }) => {
   const submitHandler = async (data: RegisterSchema) => {
     const dataToSend = formatSignUpData(data)
 
-    // enviar os dados para a API
-
     const formData = new FormData()
     formData.append('name', dataToSend.name)
     formData.append('birthDate', dataToSend.birthdate)
@@ -216,7 +214,7 @@ const SignUpForm = ({ id }: { id: string }) => {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           locale={ptBR}
-                          defaultMonth={new Date(2003, 6)}
+                          defaultMonth={new Date(2000, 6)}
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
@@ -224,6 +222,9 @@ const SignUpForm = ({ id }: { id: string }) => {
                             date > new Date() || date < new Date('1900-01-01')
                           }
                           initialFocus
+                          captionLayout="dropdown-buttons"
+                          fromYear={1900}
+                          toYear={new Date().getFullYear()}
                         />
                       </PopoverContent>
                     </Popover>
