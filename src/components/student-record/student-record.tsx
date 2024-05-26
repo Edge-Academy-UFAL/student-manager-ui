@@ -16,15 +16,20 @@ const StudentRecord = ({
   const [pdfViewerKey, setPdfViewerKey] = useState(Math.random())
 
   const dateRegex = /\d{4}-\d{2}-\d{2}/
-  let updatedAtFormatted = ''
+  let date = null
+
+  const dateFormat = new Intl.DateTimeFormat('pt-br', {
+    dateStyle: 'long',
+    timeStyle: undefined,
+  })
 
   if (studentData.academicRecordUrl) {
-    const updatedAtMatch = studentData.academicRecordUrl.match(dateRegex)
-
+    const updatedAtMatch =
+      studentData.academicRecordUrl.match(dateRegex)?.toString() +
+      'T00:00:00.000-0300' // ajusta o fuso horário para Brasília
+    console.log(updatedAtMatch)
     if (updatedAtMatch) {
-      const [year, month, day] = updatedAtMatch[0].split('-')
-      // Format the date as DD/MM/YYYY
-      updatedAtFormatted = `${day}/${month}/${year}`
+      date = new Date(updatedAtMatch)
     }
   }
 
@@ -35,7 +40,7 @@ const StudentRecord = ({
           <div className="flex flex-col">
             <h2 className="text-2xl font-bold">Histórico do Aluno</h2>
             <h3 className="text-muted-foreground">
-              Atualizado em: {updatedAtFormatted}
+              {date && `Atualizado em: ${dateFormat.format(date)}`}
             </h3>
           </div>
           <StudentRecordDialog
