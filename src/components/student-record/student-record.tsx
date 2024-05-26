@@ -4,6 +4,7 @@ import { useState } from 'react'
 import StudentRecordDialog from './student-record-dialog'
 import StudentRecordFallback from './student-record-fallback'
 import { Student } from '@/lib/domain'
+import { useSession } from 'next-auth/react'
 
 const StudentRecord = ({
   studentData,
@@ -14,6 +15,11 @@ const StudentRecord = ({
 }) => {
   // Isso eh utilizado para atualizar o embed toda vez que atualizar o historico
   const [pdfViewerKey, setPdfViewerKey] = useState(Math.random())
+  const user = useSession().data?.user
+  const isAuthorizedUpdateRecord =
+    user?.dtype === 'Student' && user?.email === studentData.email
+
+  console.log(isAuthorizedUpdateRecord)
 
   const dateRegex = /\d{4}-\d{2}-\d{2}/
   let date = null
@@ -43,11 +49,13 @@ const StudentRecord = ({
               {date && `Atualizado em: ${dateFormat.format(date)}`}
             </h3>
           </div>
-          <StudentRecordDialog
-            pdfViewerKey={pdfViewerKey}
-            setPdfViewerKey={setPdfViewerKey}
-            studentData={studentData}
-          />
+          {isAuthorizedUpdateRecord && (
+            <StudentRecordDialog
+              pdfViewerKey={pdfViewerKey}
+              setPdfViewerKey={setPdfViewerKey}
+              studentData={studentData}
+            />
+          )}
         </div>
         <div className="w-full h-full flex flex-col items-center">
           {studentData.academicRecordUrl ? (
@@ -70,7 +78,9 @@ const StudentRecord = ({
               )}
             </div>
           ) : (
-            <StudentRecordFallback />
+            <StudentRecordFallback
+              isAuthorizedUpdateRecord={isAuthorizedUpdateRecord}
+            />
           )}
         </div>
       </div>
