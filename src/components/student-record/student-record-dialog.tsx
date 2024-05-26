@@ -57,6 +57,15 @@ const StudentRecordDialog = ({
     }, 1500)
   }, [])
 
+  // Dá um delay no carregamento do botão de Atualizar o Histórico para evitar bugs de sincronização do script
+  // e.g. (clicar e não abrir o modal)
+  const [dialogIsLoaded, setDialogIsLoaded] = useState<boolean>(false)
+  useEffect(() => {
+    setTimeout(() => {
+      setDialogIsLoaded(true)
+    }, 1000)
+  }, [])
+
   useEffect(() => {
     setCanSaveRecord(
       !!selectedRecord && !fileSizeIsBiggestThanMax && fileTypeIsPdf,
@@ -101,7 +110,7 @@ const StudentRecordDialog = ({
   return (
     <Dialog open={modalIsOpen} onOpenChange={changeModal}>
       <DialogTrigger asChild>
-        <Button>Atualizar o Histórico</Button>
+        <Button disabled={!dialogIsLoaded}>Atualizar o Histórico</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
