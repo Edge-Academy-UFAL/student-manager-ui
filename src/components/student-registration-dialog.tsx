@@ -132,7 +132,7 @@ function InputDialogContent(props: {
           <Input
             type="number"
             id="student-group"
-            placeholder="Identificação da turma"
+            placeholder="Insira o número da turma"
             value={props.formData.studentGroup}
             className={`${inputColor}`}
             onChange={(event) =>
