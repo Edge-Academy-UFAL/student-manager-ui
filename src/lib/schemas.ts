@@ -48,7 +48,7 @@ export const RegisterSchema = z
       .min(3, 'Preencha com seu nome completo.')
       .max(30, 'Limite de 30 caracteres atingido')
       .regex(
-        /^[a-zA-Z\sáéíóúãáçÃÁÉÍÓÚ]+$/,
+        /^[a-zA-Z\sáéêíóôúãáçÃÁÉÊÍÓÔÚüö]+$/,
         'O nome deve conter apenas letras A-Z a-z, espaços e acentos.',
       ),
     image: z
