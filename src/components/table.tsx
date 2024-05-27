@@ -184,7 +184,10 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 <DotsHorizontalIcon className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent
+              align="end"
+              onClick={(e) => e.stopPropagation()}
+            >
               <DropdownMenuItem>
                 <a
                   href={`https://mail.google.com/a/edge.ufal.br/mail/?view=cm&to=${row.original.email}&su=Contato via plataforma Edge Academy&body=Olá, ${row.original.name}.%0A%0AEstou entrando em contato com você para falar sobre ...
@@ -319,26 +322,17 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                   data-state={row.getIsSelected() && 'selected'}
                   className={'cursor-pointer'}
                 >
-                  {row.getVisibleCells().map((cell) =>
-                    cell.id === '0_actions' ? (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ) : (
-                      <TableCell
-                        key={cell.id}
-                        onClick={() => goToStudentPage(row.original.email)}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ),
-                  )}
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      onClick={() => goToStudentPage(row.original.email)}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             ) : (
