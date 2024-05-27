@@ -55,6 +55,7 @@ export type Student = {
   course: string
   period: string
   entryPeriod: string
+  ira: string
 }
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
@@ -117,7 +118,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         )
       },
       cell: ({ row }) => (
-        <div className="capitalize">
+        <div className="capitalize ps-4">
           {enumToStringCourse(row.getValue('course'))}
         </div>
       ),
@@ -136,7 +137,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         )
       },
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('studentGroup')}</div>
+        <div className="capitalize ps-4">{row.getValue('studentGroup')}</div>
       ),
     },
     {
@@ -152,7 +153,22 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
           </Button>
         )
       },
-      cell: ({ row }) => <div>{row.getValue('period')}</div>,
+      cell: ({ row }) => <div className="ps-4">{row.getValue('period')}</div>,
+    },
+    {
+      accessorKey: 'ira',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            IRA
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <div className="ps-4">{row.getValue('ira')}</div>,
     },
     {
       id: 'actions',
@@ -168,7 +184,10 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                 <DotsHorizontalIcon className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent
+              align="end"
+              onClick={(e) => e.stopPropagation()}
+            >
               <DropdownMenuItem>
                 <a
                   href={`https://mail.google.com/a/edge.ufal.br/mail/?view=cm&to=${row.original.email}&su=Contato via plataforma Edge Academy&body=Olá, ${row.original.name}.%0A%0AEstou entrando em contato com você para falar sobre ...
@@ -303,26 +322,17 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
                   data-state={row.getIsSelected() && 'selected'}
                   className={'cursor-pointer'}
                 >
-                  {row.getVisibleCells().map((cell) =>
-                    cell.id === '0_actions' ? (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ) : (
-                      <TableCell
-                        key={cell.id}
-                        onClick={() => goToStudentPage(row.original.email)}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ),
-                  )}
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell
+                      key={cell.id}
+                      onClick={() => goToStudentPage(row.original.email)}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))
             ) : (
