@@ -118,7 +118,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         )
       },
       cell: ({ row }) => (
-        <div className="capitalize">
+        <div className="capitalize ps-4">
           {enumToStringCourse(row.getValue('course'))}
         </div>
       ),
@@ -137,7 +137,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         )
       },
       cell: ({ row }) => (
-        <div className="capitalize">{row.getValue('studentGroup')}</div>
+        <div className="capitalize ps-4">{row.getValue('studentGroup')}</div>
       ),
     },
     {
@@ -153,7 +153,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
           </Button>
         )
       },
-      cell: ({ row }) => <div>{row.getValue('period')}</div>,
+      cell: ({ row }) => <div className="ps-4">{row.getValue('period')}</div>,
     },
     {
       accessorKey: 'ira',
@@ -168,7 +168,7 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
           </Button>
         )
       },
-      cell: ({ row }) => <div>{row.getValue('ira')}</div>,
+      cell: ({ row }) => <div className="ps-4">{row.getValue('ira')}</div>,
     },
     {
       id: 'actions',
