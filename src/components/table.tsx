@@ -55,6 +55,7 @@ export type Student = {
   course: string
   period: string
   entryPeriod: string
+  ira: string
 }
 
 export default function DataTableDemo({ data }: { data: Student[] }) {
@@ -153,6 +154,21 @@ export default function DataTableDemo({ data }: { data: Student[] }) {
         )
       },
       cell: ({ row }) => <div>{row.getValue('period')}</div>,
+    },
+    {
+      accessorKey: 'ira',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            IRA
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => <div>{row.getValue('ira')}</div>,
     },
     {
       id: 'actions',
