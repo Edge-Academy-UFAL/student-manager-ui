@@ -55,7 +55,7 @@ const StudentNotas = async ({
         <h2 className="text-2xl font-bold my-5">Notas do aluno</h2>
       )}
 
-      <ScrollArea className="h-screen overflow-auto">
+      <ScrollArea className="max-h-screen overflow-auto">
         <Table>
           <TableHeader>
             <TableRow>

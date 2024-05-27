@@ -104,8 +104,8 @@ const StudentIRACharts = ({ iraList }: { iraList: Array<number> }) => {
           Histórico do Rendimento Acadêmico
         </h1>
       </div>
-      <div className="flex justify-center h-96 w-full">
-        <Line options={options} data={data} />
+      <div className="flex justify-center items-center h-96 w-full">
+        {iraList[0] ? (<Line options={options} data={data} />) : (<p className='italic'>O aluno ainda não cadastrou nenhuma nota</p>)}
       </div>
     </div>
   )
