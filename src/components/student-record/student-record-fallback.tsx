@@ -5,8 +5,6 @@ const StudentRecordFallback = ({
 }: {
   isAuthorizedUpdateRecord: boolean
 }) => {
-  console.log(isAuthorizedUpdateRecord)
-
   return (
     <div className="w-full h-full flex flex-col justify-center items-center text-center">
       <p>Histórico não encontrado.</p>

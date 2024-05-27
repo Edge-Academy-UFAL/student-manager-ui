@@ -29,8 +29,6 @@ export const editInfo = async (data: any) => {
       throw new Error('Erro ao editar os dados')
     }
 
-    console.log('RESULAOTO', res.json())
-
     revalidateTag('user-data')
 
     return {

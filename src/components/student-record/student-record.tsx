@@ -19,8 +19,6 @@ const StudentRecord = ({
   const isAuthorizedUpdateRecord =
     user?.dtype === 'Student' && user?.email === studentData.email
 
-  console.log(isAuthorizedUpdateRecord)
-
   const dateRegex = /\d{4}-\d{2}-\d{2}/
   let date = null
 
@@ -33,7 +31,6 @@ const StudentRecord = ({
     const updatedAtMatch =
       studentData.academicRecordUrl.match(dateRegex)?.toString() +
       'T00:00:00.000-0300' // ajusta o fuso horário para Brasília
-    console.log(updatedAtMatch)
     if (updatedAtMatch) {
       date = new Date(updatedAtMatch)
     }
