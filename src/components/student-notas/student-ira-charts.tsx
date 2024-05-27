@@ -74,6 +74,7 @@ const StudentIRACharts = ({ iraList }: { iraList: Array<number> }) => {
         grid: {
           color: chartColors.grid, // Color of the grid lines
         },
+        max: 10, // Set the maximum value for the y-axis
       },
     },
     elements: {
