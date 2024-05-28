@@ -73,18 +73,40 @@ const getIRA = async (email: string) => {
   }
 }
 
+const getGradesAverage = async (email: string) => {
+  const session = await getServerSession(authOptions)
+  const token = session?.user.authToken
+  try {
+    const res = await fetch(`${process.env.backendRoute}/api/v1/grades/${email}/average`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      next: { tags: ['grades-average-list'], revalidate: 0 },
+    })
+
+    if (!res.ok) {
+      return null
+    }
+
+    return res.json()
+  } catch (error) {
+    throw new Error('Erro de conexão com o servidor')
+  }
+}
+
 const StudentCollegePage = async ({ params }: StudentGradesPageProps) => {
   const email = `${params.username}@edge.ufal.br`
 
   const notas = await getNotas(email)
   const disciplinas = await getDisciplinas()
   const ira = await getIRA(email)
+  const gradesAverage = await getGradesAverage(email)
+  const haveNotas = ira.length !== 0
 
-  if (!notas || !disciplinas || !ira) {
+  if (!notas || !disciplinas || !ira || !gradesAverage) {
     throw new Error('Erro ao buscar os dados')
   }
 
-  console.log(ira)
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -93,7 +115,7 @@ const StudentCollegePage = async ({ params }: StudentGradesPageProps) => {
         subjects={disciplinas}
         email={`${params.username}@edge.ufal.br`}
       />
-      <StudentIRACharts iraList={ira}/>
+      <StudentIRACharts haveNotas={haveNotas} iraList={ira} gradesAverageList={gradesAverage}/>
     </div>
   )
 }

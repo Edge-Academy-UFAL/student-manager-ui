@@ -24,10 +24,20 @@ ChartJS.register(
   Legend,
 )
 
-const StudentIRACharts = ({ iraList }: { iraList: Array<number> }) => {
-  const labels = Array.from({ length: iraList.length }, (v, k) => k + 1).map(
-    (x) => x.toString() + 'o Período',
-  )
+const StudentIRACharts = ({
+  iraList,
+  gradesAverageList,
+  haveNotas,
+}: {
+  iraList: Array<number>
+  gradesAverageList: Array<number>
+  haveNotas: boolean
+}) => {
+  const getLabels = (length: number) => {
+    return Array.from({ length }, (v, k) => k + 1).map(
+      (x) => x.toString() + 'o',
+    )
+  }
 
   const theme = useTheme().resolvedTheme
 
@@ -50,50 +60,72 @@ const StudentIRACharts = ({ iraList }: { iraList: Array<number> }) => {
     setChartColors(theme === 'dark' ? darkModeColors : lightModeColors)
   }, [theme])
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      title: {
-        display: true,
-        text: 'IRA do aluno por período',
-      },
-      labels: {
-        color: chartColors.primary, // Color of legend labels
-      },
-    },
-    scales: {
-      x: {
-        grid: {
-          color: chartColors.grid, // Color of the grid lines
+  const getChartOptions = (title: string, yLabel: string) => {
+    return {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false,
+        },
+        title: {
+          display: true,
+          text: title,
+        },
+        labels: {
+          color: chartColors.primary, // Color of legend labels
         },
       },
-      y: {
-        grid: {
-          color: chartColors.grid, // Color of the grid lines
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Período',
+          },
+          grid: {
+            color: chartColors.grid, // Color of the grid lines
+          },
         },
-        max: 10, // Set the maximum value for the y-axis
+        y: {
+          title: {
+            display: true,
+            text: yLabel,
+          },
+          grid: {
+            color: chartColors.grid, // Color of the grid lines
+          },
+          max: 10, // Set the maximum value for the y-axis
+        },
       },
-    },
-    elements: {
-      point: {
-        backgroundColor: chartColors.primary, // Color of the data points
-        borderColor: chartColors.primary, // Border color of the data points
+      elements: {
+        point: {
+          backgroundColor: chartColors.primary, // Color of the data points
+          borderColor: chartColors.primary, // Border color of the data points
+        },
       },
-    },
-    maintainAspectRatio: false, // Allow the chart to stretch to fill the container
+      maintainAspectRatio: false, // Allow the chart to stretch to fill the container
+    }
   }
 
-  const data = {
-    labels,
+  const dataIRA = {
+    labels: getLabels(iraList.length),
     datasets: [
       {
         label: 'IRA do Aluno',
         data: iraList,
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+    ],
+  }
+
+  const dataGradesAverage = {
+    labels: getLabels(gradesAverageList.length),
+    datasets: [
+      {
+        label: 'Média das Notas do Aluno',
+        data: gradesAverageList,
+        borderColor: 'rgb(53, 130, 255)',
+        backgroundColor: 'rgba(53, 130, 255, 0.5)',
       },
     ],
   }
@@ -105,8 +137,28 @@ const StudentIRACharts = ({ iraList }: { iraList: Array<number> }) => {
           Histórico do Rendimento Acadêmico
         </h1>
       </div>
-      <div className="flex justify-center items-center h-96 w-full">
-        {iraList[0] ? (<Line options={options} data={data} />) : (<p className='italic'>O aluno ainda não cadastrou nenhuma nota</p>)}
+      <div className="flex justify-center items-center my-5 h-96 w-full">
+        {haveNotas ? (
+          <div className="flex flex-row flex-wrap h-full w-full gap-x-4 gap-y-4">
+            <div className="flex-1 max-w-1/2 border rounded-lg p-3">
+              <Line
+                options={getChartOptions('IRA do aluno por período', 'IRA')}
+                data={dataIRA}
+              />
+            </div>
+            <div className="flex-1 max-w-1/2 border rounded-lg p-3">
+              <Line
+                options={getChartOptions(
+                  'Média das notas do aluno por período',
+                  'Média das Notas',
+                )}
+                data={dataGradesAverage}
+              />
+            </div>
+          </div>
+        ) : (
+          <p className="italic">O aluno ainda não cadastrou nenhuma nota</p>
+        )}
       </div>
     </div>
   )
