@@ -95,7 +95,7 @@ const StudentProfile = ({
         <h2 className="text-2xl font-bold">Atividades extras</h2>
         <AddActivityModal />
       </div>
-      <div className="mt-3 grid grid-cols-4 gap-4">
+      <div className="mt-3 grid xl:grid-cols-4 grid-cols-3 gap-4">
         {activities.map((activity, index) => (
           <ActivityCard key={index} {...activity} />
         ))}
