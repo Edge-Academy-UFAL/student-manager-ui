@@ -35,7 +35,7 @@ const StudentIRACharts = ({
 }) => {
   const getLabels = (length: number) => {
     return Array.from({ length }, (v, k) => k + 1).map(
-      (x) => x.toString() + 'o',
+      (x) => x.toString() + 'º',
     )
   }
 

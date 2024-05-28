@@ -9,8 +9,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
-import { ScrollArea } from '../ui/scroll-area'
-
 import { AddNota } from './add-nota'
 import { RemoveNota, EditNota } from './edit-nota'
 import { getServerSession } from 'next-auth/next'
@@ -55,77 +53,76 @@ const StudentNotas = async ({
         <h2 className="text-2xl font-bold my-5">Notas do aluno</h2>
       )}
 
-      <ScrollArea className="max-h-[30vw] overflow-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="font-bold text-bg">Disciplina</TableHead>
-              <TableHead className="font-bold text-bg">Carga Horária</TableHead>
-              <TableHead className="font-bold text-bg">Período</TableHead>
-              <TableHead className="font-bold text-bg">Média Final</TableHead>
-              <TableHead className="font-bold text-bg">Situação</TableHead>
-              {email === data?.user?.email && <TableHead></TableHead>}
-            </TableRow>
-          </TableHeader>
-          {notas.length > 0 ? (
-            <TableBody className="w-full">
-              {notas.map((row) => (
-                <TableRow key={row.subjectCode}>
-                  <TableCell className="font-medium">{row.name}</TableCell>
-                  <TableCell>{row.workload}</TableCell>
-                  <TableCell>{row.period}</TableCell>
-                  <TableCell>{row.finalGrade}</TableCell>
-                  <TableCell
-                    className={`${
-                      row.subjectStatus === 'APPROVED'
-                        ? 'text-green-600'
-                        : row.subjectStatus === 'REPROVED'
-                          ? 'text-red-600'
-                          : 'text-cyan-600'
-                    }`}
-                  >
-                    {row.subjectStatus === 'APPROVED' && 'Aprovado'}
-                    {row.subjectStatus === 'REPROVED' && 'Reprovado'}
-                    {row.subjectStatus === 'ENROLLED' && 'Cursando'}
-                  </TableCell>
-                  {email === data?.user?.email && (
-                    <TableCell>
-                      <div className="flex gap-3">
-                        <EditNota
-                          id={row.subjectCode}
-                          nome={row.name}
-                          code={row.subjectCode}
-                          semester={row.period}
-                          media={row.finalGrade}
-                          situacao={row.subjectStatus}
-                          email={email}
-                        />
-                        <RemoveNota
-                          id={row.subjectCode}
-                          nome={row.name}
-                          code={row.subjectCode}
-                          semester={row.period}
-                          media={row.finalGrade}
-                          situacao={row.subjectStatus}
-                          email={email}
-                        />
-                      </div>
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))}
-            </TableBody>
-          ) : (
-            <TableBody className="w-full h-[300px]">
-              <TableRow>
-                <TableCell colSpan={6} className="text-center">
-                  Nenhuma nota cadastrada
+      <Table maxHeight="30vw">
+        <TableHeader sticky={true}>
+          <TableRow>
+            <TableHead className="font-bold text-bg">Disciplina</TableHead>
+            <TableHead className="font-bold text-bg">Carga Horária</TableHead>
+            <TableHead className="font-bold text-bg">Período</TableHead>
+            <TableHead className="font-bold text-bg">Média Final</TableHead>
+            <TableHead className="font-bold text-bg">Situação</TableHead>
+            {email === data?.user?.email && <TableHead></TableHead>}
+          </TableRow>
+        </TableHeader>
+
+        {notas.length > 0 ? (
+          <TableBody className="w-full">
+            {notas.map((row) => (
+              <TableRow key={row.subjectCode}>
+                <TableCell className="font-medium">{row.name}</TableCell>
+                <TableCell>{row.workload}</TableCell>
+                <TableCell>{row.period}</TableCell>
+                <TableCell>{row.finalGrade}</TableCell>
+                <TableCell
+                  className={`${
+                    row.subjectStatus === 'APPROVED'
+                      ? 'text-green-600'
+                      : row.subjectStatus === 'REPROVED'
+                        ? 'text-red-600'
+                        : 'text-cyan-600'
+                  }`}
+                >
+                  {row.subjectStatus === 'APPROVED' && 'Aprovado'}
+                  {row.subjectStatus === 'REPROVED' && 'Reprovado'}
+                  {row.subjectStatus === 'ENROLLED' && 'Cursando'}
                 </TableCell>
+                {email === data?.user?.email && (
+                  <TableCell>
+                    <div className="flex gap-3">
+                      <EditNota
+                        id={row.subjectCode}
+                        nome={row.name}
+                        code={row.subjectCode}
+                        semester={row.period}
+                        media={row.finalGrade}
+                        situacao={row.subjectStatus}
+                        email={email}
+                      />
+                      <RemoveNota
+                        id={row.subjectCode}
+                        nome={row.name}
+                        code={row.subjectCode}
+                        semester={row.period}
+                        media={row.finalGrade}
+                        situacao={row.subjectStatus}
+                        email={email}
+                      />
+                    </div>
+                  </TableCell>
+                )}
               </TableRow>
-            </TableBody>
-          )}
-        </Table>
-      </ScrollArea>
+            ))}
+          </TableBody>
+        ) : (
+          <TableBody className="w-full">
+            <TableRow>
+              <TableCell colSpan={6} className="text-center">
+                Nenhuma nota cadastrada
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        )}
+      </Table>
     </div>
   )
 }
