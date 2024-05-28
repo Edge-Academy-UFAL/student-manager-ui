@@ -8,11 +8,11 @@ import { useSession } from 'next-auth/react'
 import { enumToStringCourse } from '@/lib/utils'
 import { StudentInfoEditDialog } from './student-info-edit-dialog'
 
-import ActivityCard from './activity-card'
+import ActivityCard from './activity/activity-card'
 import InfoBox from './info-box'
 
-import AddActivityModal from './modals/add-activity-modal'
-import EditActivityModal from './modals/edit-activity-modal'
+import AddActivityModal from './activity/add-activity-modal'
+import EditActivityModal from './activity/edit-activity-modal'
 
 import { Activity } from '../../../types/types'
 

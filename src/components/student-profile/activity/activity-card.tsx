@@ -15,18 +15,18 @@ import {
   DollarSign,
   Calendar,
 } from 'lucide-react'
-import { Separator } from '../ui/separator'
+import { Separator } from '../../ui/separator'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
-import { Button } from '../ui/button'
+} from '../../ui/dropdown-menu'
+import { Button } from '../../ui/button'
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
-import EditActivityModal from './modals/edit-activity-modal'
-import { RemoveActivity } from './modals/remove-activity-modal'
-import { Activity } from '../../../types/types'
+import EditActivityModal from './edit-activity-modal'
+import { RemoveActivity } from './remove-activity-modal'
+import { Activity } from '../../../../types/types'
 
 export default function ActivityCard({
   title,
@@ -53,31 +53,7 @@ export default function ActivityCard({
             }
             <p className="text-sm ">{type.name}</p>
           </div>
-          {/* <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <DotsHorizontalIcon className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <EditActivityModal
-                  title={title}
-                  type={type}
-                  description={description}
-                  startDate={startDate}
-                  endDate={endDate}
-                  shift={shift}
-                  payment={payment}
-                  inProgress={inProgress}
-                />
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={(e) => e.preventDefault()}>
-                <RemoveActivity title="PIBIC: Teste smells" id="234829" />
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu> */}
+
           <div className="flex gap-1">
             <EditActivityModal
               title={title}
@@ -98,7 +74,7 @@ export default function ActivityCard({
         </CardDescription>
       </CardHeader>
       <Separator className="mb-4" />
-      <CardFooter className="block text-muted-foreground">
+      <CardFooter className="block text-muted-foreground h-[30%]">
         <div className="flex flex-col text-sm gap-2">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
