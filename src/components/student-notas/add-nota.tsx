@@ -49,11 +49,12 @@ export function AddNota({ subjects, email }: AddNotaProps) {
   const { toast } = useToast()
 
   const [open, setOpen] = useState(false)
+  const [value, setValue] = useState('')
 
   const [disciplinas, setDisciplinas] = useState<Subject[]>(subjects || [])
 
   const [periodo, setPeriodo] = useState('')
-  const [nota, setNota] = useState(0)
+  const [nota, setNota] = useState('')
   const [status, setStatus] = useState('')
   const [disciplina, setDisciplina] = useState('')
 
@@ -84,7 +85,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
 
     // Validação do campo "Média Final"
     if (!nota) {
-      setNota(0)
+      setNota('')
     } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
       setNotaError('A média final deve ser um número entre 1 e 10.')
       isValid = false
@@ -153,7 +154,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
 
     if (res) {
       await new Promise((resolve) => setTimeout(resolve, 500))
-      setNota(0)
+      setNota('')
       setPeriodo('')
       setOpen(false)
       toast({
