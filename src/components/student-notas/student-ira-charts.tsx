@@ -140,13 +140,13 @@ const StudentIRACharts = ({
       <div className="flex justify-center items-center my-5 h-96 w-full">
         {haveNotas ? (
           <div className="flex flex-row flex-wrap h-full w-full gap-x-4 gap-y-4">
-            <div className="flex-1 max-w-1/2 border rounded-lg p-3">
+            <div className="flex-1 max-w-full border rounded-lg p-3">
               <Line
                 options={getChartOptions('IRA do aluno por período', 'IRA')}
                 data={dataIRA}
               />
             </div>
-            <div className="flex-1 max-w-1/2 border rounded-lg p-3">
+            <div className="flex-1 max-w-full border rounded-lg p-3">
               <Line
                 options={getChartOptions(
                   'Média das notas do aluno por período',
