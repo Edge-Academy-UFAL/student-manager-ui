@@ -3,7 +3,7 @@ import * as React from 'react'
 import { cn } from '@/lib/utils'
 
 interface TableAttributes extends React.HTMLAttributes<HTMLTableElement> {
-  maxHeight?: string
+  parentDivClassName?: string
 }
 
 interface TableHeaderAttributes
@@ -12,17 +12,22 @@ interface TableHeaderAttributes
 }
 
 const Table = React.forwardRef<HTMLTableElement, TableAttributes>(
-  ({ className, maxHeight, ...props }, ref) => (
-    <div
-      className={`${maxHeight ? `max-h-[${maxHeight}]` : ''} relative w-full overflow-auto rounded-lg border`}
-    >
-      <table
-        ref={ref}
-        className={cn('w-full caption-bottom text-sm', className)}
-        {...props}
-      />
-    </div>
-  ),
+  ({ className, parentDivClassName, ...props }, ref) => {
+    return (
+      <div
+        className={cn(
+          'relative w-full overflow-auto rounded-lg border',
+          parentDivClassName,
+        )}
+      >
+        <table
+          ref={ref}
+          className={cn('w-full caption-bottom text-sm', className)}
+          {...props}
+        />
+      </div>
+    )
+  },
 )
 Table.displayName = 'Table'
 

@@ -52,8 +52,7 @@ const StudentNotas = async ({
       ) : (
         <h2 className="text-2xl font-bold my-5">Notas do aluno</h2>
       )}
-
-      <Table maxHeight="30vw">
+      <Table parentDivClassName={'max-h-[30vw]'}>
         <TableHeader sticky={true}>
           <TableRow>
             <TableHead className="font-bold text-bg">Disciplina</TableHead>
