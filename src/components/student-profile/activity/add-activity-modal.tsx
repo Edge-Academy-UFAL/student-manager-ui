@@ -31,9 +31,9 @@ import { addActivity } from '@/lib/functions/http/add-activity-req'
 
 const ACTIVITY_TYPES = [
   { code: 'RESEARCH', name: 'Pesquisa' },
-  { code: 'EXTENSION', name: 'Extensão' },
   { code: 'TUTORING', name: 'Monitoria' },
   { code: 'INTERNSHIP', name: 'Estágio' },
+  { code: 'OTHERS', name: 'Outro' },
 ]
 
 const AddActivityModal = () => {
@@ -47,7 +47,7 @@ const AddActivityModal = () => {
   const [workShift, setWorkShift] = React.useState('')
   const [type, setType] = React.useState('')
   const [startDate, setStartDate] = React.useState('')
-  const [endDate, setEndDate] = React.useState('')
+  const [endDate, setEndDate] = React.useState<string | null>(null)
 
   const [inProgress, setInProgress] = React.useState(false)
   const [statusPaid, setStatusPaid] = React.useState(false)
@@ -103,7 +103,7 @@ const AddActivityModal = () => {
     }
 
     // Validação da data de término
-    if (!inProgress && endDate.trim() === '') {
+    if (!inProgress && endDate === null) {
       setEndDateError('Campo obrigatório')
       isValid = false
     } else {
@@ -119,36 +119,36 @@ const AddActivityModal = () => {
     const data = {
       name,
       description,
-      workShift,
-      type,
+      hours: workShift,
+      activityType: type,
       startDate,
-      endDate,
-      inProgress,
-      statusPaid,
+      conclusionDate: endDate,
+      onGoing: inProgress,
+      paid: statusPaid,
     }
 
     console.log(data)
 
-    // setLoading(true)
+    setLoading(true)
 
-    // const res = await addActivity(data)
+    const res = await addActivity(data)
 
-    // if (res) {
-    //   await new Promise((resolve) => setTimeout(resolve, 500))
-    //   // setar todos os estados para o valor inicial
-    //   setOpen(false)
-    //   toast({
-    //     title: 'Atividade adicionada com sucesso',
-    //   })
-    // } else {
-    //   toast({
-    //     title: 'Erro ao adicionar atividade',
-    //     description: 'Tente novamente mais tarde.',
-    //     variant: 'destructive',
-    //   })
-    // }
+    if (res) {
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      // setar todos os estados para o valor inicial
+      setOpen(false)
+      toast({
+        title: 'Atividade adicionada com sucesso',
+      })
+    } else {
+      toast({
+        title: 'Erro ao adicionar atividade',
+        description: 'Tente novamente mais tarde.',
+        variant: 'destructive',
+      })
+    }
 
-    // setLoading(false)
+    setLoading(false)
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -157,7 +157,7 @@ const AddActivityModal = () => {
           <Plus className="h-6 w-6 cursor-pointer" />
         </span>
       </DialogTrigger>
-      <DialogContent className="p-0 overflow-y-scroll max-h-[95vh]">
+      <DialogContent className="p-0">
         <div
           key="1"
           className="bg-background border p-6 rounded-lg shadow max-w-lg mx-auto"
@@ -286,7 +286,7 @@ const AddActivityModal = () => {
                   id="end-date"
                   placeholder="01/10/2024"
                   type="date"
-                  value={endDate}
+                  value={endDate || ''}
                   onChange={(e) => setEndDate(e.target.value)}
                   disabled={inProgress}
                 />
@@ -302,7 +302,7 @@ const AddActivityModal = () => {
                   checked={inProgress}
                   onCheckedChange={(checked) => {
                     setInProgress(checked)
-                    setEndDate('')
+                    setEndDate(null)
                   }}
                 />
                 <Label className="ml-2 text-sm" htmlFor="status-in-progress">

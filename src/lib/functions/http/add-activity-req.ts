@@ -11,6 +11,8 @@ export const addActivity = async (data: any) => {
   const session = await getServerSession(authOptions)
   const token = session?.user.authToken
 
+  data.studentEmail = session?.user.email
+
   try {
     const res = await fetch(`${process.env.backendRoute}/api/v1/activities`, {
       headers: {
@@ -25,10 +27,13 @@ export const addActivity = async (data: any) => {
       throw new Error('Erro ao adicionar atividade')
     }
 
+    console.log(res.status)
+
     revalidateTag('user-data')
 
     return true
   } catch (error) {
+    console.log(error)
     return false
   }
 }
