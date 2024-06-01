@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+'use client'
 import {
   CardTitle,
   CardDescription,
@@ -16,18 +16,16 @@ import {
   Calendar,
 } from 'lucide-react'
 import { Separator } from '../../ui/separator'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '../../ui/dropdown-menu'
-import { Button } from '../../ui/button'
-import { DotsHorizontalIcon } from '@radix-ui/react-icons'
+
 import EditActivityModal from './edit-activity-modal'
 import { RemoveActivity } from './remove-activity-modal'
 import { Activity } from '../../../../types/types'
-import { ScrollArea } from '@/components/ui/scroll-area'
+
+import { useSession } from 'next-auth/react'
+
+interface ExtendedActivity extends Activity {
+  studentEmail: string
+}
 
 export default function ActivityCard({
   name,
@@ -39,7 +37,9 @@ export default function ActivityCard({
   paid,
   onGoing,
   id,
-}: Activity) {
+  studentEmail,
+}: ExtendedActivity) {
+  const { data } = useSession()
   return (
     <Card>
       <CardHeader className="p-5">
@@ -56,20 +56,22 @@ export default function ActivityCard({
             <p className="text-sm ">{activityType}</p>
           </div>
 
-          <div className="flex gap-1">
-            <EditActivityModal
-              name={name}
-              activityType={activityType}
-              description={description}
-              startDate={startDate}
-              conclusionDate={conclusionDate}
-              hours={hours}
-              paid={paid}
-              onGoing={onGoing}
-              id={id}
-            />
-            <RemoveActivity title="PIBIC: Teste smells" id="234829" />
-          </div>
+          {studentEmail === data?.user?.email ? (
+            <div className="flex gap-1">
+              <EditActivityModal
+                name={name}
+                activityType={activityType}
+                description={description}
+                startDate={startDate}
+                conclusionDate={conclusionDate}
+                hours={hours}
+                paid={paid}
+                onGoing={onGoing}
+                id={id}
+              />
+              <RemoveActivity title="PIBIC: Teste smells" id="234829" />
+            </div>
+          ) : null}
         </div>
         <CardTitle className="break-words">{name}</CardTitle>
         <CardDescription className="dark:text-white/80 text-black/90 dark:hover:bg-[#161616] hover:bg-[#f0f0f0]  hover:cursor-pointer hover:border-2 hover:p-[0.35rem] rounded-xl">

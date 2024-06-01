@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client'
 
 import { useState } from 'react'
@@ -12,7 +11,6 @@ import ActivityCard from './activity/activity-card'
 import InfoBox from './info-box'
 
 import AddActivityModal from './activity/add-activity-modal'
-import EditActivityModal from './activity/edit-activity-modal'
 
 import { Activity } from '../../../types/types'
 
@@ -44,7 +42,6 @@ const StudentProfile = ({
   const [studentData, setStudentData] = useState<StudentInfo | null>(
     studentInfo,
   )
-  const [atividades, setAtividades] = useState<Activity[]>(activities)
 
   const { data } = useSession()
 
@@ -93,11 +90,15 @@ const StudentProfile = ({
       </div>
       <div className="flex justify-between items-center mt-6">
         <h2 className="text-2xl font-bold">Atividades extras</h2>
-        <AddActivityModal />
+        {studentData.email === data?.user?.email ? <AddActivityModal /> : null}
       </div>
       <div className="mt-3 grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-4">
-        {activities.map((activity, index) => (
-          <ActivityCard key={index} {...activity} />
+        {activities.map((activity) => (
+          <ActivityCard
+            key={activity.id}
+            {...activity}
+            studentEmail={studentData.email}
+          />
         ))}
       </div>
     </div>
