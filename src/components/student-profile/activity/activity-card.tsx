@@ -27,59 +27,66 @@ import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import EditActivityModal from './edit-activity-modal'
 import { RemoveActivity } from './remove-activity-modal'
 import { Activity } from '../../../../types/types'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export default function ActivityCard({
-  title,
-  type,
+  name,
+  activityType,
   description,
   startDate,
-  endDate,
-  shift,
-  payment,
-  inProgress,
+  conclusionDate,
+  hours,
+  paid,
+  onGoing,
+  id,
 }: Activity) {
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="p-5">
         <div className="flex justify-between items-center mb-1">
           <div className="flex gap-2 items-center text-muted-foreground">
             {
               {
                 TUTORING: <GraduationCap size={18} />,
                 RESEARCH: <FlaskConical size={18} />,
-                EXTENSION: <Building size={18} />,
+                OTHER: <Building size={18} />,
                 INTERNSHIP: <Building size={18} />,
-              }[type.code]
+              }[activityType]
             }
-            <p className="text-sm ">{type.name}</p>
+            <p className="text-sm ">{activityType}</p>
           </div>
 
           <div className="flex gap-1">
             <EditActivityModal
-              title={title}
-              type={type}
+              name={name}
+              activityType={activityType}
               description={description}
               startDate={startDate}
-              endDate={endDate}
-              shift={shift}
-              payment={payment}
-              inProgress={inProgress}
+              conclusionDate={conclusionDate}
+              hours={hours}
+              paid={paid}
+              onGoing={onGoing}
+              id={id}
             />
             <RemoveActivity title="PIBIC: Teste smells" id="234829" />
           </div>
         </div>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription className="dark:text-white/80 text-black/90">
-          <span className="mt-5">{description}</span>
+        <CardTitle className="break-words">{name}</CardTitle>
+        <CardDescription className="dark:text-white/80 text-black/90 dark:hover:bg-[#161616] hover:bg-[#f0f0f0]  hover:cursor-pointer hover:border-2 hover:p-[0.35rem] rounded-xl">
+          <span className="mb-2 break-words">
+            {description.length > 220
+              ? `${description.slice(0, 220)}...` // fazer dialog com a descrição completa
+              : description}
+          </span>
         </CardDescription>
       </CardHeader>
       <Separator className="mb-4" />
-      <CardFooter className="block text-muted-foreground h-[30%]">
+      <CardFooter className="block text-muted-foreground p-5">
         <div className="flex flex-col text-sm gap-2">
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-              <span>Data de início</span>
+              <span>Início</span>
             </div>
             <p>{startDate}</p>
           </div>
@@ -87,13 +94,9 @@ export default function ActivityCard({
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-              {!inProgress ? (
-                <span>Data de finalização</span>
-              ) : (
-                <span>Em andamento</span>
-              )}
+              {!onGoing ? <span>Finalização</span> : <span>Em andamento</span>}
             </div>
-            <p>{endDate}</p>
+            <p>{conclusionDate}</p>
           </div>
 
           <div className="flex justify-between">
@@ -101,14 +104,14 @@ export default function ActivityCard({
               <DollarSign className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span>Remunerado</span>
             </div>
-            {payment ? <p>Sim</p> : <p>Não</p>}
+            {paid ? <p>Sim</p> : <p>Não</p>}
           </div>
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <Timer className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span>Dedicação semanal</span>
             </div>
-            <p>{shift}h</p>
+            <p>{hours}h</p>
           </div>
         </div>
       </CardFooter>
