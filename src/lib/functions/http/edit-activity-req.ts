@@ -10,7 +10,8 @@ export const editActivity = async (data: any) => {
 
   const session = await getServerSession(authOptions)
   const token = session?.user.authToken
-  // const email = session?.user.email
+
+  data.studentEmail = session?.user.email
 
   try {
     const res = await fetch(`${process.env.backendRoute}/api/v1/activities`, {
@@ -25,6 +26,8 @@ export const editActivity = async (data: any) => {
     if (!res.ok) {
       throw new Error('Erro ao editar as atividades')
     }
+
+    console.log(res.status)
 
     revalidateTag('user-data')
 

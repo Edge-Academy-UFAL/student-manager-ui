@@ -33,9 +33,9 @@ import { Activity } from '../../../../types/types'
 
 const ACTIVITY_TYPES = [
   { code: 'RESEARCH', name: 'Pesquisa' },
-  { code: 'EXTENSION', name: 'Extensão' },
   { code: 'TUTORING', name: 'Monitoria' },
   { code: 'INTERNSHIP', name: 'Estágio' },
+  { code: 'OTHER', name: 'Outro' },
 ]
 
 const formatDate = (dateString: string) => {
@@ -44,37 +44,36 @@ const formatDate = (dateString: string) => {
 }
 
 const EditActivityModal = ({
-  title,
-  type,
+  name,
+  activityType,
   description,
   startDate,
-  endDate,
-  shift,
-  payment,
-  inProgress,
+  conclusionDate,
+  hours,
+  paid,
+  onGoing,
+  id,
 }: Activity) => {
   const { toast } = useToast()
 
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  const [activityName, setActivityName] = useState(title || '')
+  const [activityName, setActivityName] = useState(name || '')
   const [activityDescription, setActivityDescription] = useState(
     description || '',
   )
-  const [activityWorkShift, setActivityWorkShift] = useState(shift || '')
-  const [activityType, setActivityType] = useState(type.code || 'RESEARCH')
-  const [activityStartDate, setActivityStartDate] = useState(
-    formatDate(startDate) || '',
-  )
-  const [activityEndDate, setActivityEndDate] = useState(
-    formatDate(endDate) || '',
+  const [activityWorkShift, setActivityWorkShift] = useState(hours || '')
+  const [type, setType] = useState(activityType || '')
+  const [activityStartDate, setActivityStartDate] = useState(startDate || '')
+  const [activityEndDate, setActivityEndDate] = useState<string | null>(
+    conclusionDate || null,
   )
 
   const [activityStatusInProgress, setActivityStatusInProgress] = useState(
-    inProgress || false,
+    onGoing || false,
   )
-  const [activityStatusPaid, setActivityStatusPaid] = useState(payment || false)
+  const [activityStatusPaid, setActivityStatusPaid] = useState(paid || false)
 
   const [nameError, setNameError] = useState('')
   const [descriptionError, setDescriptionError] = useState('')
@@ -103,7 +102,7 @@ const EditActivityModal = ({
     }
 
     // Validação da dedicação semanal
-    if (activityWorkShift.trim() === '') {
+    if (activityWorkShift.toString().trim() === '') {
       setWorkShiftError('Campo obrigatório')
       isValid = false
     } else {
@@ -112,9 +111,7 @@ const EditActivityModal = ({
 
     // Validação do tipo
     if (
-      !ACTIVITY_TYPES.map((activity) => activity.code).includes(
-        activityType.toString(),
-      )
+      !ACTIVITY_TYPES.map((activity) => activity.code).includes(type.toString())
     ) {
       setTypeError('Campo obrigatório')
       isValid = false
@@ -131,7 +128,7 @@ const EditActivityModal = ({
     }
 
     // Validação da data de término
-    if (!activityStatusInProgress && endDate.trim() === '') {
+    if (!activityStatusInProgress && activityEndDate === null) {
       setEndDateError('Campo obrigatório')
       isValid = false
     } else {
@@ -147,38 +144,39 @@ const EditActivityModal = ({
     }
 
     const data = {
+      activityId: id,
       name: activityName,
-      type: activityType,
+      activityType: type,
       description: activityDescription,
       startDate: activityStartDate,
-      endDate: activityEndDate,
-      workShift: activityWorkShift,
-      payment: activityStatusPaid,
-      inProgress: activityStatusInProgress,
+      conclusionDate: activityEndDate,
+      hours: Number(activityWorkShift),
+      paid: activityStatusPaid,
+      onGoing: activityStatusInProgress,
     }
 
     console.log(data)
 
-    // setLoading(true)
+    setLoading(true)
 
-    // const res = await editActivity(data)
+    const res = await editActivity(data)
 
-    // if (res) {
-    //   await new Promise((resolve) => setTimeout(resolve, 500))
-    //   // setar todos os estados para o valor inicial
-    //   setOpen(false)
-    //   toast({
-    //     title: 'Atividade adicionada com sucesso',
-    //   })
-    // } else {
-    //   toast({
-    //     title: 'Erro ao adicionar atividade',
-    //     description: 'Tente novamente mais tarde.',
-    //     variant: 'destructive',
-    //   })
-    // }
+    if (res) {
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      // setar todos os estados para o valor inicial
+      setOpen(false)
+      toast({
+        title: 'Atividade editada com sucesso',
+      })
+    } else {
+      toast({
+        title: 'Erro ao editar atividade',
+        description: 'Tente novamente mais tarde.',
+        variant: 'destructive',
+      })
+    }
 
-    // setLoading(false)
+    setLoading(false)
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -191,7 +189,7 @@ const EditActivityModal = ({
           {/* <p>Editar</p> */}
         </span>
       </DialogTrigger>
-      <DialogContent className="p-0 overflow-y-scroll max-h-[95vh]">
+      <DialogContent className="p-0">
         <div
           key="1"
           className="bg-background border p-6 rounded-lg shadow max-w-lg mx-auto"
@@ -200,7 +198,7 @@ const EditActivityModal = ({
             Editar uma atividade extra
           </h3>
           <p className="text-sm text-foreground mb-6">
-            Edite a atividade <span className="font-bold">{activityName}</span>
+            Edite a atividade <span className="font-bold">{name}</span>
             utilizando o formulário abaixo. Evite deixar informações
             desatualizadas.
           </p>
@@ -213,26 +211,29 @@ const EditActivityModal = ({
                 Tipo da atividade*
               </label>
               <Select
-                onValueChange={(value) =>
-                  setActivityType(
-                    value as
-                      | 'RESEARCH'
-                      | 'EXTENSION'
-                      | 'TUTORING'
-                      | 'INTERNSHIP',
-                  )
-                }
-                defaultValue={activityType}
+                onValueChange={(
+                  value: 'RESEARCH' | 'TUTORING' | 'INTERNSHIP' | 'OTHER',
+                ) => setType(value)}
+                defaultValue={type}
               >
                 <SelectTrigger id="activity-type">
                   <SelectValue placeholder="Selecione o tipo da atividade" />
                 </SelectTrigger>
                 <SelectContent position="popper">
                   <SelectGroup>
-                    <SelectItem value="RESEARCH">Pesquisa</SelectItem>
-                    <SelectItem value="EXTENSION">Extensão</SelectItem>
-                    <SelectItem value="TUTORING">Monitoria</SelectItem>
-                    <SelectItem value="INTERNSHIP">Estágio</SelectItem>
+                    {ACTIVITY_TYPES.map((activity) => (
+                      <div
+                        key={activity.code}
+                        className="w-[--radix-select-trigger-width]"
+                      >
+                        <SelectItem
+                          value={activity.code}
+                          className="hover:cursor-pointer"
+                        >
+                          {activity.name}
+                        </SelectItem>
+                      </div>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -267,7 +268,7 @@ const EditActivityModal = ({
               <Textarea
                 id="description"
                 placeholder="Escreva uma descrição detalhada da atividade."
-                value={description}
+                value={activityDescription}
                 onChange={(e) => setActivityDescription(e.target.value)}
               />
               {descriptionError && (
@@ -322,7 +323,7 @@ const EditActivityModal = ({
                   id="end-date"
                   placeholder="01/10/2024"
                   type="date"
-                  value={activityEndDate}
+                  value={activityEndDate || ''}
                   onChange={(e) => setActivityEndDate(e.target.value)}
                   disabled={activityStatusInProgress}
                 />
@@ -338,7 +339,7 @@ const EditActivityModal = ({
                   checked={activityStatusInProgress}
                   onCheckedChange={(checked) => {
                     setActivityStatusInProgress(checked)
-                    setActivityEndDate('')
+                    setActivityEndDate(null)
                   }}
                 />
                 <Label className="ml-2 text-sm" htmlFor="status-in-progress">
