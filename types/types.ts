@@ -1,15 +1,11 @@
-export interface ActivityType {
-  code: `${'RESEARCH' | 'EXTENSION' | 'TUTORING' | 'INTERNSHIP'}`
-  name: `${'Pesquisa' | 'Extensão' | 'Monitoria' | 'Estágio'}`
-}
-
 export interface Activity {
-  title: string
-  type: ActivityType
+  name: string
+  activityType: 'RESEARCH' | 'OTHER' | 'TUTORING' | 'INTERNSHIP'
   description: string
   startDate: string
-  endDate: string
-  shift: string
-  payment: boolean
-  inProgress: boolean
+  conclusionDate: string | null
+  hours: string
+  paid: boolean
+  onGoing: boolean
+  id: string
 }
