@@ -24,13 +24,19 @@ import { removeGrade } from '@/lib/functions/http/remove-nota-req'
 
 import { ToastAction } from '../../ui/toast'
 import { addActivity } from '@/lib/functions/http/add-activity-req'
+import { removeActivity } from '@/lib/functions/http/remove-activity-req'
 
 interface RemoveActivityProps {
+  studentEmail: string
   title: string
-  id: string
+  activityId: string
 }
 
-export const RemoveActivity = ({ title, id }: RemoveActivityProps) => {
+export const RemoveActivity = ({
+  studentEmail,
+  activityId,
+  title,
+}: RemoveActivityProps) => {
   const { toast } = useToast()
 
   const [loading, setLoading] = useState(false)
@@ -39,40 +45,33 @@ export const RemoveActivity = ({ title, id }: RemoveActivityProps) => {
   const submitHandler = async () => {
     setLoading(true)
 
-    const data = {}
+    const data = {
+      studentEmail,
+      activityId,
+    }
 
-    // setLoading(true)
+    console.log(data)
 
-    // const res = await removeGrade(data)
+    setLoading(true)
 
-    // if (!res) {
-    //   toast({
-    //     title: 'Erro ao remover atividade',
-    //     description: 'Tente novamente mais tarde.',
-    //     variant: 'destructive',
-    //   })
-    // } else {
-    //   await new Promise((resolve) => setTimeout(resolve, 500))
-    //   setOpen(false)
+    const res = await removeActivity(data)
 
-    //   const undoData = {}
+    if (!res) {
+      toast({
+        title: 'Erro ao remover atividade',
+        description: 'Tente novamente mais tarde.',
+        variant: 'destructive',
+      })
+    } else {
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      setOpen(false)
 
-    //   toast({
-    //     title: `A atividade ${id} - ${title} removida com sucesso.`,
-    //     action: (
-    //       <ToastAction
-    //         altText="Try again"
-    //         onClick={() => {
-    //           addActivity(undoData)
-    //         }}
-    //       >
-    //         Desfazer
-    //       </ToastAction>
-    //     ),
-    //   })
-    // }
+      toast({
+        title: `A atividade "${title}" removida com sucesso.`,
+      })
+    }
 
-    // setLoading(false)
+    setLoading(false)
   }
 
   return (

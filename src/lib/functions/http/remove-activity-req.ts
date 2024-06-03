@@ -11,6 +11,8 @@ export const removeActivity = async (data: any) => {
   const session = await getServerSession(authOptions)
   const token = session?.user.authToken
 
+  console.log(data)
+
   try {
     const res = await fetch(`${process.env.backendRoute}/api/v1/activities`, {
       headers: {
@@ -25,7 +27,7 @@ export const removeActivity = async (data: any) => {
       throw new Error('Erro ao remover atividade')
     }
 
-    revalidateTag('disciplinas-table')
+    revalidateTag('user-data')
 
     return true
   } catch (error) {
