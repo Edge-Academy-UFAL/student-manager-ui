@@ -294,7 +294,7 @@ function FilterForm(props: {
       >
         <div className="w-full flex flex-col gap-1">
           <FormLabel>Curso</FormLabel>
-          <div className="flex flex-row items-start space-x-5 space-y-0">
+          <div className="flex flex-row items-start space-x-5 space-y-0 mt-2">
             <FormField
               control={form.control}
               name="csCheckbox"
@@ -333,7 +333,7 @@ function FilterForm(props: {
           >
             Período de ingresso na UFAL
           </FormLabel>
-          <div className="flex gap-2.5 w-full">
+          <div className="flex gap-2.5 w-full mt-2">
             <FormField
               control={form.control}
               name="admissionSemestreFilterOption"
@@ -368,7 +368,7 @@ function FilterForm(props: {
           >
             Período Atual
           </FormLabel>
-          <div className="flex gap-2.5 w-full">
+          <div className="flex gap-2.5 w-full mt-2">
             <FormField
               control={form.control}
               name="currentSemesterFilterOption"
@@ -401,7 +401,7 @@ function FilterForm(props: {
           <FormLabel className={errors.ira ? 'text-destructive' : ''}>
             Índice de rendimento acadêmico (IRA/CR)
           </FormLabel>
-          <div className="flex gap-2.5 w-full">
+          <div className="flex gap-2.5 w-full mt-2">
             <FormField
               control={form.control}
               name="iraFilterOption"
@@ -439,7 +439,7 @@ function FilterForm(props: {
             control={form.control}
             name="studentGroups"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mt-2">
                 <FormControl>
                   <MultipleSelector
                     value={field.value}
@@ -447,7 +447,7 @@ function FilterForm(props: {
                     defaultOptions={studentGroupOptions}
                     placeholder="Selecione turmas..."
                     emptyIndicator={
-                      <p className="text-center text-md leading-10 text-gray-600 dark:text-gray-400">
+                      <p className="text-center text-md leading-10 text-gray-600 dark:text-gray-400 ">
                         Essa turma não existe.
                       </p>
                     }

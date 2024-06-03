@@ -1,18 +1,25 @@
+'use client'
+
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+
 import { useToast } from './ui/use-toast'
 import { useSession } from 'next-auth/react'
+import { Input } from './ui/input'
+import { useState } from 'react'
+import { Button } from './ui/button'
 
 export function DeleteStudent(props: { name: string; email: string }) {
+  const [confirmName, setConfirmName] = useState('')
+  const [open, setOpen] = useState(false)
   const { data } = useSession()
   const { toast } = useToast()
 
@@ -35,6 +42,7 @@ export function DeleteStudent(props: { name: string; email: string }) {
         title: 'Aluno removido com sucesso',
         description: 'O aluno foi removido com sucesso',
       })
+      setOpen(false)
     } else {
       toast({
         variant: 'destructive',
@@ -45,28 +53,40 @@ export function DeleteStudent(props: { name: string; email: string }) {
   }
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger className="w-full h-full" asChild>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger className="w-full h-full" asChild>
         <div>Desligar Aluno</div>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            Deseja remover o aluno {props.name}?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Ao confirmar você estará desligando o aluno {props.name}. Esta ação
-            não pode ser desfeita. Isto irá deletar permanentemente sua conta e
-            remover seus dados de nossos servidores.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={() => handleDelete()}>
-            Continuar
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Deseja remover o aluno {props.name}?</DialogTitle>
+          <DialogDescription>
+            Tem certeza que deseja desligar o aluno {props.name}? Se você tem
+            certeza digite o <span className="underline">primeiro</span> nome do
+            aluno no campo abaixo.
+          </DialogDescription>
+        </DialogHeader>
+        <Input
+          placeholder={props.name.split(' ')[0]}
+          type="text"
+          className="outline-none focus-visible:outline-none"
+          value={confirmName}
+          onChange={(e) => setConfirmName(e.target.value)}
+        />
+        <DialogFooter>
+          <DialogClose>
+            <Button className="bg-background text-foreground hover:bg-muted border">
+              Cancelar
+            </Button>
+          </DialogClose>
+          <Button
+            onClick={() => handleDelete()}
+            disabled={confirmName !== props.name.split(' ')[0]}
+          >
+            Remover
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
