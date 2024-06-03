@@ -119,12 +119,12 @@ const AddActivityModal = () => {
     const data = {
       name,
       description,
-      hours: workShift,
+      workShift: Number(workShift),
       activityType: type,
       startDate,
       conclusionDate: endDate,
       onGoing: inProgress,
-      paid: statusPaid,
+      isPaid: statusPaid,
     }
 
     console.log(data)

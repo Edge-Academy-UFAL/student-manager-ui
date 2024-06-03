@@ -33,10 +33,10 @@ export default function ActivityCard({
   description,
   startDate,
   conclusionDate,
-  hours,
+  workShift,
   paid,
   onGoing,
-  id,
+  activityId,
   studentEmail,
 }: ExtendedActivity) {
   const { data } = useSession()
@@ -49,7 +49,7 @@ export default function ActivityCard({
               {
                 TUTORING: <GraduationCap size={18} />,
                 RESEARCH: <FlaskConical size={18} />,
-                OTHER: <Building size={18} />,
+                OTHERS: <Building size={18} />,
                 INTERNSHIP: <Building size={18} />,
               }[activityType]
             }
@@ -64,12 +64,16 @@ export default function ActivityCard({
                 description={description}
                 startDate={startDate}
                 conclusionDate={conclusionDate}
-                hours={hours}
+                workShift={workShift}
                 paid={paid}
                 onGoing={onGoing}
-                id={id}
+                activityId={activityId}
               />
-              <RemoveActivity title="PIBIC: Teste smells" id="234829" />
+              <RemoveActivity
+                studentEmail={studentEmail}
+                activityId={activityId}
+                title={name}
+              />
             </div>
           ) : null}
         </div>
@@ -113,7 +117,7 @@ export default function ActivityCard({
               <Timer className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span>Dedicação semanal</span>
             </div>
-            <p>{hours}h</p>
+            <p>{workShift}h</p>
           </div>
         </div>
       </CardFooter>

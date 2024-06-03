@@ -1,11 +1,11 @@
 export interface Activity {
   name: string
-  activityType: 'RESEARCH' | 'OTHER' | 'TUTORING' | 'INTERNSHIP'
+  activityType: 'RESEARCH' | 'OTHERS' | 'TUTORING' | 'INTERNSHIP'
   description: string
   startDate: string
   conclusionDate: string | null
-  hours: string
+  workShift: string
   paid: boolean
   onGoing: boolean
-  id: string
+  activityId: string
 }

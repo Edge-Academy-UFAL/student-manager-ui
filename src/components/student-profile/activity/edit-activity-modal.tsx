@@ -35,7 +35,7 @@ const ACTIVITY_TYPES = [
   { code: 'RESEARCH', name: 'Pesquisa' },
   { code: 'TUTORING', name: 'Monitoria' },
   { code: 'INTERNSHIP', name: 'Estágio' },
-  { code: 'OTHER', name: 'Outro' },
+  { code: 'OTHERS', name: 'Outro' },
 ]
 
 const formatDate = (dateString: string) => {
@@ -49,10 +49,10 @@ const EditActivityModal = ({
   description,
   startDate,
   conclusionDate,
-  hours,
+  workShift,
   paid,
   onGoing,
-  id,
+  activityId,
 }: Activity) => {
   const { toast } = useToast()
 
@@ -63,7 +63,7 @@ const EditActivityModal = ({
   const [activityDescription, setActivityDescription] = useState(
     description || '',
   )
-  const [activityWorkShift, setActivityWorkShift] = useState(hours || '')
+  const [activityWorkShift, setActivityWorkShift] = useState(workShift || '')
   const [type, setType] = useState(activityType || '')
   const [activityStartDate, setActivityStartDate] = useState(startDate || '')
   const [activityEndDate, setActivityEndDate] = useState<string | null>(
@@ -144,14 +144,14 @@ const EditActivityModal = ({
     }
 
     const data = {
-      activityId: id,
       name: activityName,
+      activityId,
       activityType: type,
       description: activityDescription,
       startDate: activityStartDate,
       conclusionDate: activityEndDate,
-      hours: Number(activityWorkShift),
-      paid: activityStatusPaid,
+      workShift: Number(activityWorkShift),
+      isPaid: activityStatusPaid,
       onGoing: activityStatusInProgress,
     }
 
@@ -212,7 +212,7 @@ const EditActivityModal = ({
               </label>
               <Select
                 onValueChange={(
-                  value: 'RESEARCH' | 'TUTORING' | 'INTERNSHIP' | 'OTHER',
+                  value: 'RESEARCH' | 'TUTORING' | 'INTERNSHIP' | 'OTHERS',
                 ) => setType(value)}
                 defaultValue={type}
               >

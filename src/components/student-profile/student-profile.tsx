@@ -95,7 +95,7 @@ const StudentProfile = ({
       <div className="mt-3 grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-4">
         {activities.map((activity) => (
           <ActivityCard
-            key={activity.id}
+            key={activity.activityId}
             {...activity}
             studentEmail={studentData.email}
           />
