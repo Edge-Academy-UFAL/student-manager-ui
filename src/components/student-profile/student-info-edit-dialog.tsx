@@ -123,8 +123,8 @@ const EditInfoSchema = z.object({
     .or(z.literal('')),
   semester: z.coerce
     .string()
-    .min(1, 'Semestre Inválido.')
-    .max(15, 'Semestre Inválido.'),
+    .min(1, 'Período atual Inválido.')
+    .max(15, 'Período atual Inválido.'),
   entrySemester: z.string().refine(
     (value) => {
       const currentYear = new Date().getFullYear()
@@ -268,10 +268,17 @@ const EditInfoDialogContent = ({
                 <FormItem>
                   <FormLabel>Curso</FormLabel>
                   <Select
-                    onValueChange={(newValue) => {
-                      /* Update semester select on course change */
-                      setMaxSemester(getMaxSemesterBasedOnCourse(newValue))
-                      field.onChange(newValue)
+                    onValueChange={(course) => {
+                      /* Update semester select options on course change */
+                      const newMaxSemester = getMaxSemesterBasedOnCourse(course)
+                      setMaxSemester(newMaxSemester)
+
+                      /* Prevent Ciência with more than 12 semesters */
+                      if (Number(form.getValues('semester')) > newMaxSemester) {
+                        form.setValue('semester', '')
+                      }
+
+                      field.onChange(course)
                     }}
                     defaultValue={field.value}
                   >
@@ -338,10 +345,16 @@ const EditInfoDialogContent = ({
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione o seu período" />
+                        {/* Reset the placeholder when invalid semester is selected */}
+                        {field.value ? (
+                          <SelectValue placeholder="Selecione o seu período" />
+                        ) : (
+                          'Selecione o seu período'
+                        )}
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
