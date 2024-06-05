@@ -52,18 +52,19 @@ const StudentNotas = async ({
       ) : (
         <h2 className="text-2xl font-bold my-5">Notas do aluno</h2>
       )}
-
-      <Table>
-        <TableHeader>
+      <Table parentDivClassName={'max-h-[30vw]'}>
+        <TableHeader sticky={true}>
           <TableRow>
             <TableHead className="font-bold text-bg">Disciplina</TableHead>
             <TableHead className="font-bold text-bg">Carga Horária</TableHead>
             <TableHead className="font-bold text-bg">Período</TableHead>
             <TableHead className="font-bold text-bg">Média Final</TableHead>
             <TableHead className="font-bold text-bg">Situação</TableHead>
+            {email === data?.user?.email && <TableHead></TableHead>}
           </TableRow>
         </TableHeader>
-        {notas.length > 0 && (
+
+        {notas.length > 0 ? (
           <TableBody className="w-full">
             {notas.map((row) => (
               <TableRow key={row.subjectCode}>
@@ -84,8 +85,7 @@ const StudentNotas = async ({
                   {row.subjectStatus === 'REPROVED' && 'Reprovado'}
                   {row.subjectStatus === 'ENROLLED' && 'Cursando'}
                 </TableCell>
-
-                {email === data?.user?.email ? (
+                {email === data?.user?.email && (
                   <TableCell>
                     <div className="flex gap-3">
                       <EditNota
@@ -108,15 +108,14 @@ const StudentNotas = async ({
                       />
                     </div>
                   </TableCell>
-                ) : null}
+                )}
               </TableRow>
             ))}
           </TableBody>
-        )}
-        {notas.length === 0 && (
-          <TableBody className="w-full h-[300px]">
+        ) : (
+          <TableBody className="w-full">
             <TableRow>
-              <TableCell colSpan={5} className="text-center">
+              <TableCell colSpan={6} className="text-center">
                 Nenhuma nota cadastrada
               </TableCell>
             </TableRow>

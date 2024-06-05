@@ -55,6 +55,8 @@ import { useForm } from 'react-hook-form'
 import { RegisterSchema } from '@/lib/schemas'
 import { formatSignUpData } from '@/lib/functions/formatSignUpData'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { PhoneInput } from '../ui/phone-input'
+import { Value } from 'react-phone-number-input'
 
 const SignUpForm = ({ id }: { id: string }) => {
   const form = useForm<RegisterSchema>({
@@ -73,8 +75,6 @@ const SignUpForm = ({ id }: { id: string }) => {
 
   const submitHandler = async (data: RegisterSchema) => {
     const dataToSend = formatSignUpData(data)
-
-    // enviar os dados para a API
 
     const formData = new FormData()
     formData.append('name', dataToSend.name)
@@ -214,7 +214,7 @@ const SignUpForm = ({ id }: { id: string }) => {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           locale={ptBR}
-                          defaultMonth={new Date(2003, 6)}
+                          defaultMonth={new Date(2000, 6)}
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
@@ -222,6 +222,9 @@ const SignUpForm = ({ id }: { id: string }) => {
                             date > new Date() || date < new Date('1900-01-01')
                           }
                           initialFocus
+                          captionLayout="dropdown-buttons"
+                          fromYear={1900}
+                          toYear={new Date().getFullYear()}
                         />
                       </PopoverContent>
                     </Popover>
@@ -254,10 +257,10 @@ const SignUpForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Telefone*</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="(99) 9999-9999"
-                      pattern="(\([0-9]{2}\))\s([9]{1})([0-9]{4})-([0-9]{4})"
+                    <PhoneInput
+                      value={field.value as Value}
+                      onChange={field.onChange}
+                      defaultCountry="BR"
                     />
                   </FormControl>
                   <FormMessage />
@@ -307,10 +310,10 @@ const SignUpForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Telefone Secundário</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="(99) 9999-9999"
-                      pattern="(\([0-9]{2}\))\s([9]{1})([0-9]{4})-([0-9]{4})"
+                    <PhoneInput
+                      value={field.value as Value}
+                      onChange={field.onChange}
+                      defaultCountry="BR"
                     />
                   </FormControl>
                   <FormMessage />

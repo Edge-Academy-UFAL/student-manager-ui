@@ -2,25 +2,47 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-const Table = React.forwardRef<
-  HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
->(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-auto rounded-lg border">
-    <table
-      ref={ref}
-      className={cn('w-full caption-bottom text-sm', className)}
-      {...props}
-    />
-  </div>
-))
+interface TableAttributes extends React.HTMLAttributes<HTMLTableElement> {
+  parentDivClassName?: string
+}
+
+interface TableHeaderAttributes
+  extends React.HTMLAttributes<HTMLTableSectionElement> {
+  sticky?: boolean
+}
+
+const Table = React.forwardRef<HTMLTableElement, TableAttributes>(
+  ({ className, parentDivClassName, ...props }, ref) => {
+    return (
+      <div
+        className={cn(
+          'relative w-full overflow-auto rounded-lg border',
+          parentDivClassName,
+        )}
+      >
+        <table
+          ref={ref}
+          className={cn('w-full caption-bottom text-sm', className)}
+          {...props}
+        />
+      </div>
+    )
+  },
+)
 Table.displayName = 'Table'
 
 const TableHeader = React.forwardRef<
   HTMLTableSectionElement,
-  React.HTMLAttributes<HTMLTableSectionElement>
->(({ className, ...props }, ref) => (
-  <thead ref={ref} className={cn('[&_tr]:border-b', className)} {...props} />
+  TableHeaderAttributes
+>(({ className, sticky, ...props }, ref) => (
+  <thead
+    ref={ref}
+    className={cn(
+      `${sticky ? 'sticky top-0 bg-secondary' : ''} [&_tr]:border-b`,
+      className,
+    )}
+    {...props}
+  />
 ))
 TableHeader.displayName = 'TableHeader'
 

@@ -45,8 +45,8 @@ interface FilterData {
   admissionSemestreFilterOption?: NumberFilteringOption
   currentSemester?: number | ''
   currentSemesterFilterOption?: NumberFilteringOption
-  cr?: number | ''
-  crFilterOption?: NumberFilteringOption
+  ira?: number | ''
+  iraFilterOption?: NumberFilteringOption
   studentGroups?: Array<{ label: string; value: string; group: string }>
 }
 
@@ -57,8 +57,8 @@ const filterDefaults: FilterData = {
   admissionSemestreFilterOption: NumberFilteringOption.GreaterThan,
   currentSemester: '',
   currentSemesterFilterOption: NumberFilteringOption.GreaterThan,
-  cr: '',
-  crFilterOption: NumberFilteringOption.GreaterThan,
+  ira: '',
+  iraFilterOption: NumberFilteringOption.GreaterThan,
   studentGroups: [],
 }
 
@@ -180,12 +180,12 @@ const tableGlobalFilterFn: FilterFn<Student> = (row, _, value) => {
   }
 
   // This will be available in the future. Do not remove!
-  // if (
-  //   value.cr &&
-  //   !numberFilter(student.cr, value.cr, value.crFilterOption)
-  // ) {
-  //   return false
-  // }
+  if (
+    value.ira &&
+    !numberFilter(Number(student.ira), value.ira, value.iraFilterOption)
+  ) {
+    return false
+  }
 
   if (
     value.studentGroups.length > 0 &&
@@ -227,7 +227,7 @@ const formSchema = z.object({
     .optional()
     .or(z.literal('')),
   currentSemesterFilterOption: z.nativeEnum(NumberFilteringOption),
-  cr: z.coerce
+  ira: z.coerce
     .number()
     .min(0.1, {
       message: 'O IRA/CR deve ser maior que 0.1.',
@@ -237,7 +237,7 @@ const formSchema = z.object({
     })
     .optional()
     .or(z.literal('')),
-  crFilterOption: z.nativeEnum(NumberFilteringOption),
+  iraFilterOption: z.nativeEnum(NumberFilteringOption),
   studentGroups: z
     .array(
       z.object({
@@ -294,7 +294,7 @@ function FilterForm(props: {
       >
         <div className="w-full flex flex-col gap-1">
           <FormLabel>Curso</FormLabel>
-          <div className="flex flex-row items-start space-x-5 space-y-0">
+          <div className="flex flex-row items-start space-x-5 space-y-0 mt-2">
             <FormField
               control={form.control}
               name="csCheckbox"
@@ -333,7 +333,7 @@ function FilterForm(props: {
           >
             Período de ingresso na UFAL
           </FormLabel>
-          <div className="flex gap-2.5 w-full">
+          <div className="flex gap-2.5 w-full mt-2">
             <FormField
               control={form.control}
               name="admissionSemestreFilterOption"
@@ -368,7 +368,7 @@ function FilterForm(props: {
           >
             Período Atual
           </FormLabel>
-          <div className="flex gap-2.5 w-full">
+          <div className="flex gap-2.5 w-full mt-2">
             <FormField
               control={form.control}
               name="currentSemesterFilterOption"
@@ -398,26 +398,25 @@ function FilterForm(props: {
           )}
         </div>
         <div className="w-full flex flex-col gap-1">
-          <FormLabel className={errors.cr ? 'text-destructive' : ''}>
+          <FormLabel className={errors.ira ? 'text-destructive' : ''}>
             Índice de rendimento acadêmico (IRA/CR)
           </FormLabel>
-          <div className="flex gap-2.5 w-full">
+          <div className="flex gap-2.5 w-full mt-2">
             <FormField
               control={form.control}
-              name="crFilterOption"
+              name="iraFilterOption"
               render={({ field }) => (
                 <FormItem className="basis-2/5">
                   <FilterOptionSelect
                     onChange={field.onChange}
                     defaultValue={field.value}
-                    disabled={true}
                   />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="cr"
+              name="ira"
               render={({ field }) => (
                 <FormItem className="basis-3/5">
                   <FormControl>
@@ -425,7 +424,6 @@ function FilterForm(props: {
                       type="number"
                       lang="pt-br"
                       placeholder="8,5"
-                      disabled={true}
                       {...field}
                     />
                   </FormControl>
@@ -433,7 +431,7 @@ function FilterForm(props: {
               )}
             />
           </div>
-          {errors.cr && <FormMessage>{errors.cr.message}</FormMessage>}
+          {errors.ira && <FormMessage>{errors.ira.message}</FormMessage>}
         </div>
         <div className="w-full flex flex-col gap-1">
           <FormLabel>Turmas</FormLabel>
@@ -441,7 +439,7 @@ function FilterForm(props: {
             control={form.control}
             name="studentGroups"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mt-2">
                 <FormControl>
                   <MultipleSelector
                     value={field.value}
@@ -449,7 +447,7 @@ function FilterForm(props: {
                     defaultOptions={studentGroupOptions}
                     placeholder="Selecione turmas..."
                     emptyIndicator={
-                      <p className="text-center text-md leading-10 text-gray-600 dark:text-gray-400">
+                      <p className="text-center text-md leading-10 text-gray-600 dark:text-gray-400 ">
                         Essa turma não existe.
                       </p>
                     }
@@ -505,7 +503,7 @@ function TableFiltersDropdown(props: {
       count += 1
     }
 
-    if (value.cr !== undefined && value.cr !== '') {
+    if (value.ira !== undefined && value.ira !== '') {
       count += 1
     }
 
