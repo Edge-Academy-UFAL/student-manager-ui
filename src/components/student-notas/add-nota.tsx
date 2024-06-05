@@ -221,7 +221,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent className="p-0">
+                <PopoverContent className="p-0 w-[475px]">
                   <ScrollArea className="h-72">
                     <Command>
                       <CommandInput placeholder="Busque por uma disciplina" />
@@ -240,7 +240,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
                               setOpenDisciplnas(false)
                             }}
                           >
-                            {disciplina.name}
+                            {disciplina.code + ' - ' + disciplina.name}
                           </CommandItem>
                         ))}
                       </CommandGroup>
