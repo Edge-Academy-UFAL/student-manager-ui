@@ -63,7 +63,7 @@ const getIRA = async (email: string) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      next: { tags: ['ira-list'], revalidate: 0 },
+      next: { tags: ['disciplinas-table'], revalidate: 600 },
     })
 
     if (!res.ok) {
@@ -84,7 +84,7 @@ const getGradesAverage = async (email: string) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      next: { tags: ['grades-average-list'], revalidate: 0 },
+      next: { tags: ['disciplinas-table'], revalidate: 600 },
     })
 
     if (!res.ok) {
