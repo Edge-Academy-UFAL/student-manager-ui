@@ -22,6 +22,23 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
+import { Check, ChevronsUpDown } from 'lucide-react'
+
+import { cn, handleLimitRange } from '@/lib/utils'
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from '@/components/ui/command'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+
 import { Label } from '../ui/label'
 
 import { Input } from '@/components/ui/input'
@@ -30,7 +47,7 @@ import { LoadingSpinner } from '../loading-spinner'
 import { useState } from 'react'
 import { Separator } from '../ui/separator'
 import { addGrade } from '@/lib/functions/http/add-nota-req'
-import { handleLimitRange } from '@/lib/utils'
+import { ScrollArea } from '../ui/scroll-area'
 
 interface Subject {
   code: string
@@ -49,13 +66,14 @@ export function AddNota({ subjects, email }: AddNotaProps) {
   const { toast } = useToast()
 
   const [open, setOpen] = useState(false)
+  const [openDisciplnas, setOpenDisciplnas] = useState(false)
 
   const [disciplinas, setDisciplinas] = useState<Subject[]>(subjects || [])
 
   const [periodo, setPeriodo] = useState('')
-  const [nota, setNota] = useState(0)
+  const [nota, setNota] = useState('')
   const [status, setStatus] = useState('')
-  const [disciplina, setDisciplina] = useState('')
+  const [disciplina, setDisciplina] = useState<Subject>({} as Subject)
 
   const [periodoError, setPeriodoError] = useState('')
   const [notaError, setNotaError] = useState('')
@@ -83,16 +101,20 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     }
 
     // Validação do campo "Média Final"
-    if (!nota) {
-      setNota(0)
+    if (nota.trim() === '') {
+      setNotaError('A média final é obrigatória.')
+      setNota('')
     } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
       setNotaError('A média final deve ser um número entre 1 e 10.')
       isValid = false
+      console.log('2')
     } else if (!/^\d+(\.\d{1,2})?$/.test(nota.toString())) {
       setNotaError('A média final deve ter no máximo duas casas decimais.')
       isValid = false
+      console.log('3')
     } else {
       setNotaError('')
+      console.log('4')
     }
 
     // Validação do campo "Status"
@@ -104,9 +126,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     }
 
     // Validação do campo "Disciplina"
-    if (
-      !disciplinas.map((disciplina) => disciplina.code).includes(disciplina)
-    ) {
+    if (!disciplina.code) {
       setDisciplinaError('A disciplina é obrigatória.')
       isValid = false
     } else {
@@ -141,7 +161,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     }
 
     const data = {
-      subjectCode: disciplina,
+      subjectCode: disciplina.code,
       studentEmail: email,
       period: periodo,
       finalGrade: nota,
@@ -153,8 +173,9 @@ export function AddNota({ subjects, email }: AddNotaProps) {
 
     if (res) {
       await new Promise((resolve) => setTimeout(resolve, 500))
-      setNota(0)
+      setNota('')
       setPeriodo('')
+      setDisciplina({} as Subject)
       setOpen(false)
       toast({
         title: 'Disciplina adicionada com sucesso',
@@ -184,32 +205,49 @@ export function AddNota({ subjects, email }: AddNotaProps) {
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">
               <Label>Disciplinas</Label>
-              <Select onValueChange={(value) => setDisciplina(value)}>
-                <SelectTrigger className="w-full text-left">
-                  <SelectValue
-                    placeholder="Selecione a disciplina"
-                    className="w-full"
-                  />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    {disciplinas.map((disciplina) => (
-                      <div
-                        key={disciplina.code}
-                        className="w-[--radix-select-trigger-width]"
-                      >
-                        <SelectItem
-                          value={disciplina.code}
-                          className="hover:cursor-pointer"
-                        >
-                          {disciplina.code + ' - ' + disciplina.name}
-                        </SelectItem>
-                        <Separator />
-                      </div>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
+              <Popover
+                modal={true}
+                open={openDisciplnas}
+                onOpenChange={setOpenDisciplnas}
+              >
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className=" justify-between"
+                  >
+                    {disciplina.name || 'Selecione a disciplina'}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="p-0">
+                  <ScrollArea className="h-72">
+                    <Command>
+                      <CommandInput placeholder="Busque por uma disciplina" />
+                      <CommandEmpty>
+                        Nenhuma disciplina encontrada.
+                      </CommandEmpty>
+                      <CommandGroup className="">
+                        {disciplinas.map((disciplina) => (
+                          // eslint-disable-next-line react/jsx-key
+                          <CommandItem
+                            className="hover:cursor-pointer"
+                            key={disciplina.code}
+                            value={disciplina.name}
+                            onSelect={(currentValue) => {
+                              setDisciplina(disciplina)
+                              setOpenDisciplnas(false)
+                            }}
+                          >
+                            {disciplina.name}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </ScrollArea>
+                </PopoverContent>
+              </Popover>
               {disciplinaError && (
                 <span className="text-red-500 text-sm">{disciplinaError}</span>
               )}
@@ -219,11 +257,9 @@ export function AddNota({ subjects, email }: AddNotaProps) {
               <Input
                 id="nota"
                 className="col-span-3"
-                value={nota.toString()}
                 type="number"
-                onChange={(e) =>
-                  setNota(handleLimitRange(e.target.valueAsNumber, 0, 10))
-                }
+                value={nota.toString()}
+                onChange={(e) => setNota(e.target.value)}
               />
               {notaError && (
                 <span className="text-red-500 text-sm">{notaError}</span>
@@ -267,6 +303,15 @@ export function AddNota({ subjects, email }: AddNotaProps) {
             <DialogClose asChild>
               <Button
                 type="submit"
+                onClick={() => {
+                  setDisciplina({} as Subject)
+                  setNota('')
+                  setPeriodo('')
+                  setNotaError('')
+                  setPeriodoError('')
+                  setDisciplinaError('')
+                  setSituacaoError('')
+                }}
                 className="bg-background border text-foreground hover:cursor-pointer hover:bg-background hover:text-muted-foreground"
               >
                 Cancelar
