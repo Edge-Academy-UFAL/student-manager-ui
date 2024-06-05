@@ -1,11 +1,5 @@
 'use client'
-import {
-  CardTitle,
-  CardDescription,
-  CardHeader,
-  CardFooter,
-  Card,
-} from '@/components/ui/card'
+import { CardTitle, CardHeader, CardFooter, Card } from '@/components/ui/card'
 
 import {
   FlaskConical,
