@@ -55,7 +55,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { UseFormReturn, useForm } from 'react-hook-form'
 
 import { z } from 'zod'
-import { StudentResponse } from './student-profile'
+import { StudentInfo } from './student-profile'
 import { Textarea } from '../ui/textarea'
 import { ScrollArea } from '../ui/scroll-area'
 
@@ -418,8 +418,8 @@ export function StudentInfoEditDialog({
   studentData,
   setStudentData,
 }: {
-  studentData: StudentResponse
-  setStudentData: Dispatch<SetStateAction<StudentResponse | null>>
+  studentData: StudentInfo
+  setStudentData: Dispatch<SetStateAction<StudentInfo | null>>
 }) {
   const [showDialog, setShowDialog] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)

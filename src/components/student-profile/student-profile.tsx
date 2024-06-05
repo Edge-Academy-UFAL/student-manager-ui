@@ -1,12 +1,20 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
 import { useState } from 'react'
-import InfoBox from './info-box'
+
+import { useSession } from 'next-auth/react'
+
 import { enumToStringCourse } from '@/lib/utils'
 import { StudentInfoEditDialog } from './student-info-edit-dialog'
 
-export interface StudentResponse {
+import ActivityCard from './activity/activity-card'
+import InfoBox from './info-box'
+
+import AddActivityModal from './activity/add-activity-modal'
+
+import { Activity } from '../../../types/types'
+
+export interface StudentInfo {
   name: string
   photoUrl: string
   birthDate: string
@@ -24,13 +32,15 @@ export interface StudentResponse {
 }
 
 const StudentProfile = ({
-  studentDataServerSide,
+  studentInfo,
+  activities,
 }: {
   username: string
-  studentDataServerSide: StudentResponse
+  studentInfo: StudentInfo
+  activities: Activity[]
 }) => {
-  const [studentData, setStudentData] = useState<StudentResponse | null>(
-    studentDataServerSide,
+  const [studentData, setStudentData] = useState<StudentInfo | null>(
+    studentInfo,
   )
 
   const { data } = useSession()
@@ -77,6 +87,19 @@ const StudentProfile = ({
             <InfoBox title="Período de entrada" text={studentData.entryDate} />
           </div>
         </div>
+      </div>
+      <div className="flex justify-between items-center mt-6">
+        <h2 className="text-2xl font-bold">Atividades extras</h2>
+        {studentData.email === data?.user?.email ? <AddActivityModal /> : null}
+      </div>
+      <div className="mt-3 grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-4">
+        {activities.map((activity) => (
+          <ActivityCard
+            key={activity.activityId}
+            {...activity}
+            studentEmail={studentData.email}
+          />
+        ))}
       </div>
     </div>
   )
