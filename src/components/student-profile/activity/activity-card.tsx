@@ -78,13 +78,11 @@ export default function ActivityCard({
           ) : null}
         </div>
         <CardTitle className="break-words">{name}</CardTitle>
-        <CardDescription className="dark:text-white/80 text-black/90 dark:hover:bg-[#161616] hover:bg-[#f0f0f0]  hover:cursor-pointer hover:border-2 hover:p-[0.35rem] rounded-xl">
-          <span className="mb-2 break-words">
-            {description.length > 220
-              ? `${description.slice(0, 220)}...` // fazer dialog com a descrição completa
-              : description}
-          </span>
-        </CardDescription>
+        <div className="dark:text-white/80 text-black/90 text-sm">
+          <div className="mb-2 break-words h-[100px] overflow-y-auto">
+            {description}
+          </div>
+        </div>
       </CardHeader>
       <Separator className="mb-4" />
       <CardFooter className="block text-muted-foreground p-5">
