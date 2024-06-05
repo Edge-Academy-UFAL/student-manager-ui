@@ -198,7 +198,7 @@ const EditActivityModal = ({
             Editar uma atividade extra
           </h3>
           <p className="text-sm text-foreground mb-6">
-            Edite a atividade <span className="font-bold">{name}</span>
+            Edite a atividade <span className="font-bold">{name} </span>
             utilizando o formulário abaixo. Evite deixar informações
             desatualizadas.
           </p>
