@@ -171,7 +171,6 @@ const SignUpForm = ({ id }: { id: string }) => {
                     onValueChange={(course) => {
                       /* Update semester select options on course change */
                       const newMaxSemester = getMaxSemesterBasedOnCourse(course)
-                      console.log(newMaxSemester)
                       setMaxSemester(newMaxSemester)
 
                       /* Prevent Ciência with more than 12 semesters */
