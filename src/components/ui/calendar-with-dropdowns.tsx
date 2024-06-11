@@ -63,6 +63,21 @@ function CalendarWithDropdowns({
       }}
       components={{
         Dropdown: ({ value, onChange, children, ...props }: DropdownProps) => {
+          const monthMap = {
+            janeiro: 'Jan',
+            fevereiro: 'Fev',
+            março: 'Mar',
+            abril: 'Abr',
+            maio: 'Mai',
+            junho: 'Jun',
+            julho: 'Jul',
+            agosto: 'Ago',
+            setembro: 'Set',
+            outubro: 'Out',
+            novembro: 'Nov',
+            dezembro: 'Dez',
+          }
+
           const options = React.Children.toArray(
             children,
           ) as React.ReactElement<React.HTMLProps<HTMLOptionElement>>[]
@@ -81,7 +96,13 @@ function CalendarWithDropdowns({
               }}
             >
               <SelectTrigger className="pr-1.5 focus:ring-0">
-                <SelectValue>{selected?.props?.children}</SelectValue>
+                <SelectValue>
+                  {props.name === 'months'
+                    ? monthMap[
+                        selected?.props?.children as keyof typeof monthMap
+                      ]
+                    : selected?.props?.children}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent position="popper">
                 <ScrollArea className="h-80">
@@ -90,7 +111,11 @@ function CalendarWithDropdowns({
                       key={`${option.props.value}-${id}`}
                       value={option.props.value?.toString() ?? ''}
                     >
-                      {option.props.children}
+                      {props.name === 'months'
+                        ? monthMap[
+                            option.props.children as keyof typeof monthMap
+                          ]
+                        : option.props.children}
                     </SelectItem>
                   ))}
                 </ScrollArea>
