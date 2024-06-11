@@ -43,10 +43,13 @@ import {
   Upload,
 } from 'lucide-react'
 
-import { Calendar } from '@/components/ui/calendar'
-import { format } from 'date-fns'
+import { CalendarWithDropdowns } from '@/components/ui/calendar-with-dropdowns'
 import { ptBR } from 'date-fns/locale'
-import { cn, getMaxSemesterBasedOnCourse } from '@/lib/utils'
+import {
+  cn,
+  getMaxSemesterBasedOnCourse,
+  formatDateToReadableBRFormat,
+} from '@/lib/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useToast } from '../ui/use-toast'
@@ -219,7 +222,7 @@ const SignUpForm = ({ id }: { id: string }) => {
                           )}
                         >
                           {field.value ? (
-                            format(field.value, 'PPP')
+                            formatDateToReadableBRFormat(field.value)
                           ) : (
                             <span>Selecione um data</span>
                           )}
@@ -227,7 +230,7 @@ const SignUpForm = ({ id }: { id: string }) => {
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
+                        <CalendarWithDropdowns
                           locale={ptBR}
                           defaultMonth={new Date(2000, 6)}
                           mode="single"
@@ -236,9 +239,8 @@ const SignUpForm = ({ id }: { id: string }) => {
                           disabled={(date) =>
                             date > new Date() || date < new Date('1900-01-01')
                           }
-                          initialFocus
                           captionLayout="dropdown-buttons"
-                          fromYear={1900}
+                          fromYear={1980}
                           toYear={new Date().getFullYear()}
                         />
                       </PopoverContent>

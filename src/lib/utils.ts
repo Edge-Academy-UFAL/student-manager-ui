@@ -75,3 +75,17 @@ export function handleLimitRange(
   }
   return value
 }
+
+export function formatDateToReadableBRFormat(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }
+  const formattedDate = new Intl.DateTimeFormat('pt-BR', options).format(date)
+
+  const parts = formattedDate.split(' ')
+  parts[2] = parts[2].charAt(0).toUpperCase() + parts[2].slice(1)
+
+  return parts.join(' ')
+}

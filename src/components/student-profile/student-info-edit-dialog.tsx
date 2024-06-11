@@ -42,9 +42,13 @@ import {
 } from '@/components/ui/popover'
 
 import { CalendarWithDropdowns } from '../ui/calendar-with-dropdowns'
-import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { cn, formatDate, getMaxSemesterBasedOnCourse } from '@/lib/utils'
+import {
+  cn,
+  formatDate,
+  getMaxSemesterBasedOnCourse,
+  formatDateToReadableBRFormat,
+} from '@/lib/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UseFormReturn, useForm } from 'react-hook-form'
@@ -240,7 +244,7 @@ const EditInfoDialogContent = ({
                           )}
                         >
                           {field.value ? (
-                            format(field.value, 'PPP')
+                            formatDateToReadableBRFormat(field.value)
                           ) : (
                             <span>Selecione um data</span>
                           )}
@@ -351,6 +355,31 @@ const EditInfoDialogContent = ({
           <div>
             <FormField
               control={form.control}
+              name="secondaryPhone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefone Secundário</FormLabel>
+                  <FormControl>
+                    <PhoneInput
+                      initialValueFormat="national"
+                      value={
+                        parsePhoneNumber(
+                          form.getValues('secondaryPhone') || '',
+                          'BR',
+                        )?.number as Value
+                      }
+                      onChange={field.onChange}
+                      defaultCountry="BR"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div>
+            <FormField
+              control={form.control}
               name="semester"
               render={({ field }) => (
                 <FormItem>
@@ -382,31 +411,6 @@ const EditInfoDialogContent = ({
                       )}
                     </SelectContent>
                   </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div>
-            <FormField
-              control={form.control}
-              name="secondaryPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone Secundário</FormLabel>
-                  <FormControl>
-                    <PhoneInput
-                      initialValueFormat="national"
-                      value={
-                        parsePhoneNumber(
-                          form.getValues('secondaryPhone') || '',
-                          'BR',
-                        )?.number as Value
-                      }
-                      onChange={field.onChange}
-                      defaultCountry="BR"
-                    />
-                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
