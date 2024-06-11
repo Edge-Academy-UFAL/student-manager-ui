@@ -13,10 +13,6 @@ export const addActivity = async (data: any) => {
 
   data.studentEmail = session?.user.email
 
-  data.workShift = 20
-
-  console.log(data)
-
   try {
     const res = await fetch(`${process.env.backendRoute}/api/v1/activities`, {
       headers: {
@@ -30,8 +26,6 @@ export const addActivity = async (data: any) => {
     if (!res.ok) {
       throw new Error('Erro ao adicionar atividade')
     }
-
-    console.log(res.status)
 
     revalidateTag('user-data')
 
