@@ -46,7 +46,7 @@ import {
 import { Calendar } from '@/components/ui/calendar'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
-import { cn } from '@/lib/utils'
+import { cn, getMaxSemesterBasedOnCourse } from '@/lib/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useToast } from '../ui/use-toast'
@@ -72,6 +72,10 @@ const SignUpForm = ({ id }: { id: string }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
+
+  const [maxSemester, setMaxSemester] = useState<number>(
+    getMaxSemesterBasedOnCourse(form.getValues('course')),
+  )
 
   const submitHandler = async (data: RegisterSchema) => {
     const dataToSend = formatSignUpData(data)
@@ -164,7 +168,19 @@ const SignUpForm = ({ id }: { id: string }) => {
                 <FormItem>
                   <FormLabel>Curso*</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(course) => {
+                      /* Update semester select options on course change */
+                      const newMaxSemester = getMaxSemesterBasedOnCourse(course)
+                      console.log(newMaxSemester)
+                      setMaxSemester(newMaxSemester)
+
+                      /* Prevent Ciência with more than 12 semesters */
+                      if (Number(form.getValues('semester')) > newMaxSemester) {
+                        form.setValue('semester', '')
+                      }
+
+                      field.onChange(course)
+                    }}
                     defaultValue={field.value}
                   >
                     <FormControl>
@@ -278,23 +294,28 @@ const SignUpForm = ({ id }: { id: string }) => {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    value={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Selecione o seu período" />
+                        {/* Reset the placeholder when invalid semester is selected */}
+                        {field.value ? (
+                          <SelectValue placeholder="Selecione o seu período" />
+                        ) : (
+                          'Selecione o seu período'
+                        )}
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="1">1</SelectItem>
-                      <SelectItem value="2">2</SelectItem>
-                      <SelectItem value="3">3</SelectItem>
-                      <SelectItem value="4">4</SelectItem>
-                      <SelectItem value="5">5</SelectItem>
-                      <SelectItem value="6">6</SelectItem>
-                      <SelectItem value="7">7</SelectItem>
-                      <SelectItem value="8">8</SelectItem>
-                      <SelectItem value="9">9</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
+                      {Array.from({ length: maxSemester }, (_, i) => i + 1).map(
+                        (i) => {
+                          return (
+                            <SelectItem key={`s_${i}`} value={i.toString()}>
+                              {i}
+                            </SelectItem>
+                          )
+                        },
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
