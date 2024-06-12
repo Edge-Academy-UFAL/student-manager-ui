@@ -66,8 +66,8 @@ const StudentProfile = ({
         <div className="basis-1/2">
           <InfoBox title="Sobre mim" text={studentData.about} />
         </div>
-        <div className="basis-1/2 flex flex-row justify-between lg:justify-evenly">
-          <div className="">
+        <div className="basis-1/2 flex flex-row justify-between lg:gap-4 md:justify-start lg:justify-evenly">
+          <div className="flex flex-col items-start gap-y-1">
             <InfoBox title="E-mail" text={studentData.email} />
             <InfoBox
               title="Data de nascimento"
@@ -90,7 +90,7 @@ const StudentProfile = ({
               }
             />
           </div>
-          <div className="">
+          <div className="flex flex-col items-start gap-y-1">
             <InfoBox
               title="Curso"
               text={enumToStringCourse(studentData.course)}
