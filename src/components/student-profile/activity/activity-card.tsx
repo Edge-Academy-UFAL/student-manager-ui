@@ -16,9 +16,19 @@ import { RemoveActivity } from './remove-activity-modal'
 import { Activity } from '../../../../types/types'
 
 import { useSession } from 'next-auth/react'
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from '@/components/ui/hover-card'
+import { useEffect, useRef, useState } from 'react'
 
 interface ExtendedActivity extends Activity {
   studentEmail: string
+}
+
+function isTextClamped(el: HTMLElement | null) {
+  return !el || el.scrollHeight > el.clientHeight + 10
 }
 
 export default function ActivityCard({
@@ -34,6 +44,15 @@ export default function ActivityCard({
   studentEmail,
 }: ExtendedActivity) {
   const { data } = useSession()
+  const descriptionRef = useRef(null)
+  const [isClamped, setIsClamped] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (isTextClamped(descriptionRef.current)) {
+      setIsClamped(true)
+    }
+  }, [])
+
   return (
     <Card>
       <CardHeader className="p-5">
@@ -89,9 +108,25 @@ export default function ActivityCard({
           ) : null}
         </div>
         <CardTitle className="break-words">{name}</CardTitle>
-        <div className="dark:text-white/80 text-black/90 text-sm">
-          <p className="break-words h-[36px] line-clamp-2">{description}</p>
-        </div>
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <div className="dark:text-white/80 text-black/90 text-sm">
+              <p
+                ref={descriptionRef}
+                className="break-words h-[40px] line-clamp-2 text-muted-foreground"
+              >
+                {description}
+              </p>
+            </div>
+          </HoverCardTrigger>
+          {isClamped && (
+            <HoverCardContent className="w-[400px]">
+              <p className="dark:text-white/80 text-black/90 text-sm break-words text-muted-foreground">
+                {description}
+              </p>
+            </HoverCardContent>
+          )}
+        </HoverCard>
       </CardHeader>
       <Separator className="m-0 p-0" />
       <CardFooter className="block text-muted-foreground p-5">
