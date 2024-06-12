@@ -37,17 +37,34 @@ export default function ActivityCard({
   return (
     <Card>
       <CardHeader className="p-5">
-        <div className="flex justify-between items-center mb-1">
+        <div className="flex justify-between items-center mb-0">
           <div className="flex gap-2 items-center text-muted-foreground">
             {
               {
-                TUTORING: <GraduationCap size={18} />,
-                RESEARCH: <FlaskConical size={18} />,
-                OTHERS: <Building size={18} />,
-                INTERNSHIP: <Building size={18} />,
+                TUTORING: (
+                  <>
+                    <GraduationCap size={18} />{' '}
+                    <p className="text-sm ">Monitoria</p>
+                  </>
+                ),
+                RESEARCH: (
+                  <>
+                    <FlaskConical size={18} />{' '}
+                    <p className="text-sm ">Pesquisa</p>
+                  </>
+                ),
+                OTHERS: (
+                  <>
+                    <Building size={18} /> <p className="text-sm ">Outros</p>
+                  </>
+                ),
+                INTERNSHIP: (
+                  <>
+                    <Building size={18} /> <p className="text-sm ">Estágio</p>
+                  </>
+                ),
               }[activityType]
             }
-            <p className="text-sm ">{activityType}</p>
           </div>
 
           {studentEmail === data?.user?.email ? (
@@ -73,12 +90,10 @@ export default function ActivityCard({
         </div>
         <CardTitle className="break-words">{name}</CardTitle>
         <div className="dark:text-white/80 text-black/90 text-sm">
-          <div className="mb-2 break-words h-[100px] overflow-y-auto">
-            {description}
-          </div>
+          <p className="break-words h-[36px] line-clamp-2">{description}</p>
         </div>
       </CardHeader>
-      <Separator className="mb-4" />
+      <Separator className="m-0 p-0" />
       <CardFooter className="block text-muted-foreground p-5">
         <div className="flex flex-col text-sm gap-2">
           <div className="flex justify-between">
@@ -92,9 +107,9 @@ export default function ActivityCard({
           <div className="flex justify-between">
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-              {!onGoing ? <span>Finalização</span> : <span>Em andamento</span>}
+              <span>Finalização</span>
             </div>
-            <p>{conclusionDate}</p>
+            <p>{!onGoing ? conclusionDate : 'Em andamento'}</p>
           </div>
 
           <div className="flex justify-between">
