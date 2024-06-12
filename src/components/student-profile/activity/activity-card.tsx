@@ -21,6 +21,9 @@ import {
   HoverCardTrigger,
   HoverCardContent,
 } from '@/components/ui/hover-card'
+
+import { formatToCompactBRFormat } from '@/lib/utils'
+
 import { useEffect, useRef, useState } from 'react'
 
 interface ExtendedActivity extends Activity {
@@ -136,7 +139,7 @@ export default function ActivityCard({
               <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span>Início</span>
             </div>
-            <p>{startDate}</p>
+            <p>{formatToCompactBRFormat(new Date(startDate))}</p>
           </div>
 
           <div className="flex justify-between">
@@ -144,7 +147,11 @@ export default function ActivityCard({
               <Calendar className="h-4 w-4 text-gray-500 dark:text-gray-400" />
               <span>Finalização</span>
             </div>
-            <p>{!onGoing ? conclusionDate : 'Em andamento'}</p>
+            <p>
+              {conclusionDate
+                ? formatToCompactBRFormat(new Date(conclusionDate))
+                : 'Em andamento'}
+            </p>
           </div>
 
           <div className="flex justify-between">
