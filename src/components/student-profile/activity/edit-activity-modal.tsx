@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from 'react'
 
 import { useToast } from '@/components/ui/use-toast'
@@ -25,11 +24,21 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-import { FilePenLine } from 'lucide-react'
+import { CalendarIcon, FilePenLine } from 'lucide-react'
 
 import { editActivity } from '@/lib/functions/http/edit-activity-req'
 
 import { Activity } from '../../../../types/types'
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+
+import { CalendarWithDropdowns } from '@/components/ui/calendar-with-dropdowns'
+import { ptBR } from 'date-fns/locale'
+import { cn, formatDateToReadableBRFormat } from '@/lib/utils'
 
 const ACTIVITY_TYPES = [
   { code: 'RESEARCH', name: 'Pesquisa' },
@@ -38,10 +47,10 @@ const ACTIVITY_TYPES = [
   { code: 'OTHERS', name: 'Outro' },
 ]
 
-const formatDate = (dateString: string) => {
-  const [day, month, year] = dateString.split('/')
-  return `${year}-${month}-${day}`
-}
+// const formatDate = (dateString: string) => {
+//   const [day, month, year] = dateString.split('/')
+//   return `${year}-${month}-${day}`
+// }
 
 const EditActivityModal = ({
   name,
@@ -149,13 +158,11 @@ const EditActivityModal = ({
       activityType: type,
       description: activityDescription,
       startDate: activityStartDate,
-      conclusionDate: activityEndDate,
+      conclusionDate: activityEndDate ? activityEndDate.slice(0, 10) : null,
       workShift: Number(activityWorkShift),
-      isPaid: activityStatusPaid,
+      paid: activityStatusPaid,
       onGoing: activityStatusInProgress,
     }
-
-    console.log(data)
 
     setLoading(true)
 
@@ -166,11 +173,11 @@ const EditActivityModal = ({
       // setar todos os estados para o valor inicial
       setOpen(false)
       toast({
-        title: 'Atividade editada com sucesso',
+        title: 'Atividade editada com sucesso!',
       })
     } else {
       toast({
-        title: 'Erro ao editar atividade',
+        title: 'Erro ao editar atividade.',
         description: 'Tente novamente mais tarde.',
         variant: 'destructive',
       })
@@ -186,7 +193,6 @@ const EditActivityModal = ({
             size={15}
             className="hover:cursor-pointer hover:text-muted-foreground"
           />
-          {/* <p>Editar</p> */}
         </span>
       </DialogTrigger>
       <DialogContent className="p-0">
@@ -301,13 +307,43 @@ const EditActivityModal = ({
                 >
                   Data de início*
                 </label>
-                <Input
-                  id="start-date"
-                  placeholder="10/09/2023"
-                  type="date"
-                  value={activityStartDate}
-                  onChange={(e) => setActivityStartDate(e.target.value)}
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'pl-3 text-left font-normal w-full',
+                        !activityStartDate && 'text-muted-foreground',
+                      )}
+                    >
+                      {activityStartDate ? (
+                        formatDateToReadableBRFormat(
+                          new Date(activityStartDate),
+                        )
+                      ) : (
+                        <span>Selecione um data</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarWithDropdowns
+                      locale={ptBR}
+                      defaultMonth={new Date(activityStartDate)}
+                      mode="single"
+                      selected={new Date(activityStartDate || '')}
+                      onSelect={(e) =>
+                        setActivityStartDate(e?.toISOString() || '')
+                      }
+                      disabled={(date) =>
+                        date > new Date() || date < new Date('2000-01-01')
+                      }
+                      captionLayout="dropdown-buttons"
+                      fromYear={2000}
+                      toYear={new Date().getFullYear()}
+                    />
+                  </PopoverContent>
+                </Popover>
                 {startDateError && (
                   <span className="text-red-500 text-sm">{startDateError}</span>
                 )}
@@ -319,14 +355,44 @@ const EditActivityModal = ({
                 >
                   Data de conclusão
                 </label>
-                <Input
-                  id="end-date"
-                  placeholder="01/10/2024"
-                  type="date"
-                  value={activityEndDate || ''}
-                  onChange={(e) => setActivityEndDate(e.target.value)}
-                  disabled={activityStatusInProgress}
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'pl-3 text-left font-normal w-full',
+                        !activityEndDate && 'text-muted-foreground',
+                      )}
+                      disabled={activityStatusInProgress}
+                    >
+                      {activityEndDate ? (
+                        formatDateToReadableBRFormat(new Date(activityEndDate))
+                      ) : (
+                        <span>Selecione um data</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarWithDropdowns
+                      locale={ptBR}
+                      defaultMonth={
+                        activityEndDate ? new Date(activityEndDate) : new Date()
+                      }
+                      mode="single"
+                      selected={new Date(activityEndDate || '')}
+                      onSelect={(e) =>
+                        setActivityEndDate(e?.toISOString() || '')
+                      }
+                      disabled={(date) =>
+                        date > new Date() || date < new Date('2000-01-01')
+                      }
+                      captionLayout="dropdown-buttons"
+                      fromYear={2000}
+                      toYear={new Date().getFullYear()}
+                    />
+                  </PopoverContent>
+                </Popover>
                 {endDateError && (
                   <span className="text-red-500 text-sm">{endDateError}</span>
                 )}
@@ -366,7 +432,7 @@ const EditActivityModal = ({
                     Cancelar
                   </Button>
                 </DialogClose>
-                <Button onClick={handleSubmit} type="button">
+                <Button onClick={handleSubmit} type="button" disabled={loading}>
                   Editar
                 </Button>
               </div>

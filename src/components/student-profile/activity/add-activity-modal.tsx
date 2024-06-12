@@ -404,7 +404,7 @@ const AddActivityModal = () => {
                     Cancelar
                   </Button>
                 </DialogClose>
-                <Button onClick={handleSubmit} type="button">
+                <Button onClick={handleSubmit} type="button" disabled={loading}>
                   Adicionar
                 </Button>
               </div>
