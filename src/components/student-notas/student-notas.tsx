@@ -43,14 +43,14 @@ const StudentNotas = async ({
   return (
     <div className="max-w-[90vw] w-full px-10 py-5 justify-center flex flex-col">
       {email === data?.user?.email ? (
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between mb-2">
           <div className="flex justify-between w-full">
             <h2 className="text-2xl font-bold">Notas do aluno</h2>
           </div>
           <AddNota subjects={subjects} email={email} />
         </div>
       ) : (
-        <h2 className="text-2xl font-bold my-5">Notas do aluno</h2>
+        <h2 className="text-2xl font-bold my-5 mb-2">Notas do aluno</h2>
       )}
       <Table parentDivClassName={'max-h-[30vw]'}>
         <TableHeader sticky={true}>

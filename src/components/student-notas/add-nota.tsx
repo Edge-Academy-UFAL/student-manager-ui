@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 
 import { cn, handleLimitRange } from '@/lib/utils'
 
@@ -195,12 +195,19 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     <div className="flex justify-end">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="mb-3 text-end self-end">Adicionar</Button>
+          <Button variant="secondary">
+            <Plus />
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[525px]">
           <DialogHeader>
             <DialogTitle>Adicionar Disciplina</DialogTitle>
-            <DialogDescription></DialogDescription>
+            <DialogDescription>
+              Escolha abaixo a disciplina que você deseja adicionar e o perído
+              em que cursou ou está cursando a matéria. Caso já tenha cursado,
+              insira também a sua média final. Caso ainda esteja cursando, deixe
+              o campo da nota em branco.
+            </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">

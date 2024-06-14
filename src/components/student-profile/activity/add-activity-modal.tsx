@@ -174,9 +174,9 @@ const AddActivityModal = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <span>
-          <Plus className="h-6 w-6 cursor-pointer" />
-        </span>
+        <Button variant="secondary">
+          <Plus />
+        </Button>
       </DialogTrigger>
       <DialogContent className="p-0">
         <div
