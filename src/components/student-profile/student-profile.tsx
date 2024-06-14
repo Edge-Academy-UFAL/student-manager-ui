@@ -62,11 +62,11 @@ const StudentProfile = ({
           />
         ) : null}
       </div>
-      <div className="flex flex-col lg:flex-row p-6 gap-5 rounded-lg border mt-2">
+      <div className="flex flex-col lg:flex-row py-6 px-6 xl:px-10 gap-5 rounded-lg border mt-2">
         <div className="basis-1/2">
           <InfoBox title="Sobre mim" text={studentData.about} />
         </div>
-        <div className="basis-1/2 flex flex-row justify-between lg:gap-4 md:justify-start lg:justify-evenly">
+        <div className="basis-1/2 flex flex-row justify-between xl:gap-16 xl:justify-evenly">
           <div className="flex flex-col items-start gap-y-1">
             <InfoBox title="E-mail" text={studentData.email} />
             <InfoBox
