@@ -57,8 +57,8 @@ export default function ActivityCard({
   }, [])
 
   return (
-    <Card>
-      <CardHeader className="p-5">
+    <Card className="flex flex-col">
+      <CardHeader className="p-5 grow">
         <div className="flex justify-between items-center mb-0">
           <div className="flex gap-2 items-center text-muted-foreground">
             {
@@ -113,7 +113,7 @@ export default function ActivityCard({
         <CardTitle className="break-words">{name}</CardTitle>
         <HoverCard>
           <HoverCardTrigger asChild>
-            <div className="dark:text-white/80 text-black/90 text-sm">
+            <div className="dark:text-white/80 text-black/90 text-sm mt-auto">
               <p
                 ref={descriptionRef}
                 className="break-words h-[40px] line-clamp-2 text-muted-foreground"
