@@ -48,6 +48,7 @@ import {
   formatDate,
   getMaxSemesterBasedOnCourse,
   formatDateToReadableBRFormat,
+  createDateOnCurrentTimezone,
 } from '@/lib/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -451,7 +452,7 @@ export function StudentInfoEditDialog({
   const defaultFormData: EditableInfoData = {
     about: studentData.about,
     name: studentData.name,
-    birthDate: new Date(studentData.birthDate),
+    birthDate: createDateOnCurrentTimezone(studentData.birthDate),
     course:
       studentData.course === 'COMPUTER_SCIENCE'
         ? 'Ciência da Computação'

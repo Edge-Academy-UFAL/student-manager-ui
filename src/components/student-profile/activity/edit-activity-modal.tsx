@@ -38,7 +38,12 @@ import {
 
 import { CalendarWithDropdowns } from '@/components/ui/calendar-with-dropdowns'
 import { ptBR } from 'date-fns/locale'
-import { cn, formatDateToReadableBRFormat } from '@/lib/utils'
+import {
+  cn,
+  formatDateToReadableBRFormat,
+  createDateOnCurrentTimezone,
+  formatDateToYYYYMMDD,
+} from '@/lib/utils'
 
 const ACTIVITY_TYPES = [
   { code: 'RESEARCH', name: 'Pesquisa' },
@@ -331,9 +336,9 @@ const EditActivityModal = ({
                       locale={ptBR}
                       defaultMonth={new Date(activityStartDate)}
                       mode="single"
-                      selected={new Date(activityStartDate || '')}
+                      selected={createDateOnCurrentTimezone(activityStartDate)}
                       onSelect={(e) =>
-                        setActivityStartDate(e?.toISOString() || '')
+                        setActivityStartDate(e ? formatDateToYYYYMMDD(e) : '')
                       }
                       disabled={(date) =>
                         date > new Date() || date < new Date('2000-01-01')
@@ -380,9 +385,9 @@ const EditActivityModal = ({
                         activityEndDate ? new Date(activityEndDate) : new Date()
                       }
                       mode="single"
-                      selected={new Date(activityEndDate || '')}
+                      selected={createDateOnCurrentTimezone(activityEndDate)}
                       onSelect={(e) =>
-                        setActivityEndDate(e?.toISOString() || '')
+                        setActivityEndDate(e ? formatDateToYYYYMMDD(e) : '')
                       }
                       disabled={(date) =>
                         date > new Date() || date < new Date('2000-01-01')

@@ -82,20 +82,24 @@ export function formatDateToReadableBRFormat(date: Date): string {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
+    timeZone: 'UTC',
   }
-  const formattedDate = new Intl.DateTimeFormat('pt-BR', options).format(date)
 
+  const formattedDate = new Intl.DateTimeFormat('pt-BR', options).format(date)
   const parts = formattedDate.split(' ')
   parts[2] = parts[2].charAt(0).toUpperCase() + parts[2].slice(1)
-
   return parts.join(' ')
 }
 
 export function formatToCompactBRFormat(date: Date): string {
-  const day = date.getDate().toString().padStart(2, '0')
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  const year = date.getFullYear()
-  return `${day}/${month}/${year}`
+  const options: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }
+  const formattedDate = new Intl.DateTimeFormat('pt-BR', options).format(date)
+  return formattedDate
 }
 
 function orderActitivtiesByDateDesc(activities: Activity[]): Activity[] {
@@ -112,4 +116,25 @@ export function orderActivities(activities: Activity[]): Activity[] {
     activities.filter((act) => act.onGoing),
   )
   return [...onGoing, ...done]
+}
+
+export function createDateOnCurrentTimezone(dateString?: string | null): Date {
+  // When the date string is something like YYYY-MM-DD, the Date class assumes
+  // it is in the UTC timezone. So, when printing, it converts to the users
+  // current timezone, which resuls in unexpected dates being showed.
+
+  // This functions creates the date considering 'america/maceio' timezone, so
+  // no conversion is to happen.
+  if (dateString) {
+    return new Date(`${dateString}T03:00:00.000Z`)
+  } else {
+    return new Date()
+  }
+}
+
+export function formatDateToYYYYMMDD(date: Date): string {
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  return `${year}-${month}-${day}`
 }
