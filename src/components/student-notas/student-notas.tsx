@@ -9,6 +9,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
 import { AddNota } from './add-nota'
 import { RemoveNota, EditNota } from './edit-nota'
 import { getServerSession } from 'next-auth/next'
@@ -32,6 +39,27 @@ interface StudentGradesPageProps {
   notas: Grade[]
   subjects: Subject[]
   email: string
+}
+
+const FinalGradeTableCell = ({ children }: { children: number | null }) => {
+  if (children === null) {
+    return (
+      <TableCell>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span>---</span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>O aluno ainda está cursando esta disciplina.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </TableCell>
+    )
+  } else {
+    return <TableCell>{children}</TableCell>
+  }
 }
 
 const StudentNotas = async ({
@@ -71,7 +99,7 @@ const StudentNotas = async ({
                 <TableCell className="font-medium">{row.name}</TableCell>
                 <TableCell>{row.workload}</TableCell>
                 <TableCell>{row.period}</TableCell>
-                <TableCell>{row.finalGrade}</TableCell>
+                <FinalGradeTableCell>{row.finalGrade}</FinalGradeTableCell>
                 <TableCell
                   className={`${
                     row.subjectStatus === 'APPROVED'
