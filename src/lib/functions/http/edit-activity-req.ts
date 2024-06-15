@@ -27,8 +27,6 @@ export const editActivity = async (data: any) => {
       throw new Error('Erro ao editar as atividades')
     }
 
-    console.log(res.status)
-
     revalidateTag('user-data')
 
     return {

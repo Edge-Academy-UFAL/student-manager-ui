@@ -50,8 +50,6 @@ export const RemoveActivity = ({
       activityId,
     }
 
-    console.log(data)
-
     setLoading(true)
 
     const res = await removeActivity(data)
