@@ -240,7 +240,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
                           <CommandItem
                             className="hover:cursor-pointer"
                             key={disciplina.code}
-                            value={disciplina.name}
+                            value={disciplina.code + ' - ' + disciplina.name}
                             onSelect={(currentValue) => {
                               setDisciplina(disciplina)
                               setOpenDisciplnas(false)
