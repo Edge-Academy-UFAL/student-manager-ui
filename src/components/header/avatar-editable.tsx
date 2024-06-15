@@ -30,7 +30,7 @@ const AvatarEditable = ({
   name: string
   email: string
 }) => {
-  const { data } = useSession()
+  const { data, update } = useSession()
 
   const [selectedImage, setSelectedImage] = useState<File | null>()
   const [canSaveImage, setCanSaveImage] = useState<boolean>(false)
@@ -66,6 +66,11 @@ const AvatarEditable = ({
       const studentResponse = await response.json()
       setPhotoUrl(studentResponse.photoUrl)
       await revalidateUserPage(getUsername(studentResponse.email))
+
+      // This is necessary to update de session (and therefore, the header)
+      // when the user uploads a new profile picture
+      // More on https://next-auth.js.org/getting-started/client#updating-the-session
+      await update({ photoUrl: studentResponse.photoUrl })
     }
 
     setCanSaveImage(true)

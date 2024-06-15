@@ -25,9 +25,19 @@ import {
   DialogClose,
 } from '@/components/ui/dialog'
 
-import { Plus } from 'lucide-react'
+import { CalendarIcon, Plus } from 'lucide-react'
 
 import { addActivity } from '@/lib/functions/http/add-activity-req'
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+
+import { CalendarWithDropdowns } from '@/components/ui/calendar-with-dropdowns'
+import { ptBR } from 'date-fns/locale'
+import { cn, formatDateToReadableBRFormat } from '@/lib/utils'
 
 const ACTIVITY_TYPES = [
   { code: 'RESEARCH', name: 'Pesquisa' },
@@ -58,6 +68,17 @@ const AddActivityModal = () => {
   const [typeError, setTypeError] = React.useState('')
   const [startDateError, setStartDateError] = React.useState('')
   const [endDateError, setEndDateError] = React.useState('')
+
+  const resetFields = () => {
+    setName('')
+    setDescription('')
+    setWorkShift('')
+    setType('')
+    setStartDate('')
+    setEndDate('')
+    setInProgress(false)
+    setStatusPaid(false)
+  }
 
   const validate = () => {
     let isValid = true
@@ -121,13 +142,11 @@ const AddActivityModal = () => {
       description,
       workShift: Number(workShift),
       activityType: type,
-      startDate,
-      conclusionDate: endDate,
+      startDate: startDate.slice(0, 10),
+      conclusionDate: endDate ? endDate.slice(0, 10) : null,
       onGoing: inProgress,
       isPaid: statusPaid,
     }
-
-    console.log(data)
 
     setLoading(true)
 
@@ -135,10 +154,12 @@ const AddActivityModal = () => {
 
     if (res) {
       await new Promise((resolve) => setTimeout(resolve, 500))
+
       // setar todos os estados para o valor inicial
       setOpen(false)
+      resetFields()
       toast({
-        title: 'Atividade adicionada com sucesso',
+        title: 'Atividade adicionada com sucesso!',
       })
     } else {
       toast({
@@ -153,9 +174,9 @@ const AddActivityModal = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <span>
-          <Plus className="h-6 w-6 cursor-pointer" />
-        </span>
+        <Button variant="secondary">
+          <Plus />
+        </Button>
       </DialogTrigger>
       <DialogContent className="p-0">
         <div
@@ -264,13 +285,41 @@ const AddActivityModal = () => {
                 >
                   Data de início*
                 </label>
-                <Input
-                  id="start-date"
-                  placeholder="10/09/2023"
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'pl-3 text-left font-normal w-full',
+                        !startDate && 'text-muted-foreground',
+                      )}
+                    >
+                      {startDate ? (
+                        formatDateToReadableBRFormat(new Date(startDate))
+                      ) : (
+                        <span>Selecione um data</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarWithDropdowns
+                      locale={ptBR}
+                      defaultMonth={
+                        startDate ? new Date(startDate) : new Date()
+                      }
+                      mode="single"
+                      selected={new Date(startDate || '')}
+                      onSelect={(e) => setStartDate(e?.toISOString() || '')}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date('2000-01-01')
+                      }
+                      captionLayout="dropdown-buttons"
+                      fromYear={2000}
+                      toYear={new Date().getFullYear()}
+                    />
+                  </PopoverContent>
+                </Popover>
                 {startDateError && (
                   <span className="text-red-500 text-sm">{startDateError}</span>
                 )}
@@ -282,14 +331,40 @@ const AddActivityModal = () => {
                 >
                   Data de conclusão
                 </label>
-                <Input
-                  id="end-date"
-                  placeholder="01/10/2024"
-                  type="date"
-                  value={endDate || ''}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  disabled={inProgress}
-                />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant={'outline'}
+                      className={cn(
+                        'pl-3 text-left font-normal w-full',
+                        !endDate && 'text-muted-foreground',
+                      )}
+                      disabled={inProgress}
+                    >
+                      {endDate ? (
+                        formatDateToReadableBRFormat(new Date(endDate))
+                      ) : (
+                        <span>Selecione um data</span>
+                      )}
+                      <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <CalendarWithDropdowns
+                      locale={ptBR}
+                      defaultMonth={endDate ? new Date(endDate) : new Date()}
+                      mode="single"
+                      selected={new Date(endDate || '')}
+                      onSelect={(e) => setEndDate(e?.toISOString() || '')}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date('2000-01-01')
+                      }
+                      captionLayout="dropdown-buttons"
+                      fromYear={2000}
+                      toYear={new Date().getFullYear()}
+                    />
+                  </PopoverContent>
+                </Popover>
                 {endDateError && (
                   <span className="text-red-500 text-sm">{endDateError}</span>
                 )}
@@ -329,7 +404,7 @@ const AddActivityModal = () => {
                     Cancelar
                   </Button>
                 </DialogClose>
-                <Button onClick={handleSubmit} type="button">
+                <Button onClick={handleSubmit} type="button" disabled={loading}>
                   Adicionar
                 </Button>
               </div>

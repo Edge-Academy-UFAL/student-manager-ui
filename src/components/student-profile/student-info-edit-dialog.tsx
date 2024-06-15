@@ -42,13 +42,13 @@ import {
 } from '@/components/ui/popover'
 
 import { CalendarWithDropdowns } from '../ui/calendar-with-dropdowns'
-import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import {
   cn,
-  formatPhone,
   formatDate,
   getMaxSemesterBasedOnCourse,
+  formatDateToReadableBRFormat,
+  createDateOnCurrentTimezone,
 } from '@/lib/utils'
 
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -58,11 +58,16 @@ import { z } from 'zod'
 import { StudentInfo } from './student-profile'
 import { Textarea } from '../ui/textarea'
 import { ScrollArea } from '../ui/scroll-area'
-
 import { useToast } from '../ui/use-toast'
 
 import { editInfo } from '@/lib/functions/http/edit-info-req'
 
+import { PhoneInput } from '../ui/phone-input'
+import {
+  Value,
+  parsePhoneNumber,
+  isValidPhoneNumber,
+} from 'react-phone-number-input'
 interface EditableInfoData {
   about: string | ''
   name: string
@@ -90,13 +95,13 @@ interface StudentEditRequest {
 const EditInfoSchema = z.object({
   about: z
     .string()
-    .max(2000, 'Limite seu texto a 2000 caracteres')
+    .max(2000, 'Limite seu texto a 2000 caracteres.')
     .optional()
     .or(z.literal('')),
   name: z
     .string()
     .min(3, 'Preencha com seu nome completo.')
-    .max(30, 'Limite de 30 caracteres atingido')
+    .max(30, 'Limite de 30 caracteres atingido.')
     .regex(
       /^[a-zA-Z\sáéêíóúãáçÃÁÉÊÍÓÚ]+$/,
       'O nome deve conter apenas letras A-Z a-z, espaços e acentos.',
@@ -105,19 +110,25 @@ const EditInfoSchema = z.object({
   course: z.enum(['Ciência da Computação', 'Engenharia de Computação']),
   phone: z
     .string()
-    .min(10, 'Número de telefone inválido.')
-    .max(15, 'Número de telefone inválido.')
-    .regex(
-      /^(\([0-9]{2}\))\s?([9]{1})([0-9]{4})-([0-9]{4})$/,
-      'Números de telefone válidos são da forma (XX) 9XXXX-XXXX',
+    .refine(isValidPhoneNumber, { message: 'Número de telefone inválido.' })
+    .refine(
+      (value) => {
+        return value.length === 14
+      },
+      {
+        message: 'Número de telefone inválido.',
+      },
     ),
   secondaryPhone: z
     .string()
-    .min(10, 'Número de telefone inválido.')
-    .max(15, 'Número de telefone inválido.')
-    .regex(
-      /^(\([0-9]{2}\))\s?([9]{1})([0-9]{4})-([0-9]{4})$/,
-      'Números de telefone válidos são da forma (XX) 9XXXX-XXXX',
+    .refine(isValidPhoneNumber, { message: 'Número de telefone inválido.' })
+    .refine(
+      (value) => {
+        return value.length === 14
+      },
+      {
+        message: 'Número de telefone inválido.',
+      },
     )
     .optional()
     .or(z.literal('')),
@@ -133,19 +144,22 @@ const EditInfoSchema = z.object({
     },
     {
       message:
-        'O ano do período de ingresso não pode ser posterior ao ano atual e deve estar no formato ANO.SEMESTRE_LETIVO (ex: 2020.1, 2020.2, 2024.1, 2024.2)',
+        'O ano do período de ingresso não pode ser posterior ao ano atual e deve estar no formato ANO.SEMESTRE_LETIVO (ex: 2020.1, 2020.2, 2024.1, 2024.2).',
     },
   ),
   registration: z.string().refine((value) => /^\d{8}$/.test(value), {
-    message: 'Formato de matrícula inválido',
+    message: 'Formato de matrícula inválido.',
   }),
 })
 
 type EditInfoSchema = z.infer<typeof EditInfoSchema>
 
 function formatInfoEditData(data: EditInfoSchema): StudentEditRequest {
-  const phone = data.phone.replace(/\D/g, '')
-  const secondaryPhone = data.secondaryPhone?.replace(/\D/g, '') ?? ''
+  let phone = data.phone.replace(/\D/g, '')
+  let secondaryPhone = data.secondaryPhone?.replace(/\D/g, '') ?? ''
+
+  phone = phone.slice(2)
+  secondaryPhone = secondaryPhone.slice(2)
 
   const course =
     data.course === 'Ciência da Computação'
@@ -231,7 +245,7 @@ const EditInfoDialogContent = ({
                           )}
                         >
                           {field.value ? (
-                            format(field.value, 'PPP')
+                            formatDateToReadableBRFormat(field.value)
                           ) : (
                             <span>Selecione um data</span>
                           )}
@@ -322,12 +336,41 @@ const EditInfoDialogContent = ({
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Telefone</FormLabel>
+                  <FormLabel>Telefone*</FormLabel>
                   <FormControl>
-                    <Input
-                      defaultValue={field.value}
+                    <PhoneInput
+                      initialValueFormat="national"
+                      value={
+                        parsePhoneNumber(form.getValues('phone'), 'BR')
+                          ?.number as Value
+                      }
                       onChange={field.onChange}
-                      placeholder="(99) 99999-9999"
+                      defaultCountry="BR"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div>
+            <FormField
+              control={form.control}
+              name="secondaryPhone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefone Secundário</FormLabel>
+                  <FormControl>
+                    <PhoneInput
+                      initialValueFormat="national"
+                      value={
+                        parsePhoneNumber(
+                          form.getValues('secondaryPhone') || '',
+                          'BR',
+                        )?.number as Value
+                      }
+                      onChange={field.onChange}
+                      defaultCountry="BR"
                     />
                   </FormControl>
                   <FormMessage />
@@ -377,25 +420,6 @@ const EditInfoDialogContent = ({
           <div>
             <FormField
               control={form.control}
-              name="secondaryPhone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone Secundário</FormLabel>
-                  <FormControl>
-                    <Input
-                      defaultValue={field.value}
-                      onChange={field.onChange}
-                      placeholder="(99) 99999-9999"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div>
-            <FormField
-              control={form.control}
               name="entrySemester"
               render={({ field }) => (
                 <FormItem>
@@ -428,13 +452,15 @@ export function StudentInfoEditDialog({
   const defaultFormData: EditableInfoData = {
     about: studentData.about,
     name: studentData.name,
-    birthDate: new Date(studentData.birthDate),
+    birthDate: createDateOnCurrentTimezone(studentData.birthDate),
     course:
       studentData.course === 'COMPUTER_SCIENCE'
         ? 'Ciência da Computação'
         : 'Engenharia de Computação',
-    phone: formatPhone(studentData.phone),
-    secondaryPhone: formatPhone(studentData.secondaryPhone || ''),
+    phone: `+55${studentData.phone}`,
+    secondaryPhone: studentData.secondaryPhone
+      ? `+55${studentData.secondaryPhone}`
+      : '',
     semester: studentData.period.toString(),
     entrySemester: studentData.entryPeriod,
     registration: studentData.registration,
@@ -464,31 +490,15 @@ export function StudentInfoEditDialog({
 
     setLoading(true)
 
-    // await new Promise((resolve) => setTimeout(resolve, 1000)) // interesante
-
     const res = await editInfo(requestData)
-
-    // try {
-    //   const url = `${process.env.backendRoute}/api/v1/students/${studentData.email}`
-    //   const res = await fetch(url, {
-    //     method: 'PUT',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //       Authorization: `Bearer ${data?.user.authToken}`,
-    //     },
-    //     body: JSON.stringify(requestData),
-    //   })
-
     const status = res.status
-
-    console.log('STATUS', status)
 
     if (status === 200 || status === 201) {
       setStudentData({ ...studentData, ...requestData })
       setShowDialog(false)
 
       toast({
-        title: 'Informações atualizadas com sucesso',
+        title: 'Informações atualizadas com sucesso.',
         description: 'Seus dados foram atuaizados!',
       })
     } else if (status >= 400 && status < 500) {
@@ -504,7 +514,7 @@ export function StudentInfoEditDialog({
       })
     } else {
       toast({
-        title: 'Erro',
+        title: 'Erro.',
         description: 'Erro ao enviar os dados.',
       })
     }

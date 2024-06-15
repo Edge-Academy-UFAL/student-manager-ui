@@ -35,25 +35,25 @@ export const RegisterSchema = z
     ),
     phone: z
       .string()
-      .refine(isValidPhoneNumber, { message: 'Invalid phone number' })
+      .refine(isValidPhoneNumber, { message: 'Número de telefone inválido.' })
       .refine(
         (value) => {
           return value.length === 14
         },
         {
-          message: 'Número de telefone inválido',
+          message: 'Número de telefone inválido.',
         },
       ),
 
     secondaryPhone: z
       .string()
-      .refine(isValidPhoneNumber, { message: 'Invalid phone number' })
+      .refine(isValidPhoneNumber, { message: 'Número de telefone inválido.' })
       .refine(
         (value) => {
           return value.length === 14
         },
         {
-          message: 'Número de telefone inválido',
+          message: 'Número de telefone inválido.',
         },
       )
       .optional()
@@ -61,7 +61,7 @@ export const RegisterSchema = z
     name: z
       .string()
       .min(3, 'Preencha com seu nome completo.')
-      .max(30, 'Limite de 30 caracteres atingido')
+      .max(30, 'Limite de 30 caracteres atingido.')
       .regex(
         /^[a-zA-Z\sáéêíóôúãáçÃÁÉÊÍÓÔÚüö]+$/,
         'O nome deve conter apenas letras A-Z a-z, espaços e acentos.',
@@ -69,33 +69,29 @@ export const RegisterSchema = z
     image: z
       .any()
       .refine((files) => files, { message: 'Campo Obrigatório.' })
-      .refine(
-        (files) => {
-          return files?.[0]?.size <= MAX_FILE_SIZE
-        },
-        `Tamanho máximo de arquivo excedido. O arquivo deve ter no máximo 5MB
-      .`,
-      )
+      .refine((files) => {
+        return files?.[0]?.size <= MAX_FILE_SIZE
+      }, `Tamanho máximo de arquivo excedido. O arquivo deve ter no máximo 5MB.`)
       .refine(
         (files) => ACCEPTED_IMAGE_MIME_TYPES.includes(files?.[0]?.type),
         'Apenas formatos .jpg, .jpeg, .png são permitidos.',
       ),
     course: z.enum(['Ciência da Computação', 'Engenharia de Computação']),
     registrationNumber: z.string().refine((value) => /^\d{8}$/.test(value), {
-      message: 'Formato de matrícula inválido',
+      message: 'Formato de matrícula inválido.',
     }),
     birthdate: z.date(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     path: ['confirmPassword'],
-    message: 'As senhas não coincidem',
+    message: 'As senhas não coincidem.',
   })
 
 export type RegisterSchema = z.infer<typeof RegisterSchema>
 
 export const LoginFormSchema = z.object({
-  email: z.string().email('Adicione um email válido'),
-  password: z.string().max(20, 'A senha deve ter no máximo 20 caracteres'),
+  email: z.string().email('Adicione um email válido.'),
+  password: z.string().max(20, 'A senha deve ter no máximo 20 caracteres.'),
 })
 
 export type LoginFormSchema = z.infer<typeof LoginFormSchema>

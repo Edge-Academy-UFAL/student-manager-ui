@@ -1,6 +1,7 @@
 import StudentProfile from '@/components/student-profile/student-profile'
 import { authOptions } from '@/lib/auth'
 import { getServerSession } from 'next-auth/next'
+import { orderActivities } from '@/lib/utils'
 
 interface StudentProfilePageProps {
   params: { username: string }
@@ -20,7 +21,8 @@ const fetchStudentActivities = async (email: string, token: string) => {
 
   if (response.ok) {
     const data = await response.json()
-    return data
+    // Order by: first newer on going activities and then newer done activities.
+    return orderActivities(data)
   } else {
     throw new Error('Erro ao buscar os dados')
   }

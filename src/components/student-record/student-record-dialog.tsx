@@ -110,7 +110,9 @@ const StudentRecordDialog = ({
   return (
     <Dialog open={modalIsOpen} onOpenChange={changeModal}>
       <DialogTrigger asChild>
-        <Button disabled={!dialogIsLoaded}>Atualizar o Histórico</Button>
+        <Button disabled={!dialogIsLoaded} variant="secondary">
+          <Upload />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

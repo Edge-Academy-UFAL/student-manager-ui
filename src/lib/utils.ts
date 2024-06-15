@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { Activity } from '../../types/types'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -74,4 +75,66 @@ export function handleLimitRange(
     return max
   }
   return value
+}
+
+export function formatDateToReadableBRFormat(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }
+
+  const formattedDate = new Intl.DateTimeFormat('pt-BR', options).format(date)
+  const parts = formattedDate.split(' ')
+  parts[2] = parts[2].charAt(0).toUpperCase() + parts[2].slice(1)
+  return parts.join(' ')
+}
+
+export function formatToCompactBRFormat(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  }
+  const formattedDate = new Intl.DateTimeFormat('pt-BR', options).format(date)
+  return formattedDate
+}
+
+function orderActitivtiesByDateDesc(activities: Activity[]): Activity[] {
+  return activities.sort((a: Activity, b: Activity) => {
+    return Number(new Date(b.startDate)) - Number(new Date(a.startDate))
+  })
+}
+
+export function orderActivities(activities: Activity[]): Activity[] {
+  const done = orderActitivtiesByDateDesc(
+    activities.filter((act) => !act.onGoing),
+  )
+  const onGoing = orderActitivtiesByDateDesc(
+    activities.filter((act) => act.onGoing),
+  )
+  return [...onGoing, ...done]
+}
+
+export function createDateOnCurrentTimezone(dateString?: string | null): Date {
+  // When the date string is something like YYYY-MM-DD, the Date class assumes
+  // it is in the UTC timezone. So, when printing, it converts to the users
+  // current timezone, which resuls in unexpected dates being showed.
+
+  // This functions creates the date considering 'america/maceio' timezone, so
+  // no conversion is to happen.
+  if (dateString) {
+    return new Date(`${dateString}T03:00:00.000Z`)
+  } else {
+    return new Date()
+  }
+}
+
+export function formatDateToYYYYMMDD(date: Date): string {
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
+  const day = date.getDate().toString().padStart(2, '0')
+  return `${year}-${month}-${day}`
 }

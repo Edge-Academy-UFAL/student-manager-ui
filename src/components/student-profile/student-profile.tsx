@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import { useSession } from 'next-auth/react'
 
-import { enumToStringCourse } from '@/lib/utils'
+import { enumToStringCourse, formatDateToReadableBRFormat } from '@/lib/utils'
 import { StudentInfoEditDialog } from './student-info-edit-dialog'
 
 import ActivityCard from './activity/activity-card'
@@ -13,6 +13,8 @@ import InfoBox from './info-box'
 import AddActivityModal from './activity/add-activity-modal'
 
 import { Activity } from '../../../types/types'
+
+import { formatPhoneNumber, Value } from 'react-phone-number-input'
 
 export interface StudentInfo {
   name: string
@@ -60,21 +62,35 @@ const StudentProfile = ({
           />
         ) : null}
       </div>
-      <div className="flex flex-row gap-5 p-6 rounded-lg border mt-2">
-        <div className="w-[40%]">
+      <div className="flex flex-col lg:flex-row py-6 px-6 xl:px-10 gap-5 rounded-lg border mt-2">
+        <div className="basis-1/2">
           <InfoBox title="Sobre mim" text={studentData.about} />
         </div>
-        <div className="w-[60%] flex flex-row justify-evenly">
-          <div className="w-[30%]">
-            <InfoBox title="Email" text={studentData.email} />
-            <InfoBox title="Data de nascimento" text={studentData.birthDate} />
-            <InfoBox title="Telefone" text={studentData.phone} />
+        <div className="basis-1/2 flex flex-row justify-between xl:gap-16 xl:justify-evenly">
+          <div className="flex flex-col items-start gap-y-1">
+            <InfoBox title="E-mail" text={studentData.email} />
+            <InfoBox
+              title="Data de nascimento"
+              text={formatDateToReadableBRFormat(
+                new Date(studentData.birthDate),
+              )}
+            />
+            <InfoBox
+              title="Telefone"
+              text={formatPhoneNumber(`+55${studentData.phone}` as Value)}
+            />
             <InfoBox
               title="Telefone secundário"
-              text={studentData.secondaryPhone || 'Não fornecido'}
+              text={
+                studentData.secondaryPhone
+                  ? formatPhoneNumber(
+                      `+55${studentData.secondaryPhone}` as Value,
+                    )
+                  : 'Não fornecido'
+              }
             />
           </div>
-          <div className="w-[30%]">
+          <div className="flex flex-col items-start gap-y-1">
             <InfoBox
               title="Curso"
               text={enumToStringCourse(studentData.course)}
@@ -83,8 +99,11 @@ const StudentProfile = ({
               title="Número de matrícula"
               text={studentData.registration}
             />
-            <InfoBox title="Período" text={`${studentData.period}`} />
-            <InfoBox title="Período de entrada" text={studentData.entryDate} />
+            <InfoBox title="Período" text={`${studentData.period}°`} />
+            <InfoBox
+              title="Ano letivo de entrada"
+              text={studentData.entryPeriod}
+            />
           </div>
         </div>
       </div>

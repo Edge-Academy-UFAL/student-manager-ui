@@ -9,6 +9,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+
 import { AddNota } from './add-nota'
 import { RemoveNota, EditNota } from './edit-nota'
 import { getServerSession } from 'next-auth/next'
@@ -34,6 +41,27 @@ interface StudentGradesPageProps {
   email: string
 }
 
+const FinalGradeTableCell = ({ children }: { children: number | null }) => {
+  if (children === null) {
+    return (
+      <TableCell>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span>---</span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>O aluno ainda está cursando esta disciplina.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </TableCell>
+    )
+  } else {
+    return <TableCell>{children}</TableCell>
+  }
+}
+
 const StudentNotas = async ({
   notas,
   subjects,
@@ -43,14 +71,14 @@ const StudentNotas = async ({
   return (
     <div className="max-w-[90vw] w-full px-10 py-5 justify-center flex flex-col">
       {email === data?.user?.email ? (
-        <div className="flex flex-row justify-between">
+        <div className="flex flex-row justify-between mb-2">
           <div className="flex justify-between w-full">
             <h2 className="text-2xl font-bold">Notas do aluno</h2>
           </div>
           <AddNota subjects={subjects} email={email} />
         </div>
       ) : (
-        <h2 className="text-2xl font-bold my-5">Notas do aluno</h2>
+        <h2 className="text-2xl font-bold my-5 mb-2">Notas do aluno</h2>
       )}
       <Table parentDivClassName={'max-h-[30vw]'}>
         <TableHeader sticky={true}>
@@ -71,7 +99,7 @@ const StudentNotas = async ({
                 <TableCell className="font-medium">{row.name}</TableCell>
                 <TableCell>{row.workload}</TableCell>
                 <TableCell>{row.period}</TableCell>
-                <TableCell>{row.finalGrade}</TableCell>
+                <FinalGradeTableCell>{row.finalGrade}</FinalGradeTableCell>
                 <TableCell
                   className={`${
                     row.subjectStatus === 'APPROVED'

@@ -7,7 +7,6 @@ const getData = async (email: string) => {
   const token = session?.user.authToken
 
   try {
-    console.log(`${process.env.backendRoute}/api/v1/students/${email}`)
     const res = await fetch(
       `${process.env.backendRoute}/api/v1/students/${email}`,
       {

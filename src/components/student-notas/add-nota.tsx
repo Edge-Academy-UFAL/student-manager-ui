@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 
 import { cn, handleLimitRange } from '@/lib/utils'
 
@@ -107,14 +107,11 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
       setNotaError('A média final deve ser um número entre 1 e 10.')
       isValid = false
-      console.log('2')
     } else if (!/^\d+(\.\d{1,2})?$/.test(nota.toString())) {
       setNotaError('A média final deve ter no máximo duas casas decimais.')
       isValid = false
-      console.log('3')
     } else {
       setNotaError('')
-      console.log('4')
     }
 
     // Validação do campo "Status"
@@ -134,23 +131,22 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     }
 
     // Validação do campo "Média Final", permitir campo nulo quando a situação for "Cursando" (USAR NA PROXIMA SPRINT)
-
-    // if (status === 'ENROLLED') {
-    //   setNotaError('')
-    // } else {
-    //   if (nota.trim() === '') {
-    //     setNotaError('A média final é obrigatória.')
-    //     isValid = false
-    //   } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
-    //     setNotaError('A média final deve ser um número entre 0 e 10.')
-    //     isValid = false
-    //   } else if (!/^\d+(\.\d{1,2})?$/.test(nota)) {
-    //     setNotaError('A média final deve ter no máximo duas casas decimais.')
-    //     isValid = false
-    //   } else {
-    //     setNotaError('')
-    //   }
-    // }
+    if (status === 'ENROLLED') {
+      setNotaError('')
+    } else {
+      if (nota.trim() === '') {
+        setNotaError('A média final é obrigatória.')
+        isValid = false
+      } else if (isNaN(Number(nota)) || Number(nota) < 0 || Number(nota) > 10) {
+        setNotaError('A média final deve ser um número entre 0 e 10.')
+        isValid = false
+      } else if (!/^\d+(\.\d{1,2})?$/.test(nota)) {
+        setNotaError('A média final deve ter no máximo duas casas decimais.')
+        isValid = false
+      } else {
+        setNotaError('')
+      }
+    }
 
     return isValid
   }
@@ -195,12 +191,19 @@ export function AddNota({ subjects, email }: AddNotaProps) {
     <div className="flex justify-end">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="mb-3 text-end self-end">Adicionar</Button>
+          <Button variant="secondary">
+            <Plus />
+          </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[525px]">
           <DialogHeader>
             <DialogTitle>Adicionar Disciplina</DialogTitle>
-            <DialogDescription></DialogDescription>
+            <DialogDescription>
+              Escolha abaixo a disciplina que você deseja adicionar e o perído
+              em que cursou ou está cursando a matéria. Caso já tenha cursado,
+              insira também a sua média final. Caso ainda esteja cursando, deixe
+              o campo da nota em branco.
+            </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-3">
@@ -234,7 +237,7 @@ export function AddNota({ subjects, email }: AddNotaProps) {
                           <CommandItem
                             className="hover:cursor-pointer"
                             key={disciplina.code}
-                            value={disciplina.name}
+                            value={disciplina.code + ' - ' + disciplina.name}
                             onSelect={(currentValue) => {
                               setDisciplina(disciplina)
                               setOpenDisciplnas(false)
