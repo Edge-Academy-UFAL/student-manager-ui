@@ -69,7 +69,14 @@ export const authOptions: NextAuthOptions = {
         },
       }
     },
-    jwt: ({ token, user }) => {
+    jwt: ({ token, trigger, user, session }) => {
+      // This is necessary to update de session (and therefore, the header)
+      // when the user uploads a new profile picture
+      // More on https://next-auth.js.org/getting-started/client#updating-the-session
+      if (trigger === 'update' && session?.photoUrl) {
+        token.photoUrl = session.photoUrl
+      }
+
       if (user) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const u = user as unknown as any
